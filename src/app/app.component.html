@@ -1,8 +1,10 @@
 @if (isAuthenticated$ | async ) {
   <app-toasts aria-live="polite" aria-atomic="true" ></app-toasts>
-  <app-main-layout [navbarMenu]="navbarMenu" (logoutButtonClick)="onLogoutButtonClick()">
+  <app-main-layout [navbarMenu]="navbarMenu" (logoutButtonClick)="onLogoutButtonClick()" 
+  (profileButtonClick)="profileButtonClick()">
 
   </app-main-layout>
+  
 } @else {
   <!-- Faltaba agreagar la variable current url -->
   @if ((currentUrl$ | async) === '/forgotpassword') {

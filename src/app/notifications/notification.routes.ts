@@ -19,7 +19,7 @@ export const NOTIFICATION_ROUTES: Routes = [
     path: 'templates/new',
     component: TemplateEmailComponent,
     //canActivate: [authGuard],
-    canMatch: [hasRoleCodeGuard],
+    // canMatch: [hasRoleCodeGuard],
     data: {
       allowedRoleCodes: [
         URLTargetType.SUPERADMIN,
@@ -32,7 +32,7 @@ export const NOTIFICATION_ROUTES: Routes = [
     path: 'templates',
     component: TemplateListComponent,
     //canActivate: [authGuard],
-    canMatch: [hasRoleCodeGuard],
+    // canMatch: [hasRoleCodeGuard],
     data: {
       allowedRoleCodes: [
         URLTargetType.SUPERADMIN,
@@ -48,8 +48,8 @@ export const NOTIFICATION_ROUTES: Routes = [
         (m) => m.SendEmailComponent
       ),
     component: SendEmailComponent,
-    canActivate: [authGuard],
-    canMatch: [hasRoleCodeGuard],
+    // canActivate: [authGuard],
+    // canMatch: [hasRoleCodeGuard],
     data: {
       allowedRoleCodes: [
         URLTargetType.SUPERADMIN,
@@ -65,8 +65,8 @@ export const NOTIFICATION_ROUTES: Routes = [
         './modules/components/send-email-contact/send-email-contact.component'
       ).then((m) => m.SendEmailContactComponent),
     component: SendEmailContactComponent,
-    canActivate: [authGuard],
-    canMatch: [hasRoleCodeGuard],
+    // canActivate: [authGuard],
+    // canMatch: [hasRoleCodeGuard],
     data: {
       allowedRoleCodes: [
         URLTargetType.SUPERADMIN,
@@ -78,8 +78,8 @@ export const NOTIFICATION_ROUTES: Routes = [
   {
     path: 'notifications-historic',
     component: NotificationHistoricComponent,
-    canActivate: [authGuard],
-    canMatch: [hasRoleCodeGuard],
+    // canActivate: [authGuard],
+    // canMatch: [hasRoleCodeGuard],
     data: {
       allowedRoleCodes: [
         URLTargetType.SUPERADMIN,
@@ -91,8 +91,8 @@ export const NOTIFICATION_ROUTES: Routes = [
   {
     path: 'my-notification',
     component: MyNotificationComponent,
-    canActivate: [authGuard],
-    canMatch: [hasRoleCodeGuard],
+    // canActivate: [authGuard],
+    // canMatch: [hasRoleCodeGuard],
     data: {
       allowedRoleCodes: [
         URLTargetType.SUPERADMIN,
@@ -106,8 +106,8 @@ export const NOTIFICATION_ROUTES: Routes = [
   {
     path: 'contact-audit',
     component: ContactAuditHistoryComponent,
-    canActivate: [authGuard],
-    canMatch: [hasRoleCodeGuard],
+    // canActivate: [authGuard],
+    // canMatch: [hasRoleCodeGuard],
     data: {
       allowedRoleCodes: [
         URLTargetType.SUPERADMIN,
@@ -119,8 +119,8 @@ export const NOTIFICATION_ROUTES: Routes = [
   {
     path: 'contacts',
     component: ContactListComponent,
-    canActivate: [authGuard],
-    canMatch: [hasRoleCodeGuard],
+    // canActivate: [authGuard],
+    // canMatch: [hasRoleCodeGuard],
     data: {
       allowedRoleCodes: [
         URLTargetType.SUPERADMIN,
@@ -132,8 +132,8 @@ export const NOTIFICATION_ROUTES: Routes = [
   {
     path: 'contact/new',
     component: ContactNewComponent,
-    canActivate: [authGuard],
-    canMatch: [hasRoleCodeGuard],
+    // canActivate: [authGuard],
+    // canMatch: [hasRoleCodeGuard],
     data: {
       allowedRoleCodes: [
         URLTargetType.SUPERADMIN,
@@ -145,8 +145,8 @@ export const NOTIFICATION_ROUTES: Routes = [
   {
     path: 'notification/charts',
     component: NotificationChartComponent,
-    canActivate: [authGuard],
-    canMatch: [hasRoleCodeGuard],
+    // canActivate: [authGuard],
+    // canMatch: [hasRoleCodeGuard],
     data: {
       allowedRoleCodes: [
         URLTargetType.SUPERADMIN,

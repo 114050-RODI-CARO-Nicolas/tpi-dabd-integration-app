@@ -14,7 +14,7 @@ export const authGuard: CanActivateFn = (route, state) => {
     map((u) => {
       if (!u) {
         return router.parseUrl('');
-        //return router.parseUrl('/home');
+        // return router.parseUrl('/home');
       }
       return true;
     })

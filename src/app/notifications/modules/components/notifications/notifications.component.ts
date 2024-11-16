@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NotificationService } from '../../../services/notification.service';
 import { Notification } from '../../../models/notifications/notification';
 import { Router } from '@angular/router';
+import { NotificationEventServiceService } from '../../../services/NotificationEventService.service';
 
 @Component({
   selector: 'app-notifications',
@@ -26,12 +27,22 @@ export class NotificationsComponent implements OnInit {
   clickCount = 0;
   showNotification = false;
 
-  notificationService = new NotificationService();
-  constructor(private router: Router) {}
+  constructor(private router: Router, 
+    private notificationService: NotificationService,
+    private notificationEventService: NotificationEventServiceService
+  ) {}
 
   @ViewChild('iframePreview', { static: false }) iframePreview!: ElementRef;
 
   ngOnInit() {
+    console.log("button")
+
+    this.notificationEventService.triggerNotification$.subscribe(() => {
+      this.toggleNotifications(); 
+      console.log("button")
+
+
+    });
     this.notificationService.getNotificationByContact().subscribe({
       next: (notifications) => {
         this.notifications = notifications.sort((a, b) => {
@@ -56,6 +67,7 @@ export class NotificationsComponent implements OnInit {
       this.closeModal();
     }
   }
+  
 
 
   showNotificationDetails(notification: Notification) {

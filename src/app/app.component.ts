@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { RouterModule, RouterOutlet, Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import {
   MainLayoutComponent,
@@ -12,23 +12,26 @@ import { LoginService } from './users/services/login.service';
 import { ForgotPasswordComponent } from './users/components/forgot-password/forgot-password.component';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { NotificationsComponent } from './notifications/modules/components/notifications/notifications.component';
+import { NotificationEventServiceService } from './notifications/services/NotificationEventService.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    RouterOutlet,
     RouterModule,
     MainLayoutComponent,
     ToastsContainer,
     AsyncPipe,
     LoginComponent,
-	ForgotPasswordComponent,
+    ForgotPasswordComponent,
+    NotificationsComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
+
   // title = 'AppName';
 
   //variables
@@ -358,8 +361,8 @@ export class AppComponent {
    * Service responsible for managing user session and authentication state.
    */
   private sessionService = inject(SessionService);
-  private router = inject(Router)
-
+  private router = inject(Router);
+  private notificationEventService = inject(NotificationEventServiceService);
   /**
    * Observable that emits the current authentication status.
    * This observable updates automatically whenever the session state changes,
@@ -379,6 +382,12 @@ export class AppComponent {
     this.sessionService.logout();
     this.router.navigate([""]);
   }
+
+  profileButtonClick() {
+    this.notificationEventService.triggerNotifications();
+  }
+
+
   //#endregion
 
   currentUrl$ = this.router.events.pipe(
