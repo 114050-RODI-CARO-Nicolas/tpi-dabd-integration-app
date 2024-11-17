@@ -157,20 +157,20 @@ export class TemplateEmailComponent {
 
   openIaModal() {
     this.isIaModalOpen = true;
-    const iaTemplateBodyControl = document.getElementById('iaTemplateBodyModel');
-    if (iaTemplateBodyControl) {
-      iaTemplateBodyControl.classList.remove('ng-dirty', 'ng-touched', 'is-invalid', 'is-valid');
-    }
+    // const iaTemplateBodyControl = document.getElementById('iaTemplateBodyModel');
+    // if (iaTemplateBodyControl) {
+    //   iaTemplateBodyControl.classList.remove('ng-dirty', 'ng-touched', 'is-invalid', 'is-valid');
+    // }
   }
 
   closeIaModal() {
     this.iaInputText = '';
     this.iaResponse = '';
-    this.isIaModalOpen = false;  // Restablece el estado del modelo
+    this.isIaModalOpen = false;  
     if (this.iaTemplateBodyModel) {
-      this.iaTemplateBodyModel.control.markAsPristine(); // Limpia dirty
-      this.iaTemplateBodyModel.control.markAsUntouched(); // Limpia touched
-      this.iaTemplateBodyModel.control.updateValueAndValidity(); // Actualiza validaciones
+      this.iaTemplateBodyModel.control.markAsPristine(); 
+      this.iaTemplateBodyModel.control.markAsUntouched(); 
+      this.iaTemplateBodyModel.control.updateValueAndValidity(); 
     }
   }
 
@@ -190,9 +190,7 @@ export class TemplateEmailComponent {
   }
 
   sendBodyIa() {
-    // this.templateBodyModal = this.iaResponse.toString();
-    
-
+   
     this.form.patchValue({
       templateBody: this.iaResponse.toString(),
     });
@@ -223,7 +221,6 @@ export class TemplateEmailComponent {
     this.showModalToRenderHTML = true;
     setTimeout(() => {
       const iframe = this.iframePreview.nativeElement as HTMLIFrameElement;
-      console.log(this.iframePreview.nativeElement);
       iframe.srcdoc = this.iaResponse.toString(); // Asigna la respuesta de la IA al iframe
       iframe.onload = () => {
         const iframeDocument =
