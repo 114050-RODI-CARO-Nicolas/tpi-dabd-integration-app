@@ -459,11 +459,9 @@
                       (click)="setAddressValue($index)">
                 {{address.streetAddress}} {{address.number}}
               </button>
-              @if (!id) {
                 <button type="button" class="btn btn-danger btn-sm" (click)="removeAddress($index)">
                   <i class="bi bi-trash-fill"></i>
                 </button>
-              }
             </div>
           }
         </div>
@@ -519,7 +517,7 @@
                 formControlName="contactValue"
               />
             </div>
-            
+
           </div>
           <div class="col">
             @if(ownerForm.get('contactsForm.contactValue')?.invalid &&
@@ -564,11 +562,9 @@
                         (click)="setContactValue($index)">
                   {{ setContactType(contact.contactType) }} - {{ contact.contactValue }}
                 </button>
-                @if (!id) {
                   <button type="button" class="btn btn-danger btn-sm" (click)="removeContact($index)">
                     <i class="bi bi-trash-fill"></i>
                   </button>
-                }
               </div>
             }
           </div>

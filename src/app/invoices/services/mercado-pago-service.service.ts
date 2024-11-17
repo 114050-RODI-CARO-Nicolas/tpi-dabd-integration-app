@@ -2,17 +2,27 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TicketPayDto } from '../models/TicketPayDto';
+import { environment } from '../../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MercadoPagoServiceService {  
-  private apiUrl = 'http://localhost:8090/payments/mercadopago/crear-preferencia';
+  private apiUrl = environment.apis.payments + 'mercadopago/crear-preferencia';
+  userId: number;
+  // private apiUrl = 'http://localhost:8090/payments/mercadopago/crear-preferencia';// DEV
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.userId = sessionStorage.getItem('userId') ? Number(sessionStorage.getItem('userId')) : 1;
+  }
 
   crearPreferencia(orderData: TicketPayDto): Observable<any> {
-    return this.http.post<any>(this.apiUrl, orderData);
+    const Headers = {
+      'x-user-id': this.userId.toString(),
+    };
+    return this.http.post<any>(this.apiUrl, orderData, {
+      headers: Headers
+    });
   }
 
   initMercadoPagoButton(preferenceId: string): void {

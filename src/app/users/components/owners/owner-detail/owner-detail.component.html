@@ -126,61 +126,56 @@
 
     <hr />
     <!-- Addresses -->
-    <div formGroupName="addressForm" class="row g-3 m-2">
-      <h5 class="mt-2 p-2">Añadir Dirección</h5>
+    <div formGroupName="addressForm" class="row g-3">
+      <h5 class="mt-2 p-2">Dirección</h5>
 
       <div class="col-md-6">
         <div class="d-flex flex-row align-items-center">
-          <label for="street-address" class="form-label me-2">Calle</label>
-          <input
-            type="text"
-            class="form-control"
-            id="street-address"
-            formControlName="street_address"
-          />
+          <label for="street-address" class="col-form-label col-md-2">Calle<label class="text-danger">*</label></label>
+          <input type="text" class="form-control" id="street-address" formControlName="streetAddress"
+                 [ngClass]="{'is-invalid': ownerForm.get('addressForm')?.get('streetAddress')?.invalid && ownerForm.get('addressForm')?.get('streetAddress')?.touched,
+                  'is-valid': ownerForm.get('streetAddress')?.get('streetAddress')?.valid && ownerForm.get('addressForm')?.get('streetAddress')?.touched}"
+          >
         </div>
       </div>
 
       <div class="col-md-6">
         <div class="d-flex flex-row align-items-center">
-          <label for="number" class="form-label me-2">Número</label>
-          <input
-            type="number"
-            class="form-control"
-            id="number"
-            formControlName="number"
-          />
+          <label for="number" class="col-form-label col-md-2">Número<label class="text-danger">*</label></label>
+          <input type="number" class="form-control" id="number" formControlName="number"
+                 [ngClass]="{'is-invalid': ownerForm.get('addressForm')?.get('number')?.invalid && ownerForm.get('addressForm')?.get('number')?.touched,
+                   'is-valid': ownerForm.get('addressForm')?.get('number')?.valid && ownerForm.get('addressForm')?.get('number')?.touched}"
+          >
         </div>
       </div>
 
       <div class="col-md-6">
         <div class="d-flex flex-row align-items-center">
-          <label for="floor" class="form-label me-2">Piso</label>
-          <input
-            type="number"
-            class="form-control"
-            id="floor"
-            formControlName="floor"
-          />
+          <label for="floor" class="col-form-label col-md-2">Piso</label>
+          <input type="number" class="form-control" id="floor" formControlName="floor"
+                 [ngClass]="{'is-invalid': ownerForm.get('addressForm')?.get('floor')?.invalid && ownerForm.get('addressForm')?.get('floor')?.touched,
+                  'is-valid': ownerForm.get('addressForm')?.get('floor')?.valid && ownerForm.get('addressForm')?.get('floor')?.touched}"
+          >
         </div>
       </div>
 
       <div class="col-md-6">
         <div class="d-flex flex-row align-items-center">
-          <label for="apartment" class="form-label me-2">Depto</label>
-          <input
-            type="text"
-            class="form-control"
-            id="apartment"
-            formControlName="apartment"
-          />
+          <label for="apartment" class="col-form-label col-md-2">Depto</label>
+          <input type="text" class="form-control" id="apartment" formControlName="apartment"
+                 [ngClass]="{'is-invalid': ownerForm.get('addressForm')?.get('apartment')?.invalid && ownerForm.get('addressForm')?.get('apartment')?.touched,
+                   'is-valid': ownerForm.get('addressForm')?.get('apartment')?.valid && ownerForm.get('addressForm')?.get('apartment')?.touched}"
+          >
         </div>
       </div>
 
       <div class="col-md-6">
         <div class="d-flex flex-row align-items-center">
-          <label for="country" class="form-label me-2">País</label>
-          <select id="country" class="form-select" formControlName="country">
+          <label for="country" class="col-form-label col-md-2">País<label class="text-danger">*</label></label>
+          <select id="country" class="form-select" formControlName="country"
+                  [ngClass]="{'is-invalid': ownerForm.get('addressForm')?.get('country')?.invalid && ownerForm.get('addressForm')?.get('country')?.touched,
+                      'is-valid': ownerForm.get('addressForm')?.get('country')?.valid && ownerForm.get('addressForm')?.get('country')?.touched}"
+          >
             @for(country of countryOptions; track $index) {
               <option [value]="country.value">{{ country.display }}</option>
             }
@@ -190,10 +185,10 @@
 
       <div class="col-md-6">
         <div class="d-flex flex-row align-items-center">
-          <select
-            id="province"
-            class="form-select"
-            formControlName="province"
+          <label for="province" class="col-form-label col-md-2">Provincia<label class="text-danger">*</label></label>
+          <select id="province" class="form-select" formControlName="province"
+                  [ngClass]="{'is-invalid': ownerForm.get('addressForm')?.get('province')?.invalid && ownerForm.get('addressForm')?.get('province')?.touched,
+                      'is-valid': ownerForm.get('addressForm')?.get('province')?.valid && ownerForm.get('addressForm')?.get('province')?.touched}"
           >
             @for(province of provinceOptions; track $index) {
               <option [value]="province.value">{{ province.display }}</option>
@@ -201,48 +196,82 @@
           </select>
         </div>
       </div>
-
       <div class="col-md-6">
         <div class="d-flex flex-row align-items-center">
-          <label for="city" class="form-label me-2">Ciudad</label>
+          <label for="city" class="col-form-label col-md-2">Ciudad<label class="text-danger">*</label></label>
           <input
             type="text"
-            class="form-control"
+            class="form-control w-100"
             id="city"
             formControlName="city"
+            [ngClass]="{'is-invalid': ownerForm.get('addressForm')?.get('city')?.invalid && ownerForm.get('addressForm')?.get('city')?.touched,
+                 'is-valid': ownerForm.get('addressForm')?.get('city')?.valid && ownerForm.get('addressForm')?.get('city')?.touched}"
           />
         </div>
       </div>
 
       <div class="col-md-6">
-        <div class="d-flex flex-row align-items-center">
-          <label for="postal-code" class="form-label me-2"
-          >Código Postal</label
+        <div class="row g-0 align-items-center">
+          <label for="postal-code" class="col-form-label col-md-2"
+          >Código Postal<label class="text-danger">*</label></label
           >
-          <input
-            type="number"
-            class="form-control"
-            id="postal-code"
-            formControlName="postal_code"
-          />
+          <div class="col">
+            <input
+              type="number"
+              class="form-control"
+              id="postal-code"
+              formControlName="postalCode"
+              [ngClass]="{'is-invalid': ownerForm.get('addressForm')?.get('postalCode')?.invalid && ownerForm.get('addressForm')?.get('postalCode')?.touched,
+                   'is-valid': ownerForm.get('addressForm')?.get('postalCode')?.valid && ownerForm.get('addressForm')?.get('postalCode')?.touched}"
+            >
+          </div>
         </div>
       </div>
     </div>
 
+    @if (addresses.length !== 0) {
+
+      <div class="col-12">
+        <h5 class="mb-3">Lista de Direcciones</h5>
+        <div class="list-group">
+          @for (address of addresses; track $index) {
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <button type="button"
+                      class="list-group-item list-group-item-action btn btn-primary btn-sm me-2"
+                      (click)="setAddressValue($index)">
+                {{address.streetAddress}} {{address.number}}
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+
+    <div class="mb-3"></div>
     <hr />
     <!-- Contactos -->
 
-    <h5 class="mt-2 p-2">Contactos</h5>
+    <div formGroupName="contactsForm" class="row g-3 pb-5">
 
-    <div class="row" formArrayName="contactsForm">
-      @for(contact of contacts; track $index) {
-        <div class="row">
-          <div class="col-9">
-            {{ setContactType(contact.contact_type) }} - {{ contact.contact_value }}
+      @if (contacts.length !== 0) {
+
+        <div class="col-12">
+          <h5 class="mb-3">Lista de Contactos</h5>
+          <div class="list-group">
+            @for (contact of contacts; track contact) {
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <button type="button"
+                        class="list-group-item list-group-item-action btn btn-primary btn-sm me-2">
+                  {{ setContactType(contact.contactType) }} - {{ contact.contactValue }}
+                </button>
+              </div>
+            }
           </div>
         </div>
       }
     </div>
+
 
 
     <div class="col-12 d-flex justify-content-end">

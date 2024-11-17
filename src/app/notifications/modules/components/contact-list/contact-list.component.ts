@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 import { NgbPagination, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { MainContainerComponent, ToastService, TableFiltersComponent, Filter, FilterConfigBuilder } from 'ngx-dabd-grupo01';
 import { SubscriptionService } from '../../../services/subscription.service';
-import { map } from 'rxjs';
+import { concatMap, map, tap } from 'rxjs';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -103,24 +103,24 @@ export class ContactListComponent implements OnInit {
   }
   selectContact(contactId: number, event: Event) {
     const inputElement = event.target as HTMLInputElement
-    
+
     if (inputElement && inputElement.checked !== undefined) {
       const isSelected = inputElement.checked;
-  
+
       // Si el checkbox está seleccionado, agregar el contacto al array
-      if (isSelected) {        
+      if (isSelected) {
         this.selectedContacts.push(contactId);
-        
+
       } else {
         // Si el checkbox está desmarcado, eliminar el contacto del array
-        
+
         const index = this.selectedContacts.indexOf(contactId);
         if (index > -1) {
           this.selectedContacts.splice(index, 1);
         }
       }
     }
-  
+
     this.minimunContacts = this.selectedContacts.length >= 2;
   }
   openEmailModal() {
@@ -135,7 +135,7 @@ export class ContactListComponent implements OnInit {
       variables: [],
       templateId: this.selectedTemplate,
       contactIds: this.selectedContacts
-    }    
+    }
     this.emailService.sendEmailWithContacts(data).subscribe({
       next: () => {
         this.isEmailModalOpen = false
@@ -255,8 +255,8 @@ export class ContactListComponent implements OnInit {
   private applyFilters() {
     this.currentPage = 1; // Resetear a la primera página al filtrar
     this.loadContacts(
-      this.isActiveContactFilter, 
-      this.activeSearchTerm === ActiveSearchTerm.FILTERED ? this.filteredSearchTerm : this.globalSearchTerm , 
+      this.isActiveContactFilter,
+      this.activeSearchTerm === ActiveSearchTerm.FILTERED ? this.filteredSearchTerm : this.globalSearchTerm ,
       this.selectedContactType
     );
   }
@@ -272,7 +272,7 @@ export class ContactListComponent implements OnInit {
 
 
 
-  
+
 
 
 
@@ -296,7 +296,7 @@ export class ContactListComponent implements OnInit {
       this.loadContacts(this.isActiveContactFilter, this.globalSearchTerm, this.selectedContactType);
     }
   }
-  
+
   previousPage() {
     if (this.currentPage > 0) {
       this.currentPage--;
@@ -334,44 +334,47 @@ export class ContactListComponent implements OnInit {
     this.loadContacts();
   }
 
-  
+
 
   saveContact() {
     this.router.navigate(['notifications/contact/new']);
   }
 
   editContact(contact: ContactModel) {
-    this.contactService.updateContact(contact).subscribe({
-      next: (response) => {
+
+
+    this.contactService.updateContact(contact).pipe(
+      tap(updateResponse => {
         const index = this.contacts.findIndex((c) => c.id === contact.id);
         if (index !== -1) {
           this.contacts[index] = { ...contact };
         }
+      }),
 
-        this.suscriptionService.updateContactSubscriptions(contact).subscribe({
-          next: (response) => {
+      concatMap(() => {
 
-          },
-          error: (error: HttpErrorResponse) => {
-
-            console.error('Error al actualizar las suscripciones del contacto intente nuevamente:', error);
-          },
-        });
+        return this.suscriptionService.updateContactSubscriptions(contact).pipe(
+          tap(response => console.log('', response)  )
+        );
+      })
+    ).subscribe({
+      next: (finalResponse) => {
 
         this.closeEditModal();
-
         this.toastService.sendSuccess(
-          'Éxito El contacto ha sido actualizado correctamente'
+          'Éxito: El contacto y sus suscripciones han sido actualizados correctamente'
         );
-
       },
       error: (error: HttpErrorResponse) => {
+
         this.toastService.sendError(
-          'Error Ha ocurrido un error al intentar actualizar el contacto intente nuevamente...'
+          'Error: Ha ocurrido un error al intentar actualizar el contacto. Intente nuevamente...'
         );
         this.closeEditModal();
-        console.error('Error al editar el contacto:', error);
       },
+      complete: () => {
+
+      }
     });
   }
 
@@ -581,7 +584,7 @@ export class ContactListComponent implements OnInit {
   openTelegramModal() {
     this.isTelegramModalOpen = true;
   }
-  
+
   closeTelegramModal() {
     this.isTelegramModalOpen = false;
   }

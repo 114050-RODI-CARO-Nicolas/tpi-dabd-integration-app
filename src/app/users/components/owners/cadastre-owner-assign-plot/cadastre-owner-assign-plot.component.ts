@@ -66,11 +66,11 @@ export class CadastreOwnerAssignPlotComponent {
       { value: 'COMPANY', label: 'Compañía' },
       { value: 'OTHER', label: 'Otro' }
     ])
-    .selectFilter('Estado del Propietario', 'owner_kyc', 'Seleccione un estado del propietario', [
-      { value: 'INITIATED', label: 'Iniciado' },
-      { value: 'TO_VALIDATE', label: 'Para Validar' },
-      { value: 'VALIDATED', label: 'Validado' },
-    ])
+    // .selectFilter('Estado del Propietario', 'owner_kyc', 'Seleccione un estado del propietario', [
+    //   { value: 'INITIATED', label: 'Iniciado' },
+    //   { value: 'TO_VALIDATE', label: 'Para Validar' },
+    //   { value: 'VALIDATED', label: 'Validado' },
+    // ])
     .build()
 
 
@@ -83,7 +83,8 @@ export class CadastreOwnerAssignPlotComponent {
   }
 
   getAllOwners(isActive?: boolean) {
-    this.ownerService.getOwners(this.currentPage - 1, this.pageSize, isActive).subscribe({
+    let filters : Record<string, any> = {"owner_kyc" : 'VALIDATED'}
+    this.ownerService.dinamicFilters(this.currentPage - 1, this.pageSize, filters).subscribe({
       next: (response) => {
         this.owners = response.content;
         this.lastPage = response.last;
@@ -111,6 +112,10 @@ export class CadastreOwnerAssignPlotComponent {
   }
 
   dinamicFilter() {
+    this.filters = {
+      ...this.filters,
+      "owner_kyc" : 'VALIDATED'
+    }
     this.ownerService.dinamicFilters(this.currentPage - 1, this.pageSize, this.filters).subscribe({
       next : (result) => {
         this.owners = result.content;
@@ -238,12 +243,7 @@ export class CadastreOwnerAssignPlotComponent {
             strong: 'Tipo de propietario: ',
             detail:
               'Filtra los propietarios que coincidan con el tipo de propietario.',
-          },
-          {
-            strong: 'Estado del propietario: ',
-            detail:
-              'Filtra los propietarios por el estado activo o inactivo del mismo.',
-          },
+          }
         ],
       },
       {

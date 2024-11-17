@@ -1,4 +1,4 @@
-<app-main-container title="{{title}}" (infoButtonClick)="openInfo()">
+<app-main-container title="{{title}}" subTitle="{{subtitle}}" (infoButtonClick)="openInfo()">
 
   <div class="d-flex justify-content-between align-items-center mb-3">
     <!-- Sección de búsqueda y filtros -->
@@ -94,8 +94,8 @@
 
             <td>
               <div class="btn-group" role="group">
-                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                  ...
+                <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-three-dots-vertical"></i>
                 </button>
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item btn btn-primary" (click)="viewOwnerDetail(owner.id)">Ver Dueño</a></li>
@@ -110,15 +110,15 @@
   </div>
   <div class="d-flex justify-content-between align-items-center mt-3">
     <ngb-pagination
-    [(page)]="currentPage"                   
-    [pageSize]="pageSize"                    
-    [collectionSize]="totalItems"            
-    (pageChange)="onPageChange($event)"      
-    [maxSize]="5"                            
-    [boundaryLinks]="false"                   
+    [(page)]="currentPage"
+    [pageSize]="pageSize"
+    [collectionSize]="totalItems"
+    (pageChange)="onPageChange($event)"
+    [maxSize]="5"
+    [boundaryLinks]="false"
     ></ngb-pagination>
-    
-    <div class="ms-auto"> 
+
+    <div class="ms-auto">
     </div>
 
     <div class="form-group mb-3 me-2">
@@ -140,4 +140,3 @@
     <button type="submit" class="btn btn-secondary" (click)="goBack()">Volver</button>
   </div>
 </app-main-container>
-    

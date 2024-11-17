@@ -429,15 +429,15 @@ export class OwnerFilesViewComponent implements OnInit {
           {
             strong: 'Pre-Aprobar: ',
             detail:
-              'Abre un modal para poder dejar una observación al archivo y cambiar el estado a "Pre-Aprobado".',
+              'Abre un modal para poder dejar una observación al archivo y cambiar el estado a "Pre-Aprobado". Pre-Aprobado significa que la persona encargada evaluó el archivo de forma digital y decidió que es apto para pasar a la siguiente etapa.',
           },
           {
             strong: 'Aprobar: ',
             detail:
-              'Abre un modal para poder dejar una observación al archivo y cambiar el estado a "Aprobado".',
+              'Abre un modal para poder dejar una observación al archivo y cambiar el estado a "Aprobado". Aprobado significa que la persona encargada se comunicó con el propietario para realizar una reunión donde se evaluaron los documentos de forma física y los consideró aptos.',
           },
           {
-            strong: 'Agregar Nota: ',
+            strong: 'Pedir Corrección: ',
             detail:
               'Abre un modal para poder dejar una observación al archivo y cambiar el estado a "Revisado".',
           },
@@ -454,7 +454,7 @@ export class OwnerFilesViewComponent implements OnInit {
           
           {
             strong: 'Validar Propietario: ',
-            detail: 'Botón azul que permite presionarlo cuando es posible cambiar el estado del Propietario a "Validado". Abre un modal para confirmación.',
+            detail: 'Botón azul que se habilita solo cuando el propietario tiene al menos 2 archivos de DNI (frente y dorso) y un archivo de escritura en estado "Aprobado". Abre un modal para confirmación.',
           },
         ],
       },

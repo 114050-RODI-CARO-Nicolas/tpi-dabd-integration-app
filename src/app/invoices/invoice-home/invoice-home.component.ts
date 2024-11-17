@@ -4,7 +4,7 @@ import { MainLayoutComponent, NavbarComponent, NavbarItem } from 'ngx-dabd-grupo
 @Component({
   selector: 'app-invoice-home',
   standalone: true,
-  imports: [NavbarComponent, MainLayoutComponent],
+  imports: [],
   templateUrl: './invoice-home.component.html',
   styleUrl: './invoice-home.component.scss'
 })

@@ -91,7 +91,7 @@
           </div>
           <h6 class="card-subtitle text-muted mb-0">Tasa de Visualización</h6>
         </div>
-        <h2 class="card-title mb-0 text-success">{{kpis.viewedRate | number:'1.0-1'}}%</h2>
+        <h2 class="card-title mb-0 text-success">{{kpis.viewedRate ? (kpis.viewedRate | number:'1.0-1') + '%' : 'N/A'}}</h2>
         <small class="text-muted">Notificaciones Visualizadas</small>
       </div>
     </div>
@@ -106,7 +106,7 @@
           </div>
           <h6 class="card-subtitle text-muted mb-0">Promedio Diario</h6>
         </div>
-        <h2 class="card-title mb-0">{{kpis.dailyAverage | number:'1.0-1'}}</h2>
+        <h2 class="card-title mb-0">{{kpis.dailyAverage ? (kpis.dailyAverage | number:'1.0-1') : 'N/A'}}</h2>
         <small class="text-muted">Notificaciones por día</small>
       </div>
     </div>
@@ -138,7 +138,7 @@
           </div>
           <h6 class="card-subtitle text-muted mb-0">Contacto más Frecuente</h6>
         </div>
-        <small class="text-muted text-truncate d-block mt-4">{{kpis.mostFrequentContact.email}}</small>
+        <small class="text-muted text-truncate d-block mt-4">{{kpis.mostFrequentContact?.email || 'N/A'}}</small>
       </div>
     </div>
   </div>
@@ -152,8 +152,9 @@
           </div>
           <h6 class="card-subtitle text-muted mb-0">Día más Activo</h6>
         </div>
-        <h2 class="card-title mb-0">{{kpis.mostActiveDay.day}}</h2>
-        <small class="text-muted">{{kpis.mostActiveDay.count}} envíos ({{kpis.mostActiveDay.percentage | number:'1.0-1'}}%)</small>
+        <h2 class="card-title mb-0">{{kpis.mostActiveDay?.day || 'N/A'}}</h2>
+        <small class="text-muted">{{kpis.mostActiveDay?.count || 'N/A'}} envíos ({{kpis.mostActiveDay?.percentage ? (kpis.mostActiveDay.percentage | number:'1.0-1') + '%' : 'N/A'}})</small>
+        
       </div>
     </div>
   </div>

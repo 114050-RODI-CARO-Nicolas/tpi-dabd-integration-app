@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import {Component, EventEmitter, inject, Input, OnInit, Output, SimpleChanges} from '@angular/core';
 import { graphModel, kpiModel, PaymentFilter } from '../../models/stadistics';
 import { StadisticsService } from '../../services/stadistics.service';
 import { KpiComponent } from '../commons/kpi/kpi.component';
@@ -14,7 +14,7 @@ import {Router} from '@angular/router';
   templateUrl: './total-payments.component.html',
   styleUrls: ['./total-payments.component.scss']
 })
-export class TotalPaymentsComponent {
+export class TotalPaymentsComponent implements OnInit{
   @Input() filters: PaymentFilter = {} as PaymentFilter;
   @Output() notifyParent: EventEmitter<string> = new EventEmitter<string>();
 
@@ -60,6 +60,15 @@ export class TotalPaymentsComponent {
     this.graph2 = { title: "Deuda Total de Propietarios", subtitle: "", data: [], options: null };
   }
 
+  ngOnInit(): void {
+    
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['value']) {
+      console.log('El valor de @Input ha cambiado:', changes['value'].currentValue);
+    }
+    this.getData();
+  }
   // Fetch report data
   getData() {
     this.getRerportPayments();

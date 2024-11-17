@@ -75,7 +75,20 @@ export class AppComponent {
           label: 'Lista de Expensas (Propietario)',
           routerLink: '/invoices/owner-list-expensas',
         },
-        { label: 'Estadísticas', routerLink: '/invoices/stadistics' },
+        {
+          label: 'Estadísticas', subMenu: [
+            {
+              label: 'Tickets',
+              routerLink: '/invoices/stadistics/1',
+            },
+            {
+              label: 'Payments',
+              routerLink: '/invoices/stadistics/2',
+            },
+            
+          ],
+        },
+
       ],
     },
     {
@@ -107,7 +120,7 @@ export class AppComponent {
       routerLink: 'notifications/contacts',
       sidebarMenu: [
         {
-          label: 'Listar Contactos',
+          label: 'Listado de Contactos',
           routerLink: 'notifications/contacts',
         },
         {
@@ -222,7 +235,7 @@ export class AppComponent {
       routerLink: 'notifications/send-email',
       sidebarMenu: [
         {
-          label: 'Listar Plantillas',
+          label: 'Listado de Plantillas',
           routerLink: 'notifications/templates',
         },
         {
@@ -242,7 +255,7 @@ export class AppComponent {
           routerLink: 'notifications/notifications-historic',
         },
         {
-          label: 'Dashboard',
+          label: 'Reporte de Notificaciones',
           routerLink: 'notifications/notification/charts',
         },
         {
@@ -352,7 +365,7 @@ export class AppComponent {
         {
           label: 'Propietarios',
           subMenu: [
-            { label: 'Lista de Propietarios', routerLink: '/users/owner/list' },
+            { label: 'Listado de Propietarios', routerLink: '/users/owner/list' },
             { label: 'Cargar Propietario', routerLink: '/users/owner/form' },
             { label: 'Asignar Lote', routerLink: '/users/owner/assign' },
             { label: 'Cargar Archivo', routerLink: '/users/files/form' },
@@ -362,20 +375,20 @@ export class AppComponent {
         {
           label: 'Lotes',
           subMenu: [
-            { label: 'Lista de Lotes', routerLink: '/users/plot/list' },
+            { label: 'Listado de Lotes', routerLink: '/users/plot/list' },
             { label: 'Cargar Lote', routerLink: '/users/plot/form' },
           ],
         },
         {
           label: 'Usuarios',
           subMenu: [
-            { label: 'Lista de Usuarios', routerLink: '/users/user/list' },
+            { label: 'Listado de Usuarios', routerLink: '/users/user/list' },
             { label: 'Cargar Usuario', routerLink: '/users/user/form' },
             {
               label: 'Cargar Inquilino',
               routerLink: '/users/user/tenant/form',
             },
-            { label: 'Lista de Roles', routerLink: '/users/roles/list' },
+            { label: 'Listado de Roles', routerLink: '/users/roles/list' },
             /*   { label: 'Cargar Roles', routerLink: '/users/roles/form' }, */
             { label: 'Usuarios Creados', routerLink: '/users/user/created' },
             { label: 'Usuarios por Rol', routerLink: '/users/user/role' },

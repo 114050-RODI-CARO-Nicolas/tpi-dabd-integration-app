@@ -87,7 +87,7 @@
           } @else {
               <thead>
                 <tr>
-                  <th scope="col">Nombre</th>
+                  <!-- <th scope="col">Nombre</th> -->
                   <th scope="col">Tipo</th>
                   <th scope="col">Estado de KYC</th>
                   <th scope="col">Acciones</th>
@@ -96,7 +96,7 @@
               <tbody>
                 @for(file of files; track file) {
                   <tr>
-                    <td>{{ file.name }}</td>
+                    <!-- <td>{{ file.name }}</td> -->
                     <td>{{ translateTable(file.fileType, fileTypeDictionary) }}</td>
                     <td>{{ translateTable(file.approvalStatus, fileStatusDictionary) }}</td>
                     <td>
@@ -113,7 +113,7 @@
                             <li><a class="dropdown-item btn btn-success" (click)="changeFileStatus(file, 'APPROVED')">Aprobar</a></li>
                           }
                           @if(file.approvalStatus === "PRE_APPROVED" || file.approvalStatus === "UPLOADED") {
-                            <li><a class="dropdown-item btn btn-danger" (click)="changeFileStatus(file, 'REVIEWED_WITH_NOTES')">Agregar Nota</a></li>
+                            <li><a class="dropdown-item btn btn-danger" (click)="changeFileStatus(file, 'REVIEWED_WITH_NOTES')">Pedir Corrección</a></li>
                           }
                           @if(file.approvalStatus === "APPROVED") {
                             <li><a class="dropdown-item btn btn-danger" (click)="changeFileStatus(file, 'MODIFICATION_PERMIT_GRANTED')">Permitir Cambio</a></li>

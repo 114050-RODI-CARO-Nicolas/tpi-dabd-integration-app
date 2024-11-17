@@ -326,6 +326,7 @@
     <!-- Contactos -->
     <!-- Contactos -->
     <!-- Contactos -->
+    <h5 class="mt-2 p-2">Contactos</h5>
     <div formGroupName="contactsForm" class="row g-3 pb-5">
 
       @if (contacts.length !== 0) {
@@ -336,8 +337,7 @@
             @for (contact of contacts; track $index) {
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <button type="button"
-                        class="list-group-item list-group-item-action btn btn-primary btn-sm me-2"
-                        (click)="setContactValue($index)">
+                        class="list-group-item list-group-item-action btn btn-primary btn-sm me-2">
                   {{ setContactType(contact.contactType) }} - {{ contact.contactValue }}
                 </button>
               </div>

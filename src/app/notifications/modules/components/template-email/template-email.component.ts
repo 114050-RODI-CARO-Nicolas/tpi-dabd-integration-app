@@ -1,3 +1,4 @@
+
 import {
   ChangeDetectorRef,
   Component,
@@ -6,6 +7,7 @@ import {
   inject,
   ViewChild,
 } from '@angular/core';
+
 import { MainContainerComponent, ToastService } from 'ngx-dabd-grupo01';
 import { TemplateService } from '../../../services/template.service';
 import {
@@ -52,12 +54,13 @@ export class TemplateEmailComponent {
   previewVisible: boolean = false;
   showModalToRenderHTML: boolean = false;
   @ViewChild('iframePreview') iframePreview!: ElementRef;
+
   @ViewChild('iaTemplateBodyModel') iaTemplateBodyModel!: NgModel;
-    
   constructor(private cdr: ChangeDetectorRef) {}
   ngAfterViewInit() {
     this.cdr.detectChanges();
   }
+
   form: FormGroup = new FormGroup({
     templateName: new FormControl('', [
       Validators.required,
@@ -69,6 +72,7 @@ export class TemplateEmailComponent {
       this.isValidHTML(),
     ]),
   });
+
 
   template: TemplateModel = {
     id: 0,
@@ -86,13 +90,14 @@ export class TemplateEmailComponent {
     const templateBodyControl = this.form.get('templateBody');
     templateBodyControl?.updateValueAndValidity();
 
+
     if (this.form.valid) {
-  
+
       return await this.sendEmailTemplate(
         this.form.get('templateName')?.value,
         this.form.get('templateBody')?.value
       );
-      
+
     }
   }
 
@@ -162,11 +167,11 @@ export class TemplateEmailComponent {
   closeIaModal() {
     this.iaInputText = '';
     this.iaResponse = '';
-    this.isIaModalOpen = false;  
+    this.isIaModalOpen = false;
     if (this.iaTemplateBodyModel) {
-      this.iaTemplateBodyModel.control.markAsPristine(); 
-      this.iaTemplateBodyModel.control.markAsUntouched(); 
-      this.iaTemplateBodyModel.control.updateValueAndValidity(); 
+      this.iaTemplateBodyModel.control.markAsPristine();
+      this.iaTemplateBodyModel.control.markAsUntouched();
+      this.iaTemplateBodyModel.control.updateValueAndValidity();
     }
   }
 
@@ -186,14 +191,14 @@ export class TemplateEmailComponent {
   }
 
   sendBodyIa() {
-   
+
     this.form.patchValue({
       templateBody: this.iaResponse.toString(),
     });
-  
+
     this.form.get('templateBody')?.markAsDirty();
     this.form.get('templateBody')?.markAsTouched();
-  
+
     this.closeIaModal();
   }
 

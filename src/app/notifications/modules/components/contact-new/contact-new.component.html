@@ -1,5 +1,5 @@
 
-<app-main-container title="Registrar Contacto">
+<app-main-container title="Registrar Contacto" (infoButtonClick)="showInfo()">
 
 <div class="container mt-5 custom-form">
 
@@ -68,24 +68,51 @@
   </form>
 </div>
 
-<!-- Modal -->
-<div [class.show]="isModalOpen" [style.display]="isModalOpen ? 'block' : 'none'" class="modal fade" id="myModal"
-  tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+<!-- Modal de Información -->
+<div [class.show]="isModalOpen" [style.display]="isModalOpen ? 'block' : 'none'" class="modal fade" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalLabel">{{ modalTitle }}</h5>
-        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+        <h5 class="modal-title">{{ modalTitle }}</h5>
+        <button type="button" class="btn-close" (click)="isModalOpen = false"></button>
       </div>
       <div class="modal-body">
-        <p>{{ modalMessage }}</p>
+        <div class="container-fluid">
+          <!-- Introducción -->
+          <div class="alert alert-info mb-2">
+            <h5 class="alert-heading">Registrar contactos.</h5>
+            <p class="mb-0 small">Este formulario permite el registro de nuevos contacto.s</p>
+          </div>
+
+          <!-- Descripción de los campos -->
+          <div class="card mb-2">
+            <div class="card-header">
+              <h5 class="mb-0">Descripción de los Campos</h5>
+            </div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <strong>Tipo de contacto:</strong> Email o teléfono.
+                </li>
+                
+          
+                <li class="list-group-item">
+                  <strong>Valor:</strong> El contacto en si mismo.
+                </li>
+              </ul>
+            </div>
+          </div>
+
+       
+        </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" (click)="closeModal()">Aceptar</button>
+        <button type="button" class="btn btn-secondary" (click)="isModalOpen = false">Volver</button>
       </div>
     </div>
   </div>
 </div>
+
 
 <!-- Backdrop para la modal -->
 <div *ngIf="isModalOpen" class="modal-backdrop fade show"></div>

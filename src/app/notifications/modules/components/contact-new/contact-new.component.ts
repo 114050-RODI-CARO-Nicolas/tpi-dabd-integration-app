@@ -157,4 +157,13 @@ export class ContactNewComponent {
   closeModal() {
     this.isModalOpen = false;
   }
+
+  showInfo() {
+    const message = `
+      <strong>Sistema de gestión de contactos</strong><br>
+      Aquí puedes registrar un nuevo contacto,.<br><br>
+    `;
+
+    this.showModal('Información', message);
+  }
 }

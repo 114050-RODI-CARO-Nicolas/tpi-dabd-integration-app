@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 // import { DashBoardFilters, graphModel, kpiModel } from '../../models/dashboard.model';
 import { StadisticsService } from '../../services/stadistics.service';
 import { KpiComponent } from '../commons/kpi/kpi.component';
@@ -18,7 +18,7 @@ import {TicketStatus} from '../../models/TicketDto';
   templateUrl: './main-dashboard.component.html',
   styleUrl: './main-dashboard.component.scss'
 })
-export class MainDashboardComponent {
+export class MainDashboardComponent implements OnInit {
   @Input() filters: TicketFilter = {} as TicketFilter;
   @Output() notifyParent: EventEmitter<string> = new EventEmitter<string>();
   // typeDictionary = VisitorTypeAccessDictionary;
@@ -65,6 +65,9 @@ export class MainDashboardComponent {
     this.graph2 = {title: "Deuda total de propietarios", subtitle: "", data: [], options: null}
   }
 
+  ngOnInit(): void {
+    this.getData()
+  }
    //getData
   getData() {
     this.getReportDinamicFilters();

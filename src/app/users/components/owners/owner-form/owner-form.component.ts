@@ -167,7 +167,7 @@ export class OwnerFormComponent implements OnInit {
       country: new FormControl('ARGENTINA', [Validators.required]),
       postalCode: new FormControl(5000, [Validators.required]),
     }),
-    
+
   });
 
   onSubmit(): void {
@@ -248,12 +248,13 @@ export class OwnerFormComponent implements OnInit {
       this.ownerService.updateOwner(this.owner.id, this.owner).subscribe({
         next: (response) => {
           this.toastService.sendSuccess('Propietario actualizado');
+          console.log("REDIRECT")
+          this.router.navigate(['/users/owner/list']);
           if (response.id) {
             this.ownerService
               .linkOwnerWithPlot(response.id, this.plot.id)
               .subscribe();
           }
-          this.router.navigate(['/users/owner/list']);
         },
         error: (error) => {
           this.toastService.sendError('Error al actualizar el propietario.');
@@ -461,7 +462,7 @@ export class OwnerFormComponent implements OnInit {
 
 
   changeContactType(event: any) {
-    
+
     const type = event.target.value;
     if(type) {
       this.ownerForm.controls['contactsForm'].controls['contactValue'].addValidators(Validators.required);
@@ -479,11 +480,7 @@ export class OwnerFormComponent implements OnInit {
 
   //#region FUNCION ADDRESS
   removeAddress(index: number): void {
-    if (this.id === null) {
-      this.addresses.splice(index, 1);
-    } else {
-
-    }
+    this.addresses.splice(index, 1);
   }
 
   getAddressValue(): Address {
@@ -525,7 +522,7 @@ export class OwnerFormComponent implements OnInit {
   }
 
   addAddress(): void {
-    
+
     if (this.ownerForm.get('addressForm')?.valid) {
       const addressValue = this.getAddressValue()
       if (this.addressIndex == undefined && addressValue) {

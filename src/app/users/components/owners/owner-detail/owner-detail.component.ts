@@ -8,11 +8,12 @@ import { Country, Provinces } from '../../../models/generics';
 import { MainContainerComponent } from 'ngx-dabd-grupo01';
 import { InfoComponent } from '../../commons/info/info.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {Location, NgClass} from '@angular/common';
 
 @Component({
   selector: 'app-owner-detail',
   standalone: true,
-  imports: [ReactiveFormsModule, MainContainerComponent],
+  imports: [ReactiveFormsModule, MainContainerComponent, NgClass],
   templateUrl: './owner-detail.component.html',
   styleUrl: './owner-detail.component.css'
 })
@@ -23,8 +24,9 @@ export class OwnerDetailComponent implements OnInit {
   address!: Address;
   ownerTypes : string[] = ['PERSON', 'COMPANY', 'OTHER']
   contact!: Contact;
-  contacts: any[] = [];
   owner!: Owner;
+  addresses: Address[] = [];
+  addressIndex: number | undefined = undefined;
 
   provinceOptions!: any;
   countryOptions!: any;
@@ -33,6 +35,7 @@ export class OwnerDetailComponent implements OnInit {
 
   protected ownerService = inject(OwnerService);
   private modalService = inject(NgbModal)
+  private location = inject(Location)
 
   ownerForm = new FormGroup({
     firstName: new FormControl({value:'', disabled: true}, [Validators.required, Validators.minLength(2), Validators.maxLength(50)]),
@@ -48,25 +51,28 @@ export class OwnerDetailComponent implements OnInit {
     isActive: new FormControl({value:true, disabled: true}),
     contactsForm: new FormArray([]),
     addressForm: new FormGroup({
-      street_address: new FormControl({value:'', disabled: true}, [Validators.required]),
+      streetAddress: new FormControl({value:'', disabled: true}, [Validators.required]),
       number: new FormControl({value:0, disabled: true}, [Validators.required, Validators.min(0)]),
       floor: new FormControl({value:0, disabled: true}, ),
       apartment: new FormControl({value:'', disabled: true}, ),
       city: new FormControl({value:'', disabled: true}, [Validators.required]),
       province: new FormControl({value:'', disabled: true}, [Validators.required]),
       country: new FormControl({value:'', disabled: true}, [Validators.required]),
-      postal_code: new FormControl({value:0, disabled: true}, [Validators.required]),
+      postalCode: new FormControl({value:0, disabled: true}, [Validators.required]),
     })
   });
 
 
+  contacts: Contact[] = [];
   ngOnInit(): void {
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
     this.setEnums();
     if(this.id) {
       this.ownerService.getOwnerById(parseInt(this.id, 10)).subscribe({
-        next: (response) => {
+        next: (response: Owner) => {
           this.owner = response;
+          this.addresses = response.addresses
+          this.contacts = response.contacts as Contact[];
           this.fillFieldsToDetail(this.owner);
         },
         error: (error) => {
@@ -99,19 +105,6 @@ export class OwnerDetailComponent implements OnInit {
       // kycStatus: owner.kycStatus,
       // isActive: owner.isActive,
     });
-    const address: Address | null =
-      owner.addresses.length > 0 ? owner.addresses[0] : null;
-    this.ownerForm.get('addressForm')?.patchValue({
-      street_address: address?.streetAddress ? address.streetAddress : '',
-      number: address?.number ? address.number : null,
-      floor: address?.floor ? address.floor : null,
-      apartment: address?.apartment ? address.apartment : '',
-      city: address?.city ? address.city : '',
-      province: address?.province ? address.province : '',
-      country: address?.country ? address.country : '',
-      postal_code: address?.postalCode != null ? address.postalCode : null,
-    });
-    this.setContactsValues(owner.contacts);
   }
 
   setContactsValues(contacts: Contact[]){
@@ -124,16 +117,28 @@ export class OwnerDetailComponent implements OnInit {
     this.contacts = contactFormArray.value;
   }
 
-  getContactsValues(): Contact {
-    const contactFormGroup = this.ownerForm.get('contactsForm') as FormGroup;
-    return {
-      contactType: contactFormGroup.get('contact_type')?.value || '',
-      contactValue: contactFormGroup.get('contact_value')?.value || '',
-    };
+  setAddressValue(index: number) {
+    const address = this.addresses[index];
+
+    if (address) {
+      const addressFormGroup = this.ownerForm.get('addressForm') as FormGroup;
+
+      addressFormGroup.patchValue({
+        streetAddress: address.streetAddress,
+        number: address.number,
+        floor: address.floor,
+        apartment: address.apartment,
+        city: address.city,
+        province: address.province,
+        country: address.country,
+        postalCode: address.postalCode
+      });
+      this.addressIndex = index;
+    }
   }
 
   onBack(): void {
-    this.router.navigate(['/users/owner/list']);
+    this.location.back()
   }
 
   mapType(type: string){
@@ -172,12 +177,12 @@ export class OwnerDetailComponent implements OnInit {
       centered: true,
       scrollable: true
     });
-    
+
     modalRef.componentInstance.title = 'Información del Propietario';
     modalRef.componentInstance.description = 'Pantalla para consultar la información del propietario detallando datos personales, dirección y contactos.';
     modalRef.componentInstance.body = [
-      { 
-        title: 'Datos del Propietario', 
+      {
+        title: 'Datos del Propietario',
         content: [
           {
             strong: 'Nombre:',
@@ -217,8 +222,8 @@ export class OwnerDetailComponent implements OnInit {
           }
         ]
       },
-      { 
-        title: 'Dirección del propietario', 
+      {
+        title: 'Dirección del propietario',
         content: [
           {
             strong: 'Calle:',
@@ -250,8 +255,8 @@ export class OwnerDetailComponent implements OnInit {
           }
         ]
       },
-      { 
-        title: 'Contactos', 
+      {
+        title: 'Contactos',
         content: [
           {
             strong: 'Contactos:',

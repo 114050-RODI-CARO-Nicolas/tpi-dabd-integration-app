@@ -1,3 +1,4 @@
+@if(idType == 1){
 <app-main-container title="Reporte de Tickets" (infoButtonClick)="onInfoButtonClick()">
   <div class="row mb-4">
     <div class="d-flex align-items-center gap-3 mb-3">
@@ -5,28 +6,24 @@
       <form [formGroup]="dateFilterForm" (ngSubmit)="filterData()" class="d-flex align-items-center gap-3">
         <div class="d-flex align-items-center gap-2">
           <span class="text-secondary">Desde:</span>
-          <input
-          type="month"
-          formControlName="firstDate"
-          class="form-control form-control-sm"
-          [(ngModel)]="ticketFilter.startExpirationDate"
-          (change)="onDateChange()"
-        />
+          <input type="month" formControlName="firstDate" class="form-control form-control-sm"
+            [(ngModel)]="ticketFilter.startExpirationDate" (change)="onDateChange()" />
         </div>
         <div class="d-flex align-items-center gap-2">
           <span class="text-secondary">Hasta:</span>
-          <input
-          type="month"
-            formControlName="lastDate"
-          class="form-control form-control-sm"
-          [(ngModel)]="ticketFilter.endExpirationDate"
-          (change)="onDateChange()"
-        />
+          <input type="month" formControlName="lastDate" class="form-control form-control-sm"
+            [(ngModel)]="ticketFilter.endExpirationDate" (change)="onDateChange()" />
         </div>
       </form>
+      @if (dateFilterForm.errors && dateFilterForm.errors['dateRangeInvalid']) {
+        <div class="text-danger">
+          La fecha de fin debe ser mayor a la fecha de inicio.
+        </div>
 
-      <button type="button" class="btn btn-outline-info" [ngbPopover]="popContent"
-              [autoClose]="'outside'" placement = "bottom" >
+      }
+ 
+      <button type="button" class="btn btn-outline-info" [ngbPopover]="popContent" [autoClose]="'outside'"
+        placement="bottom">
         <i class="bi bi-funnel-fill"></i>
       </button>
       <ng-template #popContent>
@@ -45,18 +42,18 @@
         </div>
 
 
-<!--        <div class="row">-->
-<!--          <div class="col-4">-->
-<!--            <span class="text-secondary">Forma de pago:</span>-->
-<!--          </div>-->
-<!--          <div class="col-8">-->
-<!--          <select id="visitor-type" class="form-select" [(ngModel)]="filters.status" (change)="filterData()">-->
-<!--              <option value="">Todos</option>-->
-<!--              <option value="TRANSFER">Transferencia</option>-->
-<!--              <option value="MERCADOPAGO">Mercado pago</option>-->
-<!--            </select>-->
-<!--          </div>-->
-<!--        </div>-->
+        <!--        <div class="row">-->
+        <!--          <div class="col-4">-->
+        <!--            <span class="text-secondary">Forma de pago:</span>-->
+        <!--          </div>-->
+        <!--          <div class="col-8">-->
+        <!--          <select id="visitor-type" class="form-select" [(ngModel)]="filters.status" (change)="filterData()">-->
+        <!--              <option value="">Todos</option>-->
+        <!--              <option value="TRANSFER">Transferencia</option>-->
+        <!--              <option value="MERCADOPAGO">Mercado pago</option>-->
+        <!--            </select>-->
+        <!--          </div>-->
+        <!--        </div>-->
 
 
       </ng-template>
@@ -76,62 +73,49 @@
     </div>
   </div>
 
-  <div class="mt-4"></div>
 
-  <div class="card-body">
-    <div class="d-flex justify-content-between align-items-center mb-5">
-      <div class="row">
-        <h2>Reporte de Pagos</h2>
-      </div>
-    </div>
-    <main>
-      <ng-content></ng-content>
-    </main>
-  </div>
+
+</app-main-container>
+}@else {
+
+<app-main-container title="Reporte de Pagos" (infoButtonClick)="onInfoButtonClick()">
+
 
   <div class="row mb-4">
     <div class="d-flex align-items-center gap-3 mb-3">
-
-      <form [formGroup]="dateFilterFormPayments"  class="d-flex align-items-center gap-3">
+      <form [formGroup]="dateFilterFormPayments" class="d-flex align-items-center gap-3">
         <div class="d-flex align-items-center gap-2">
           <span class="text-secondary">Desde:</span>
-          <input
-            type="month"
-            formControlName="firstDate"
-            class="form-control form-control-sm"
-            [(ngModel)]="paymentFilter.startCreatedAt"
-            (change)="filterDataPayment()"
-          />
+          <input type="month" formControlName="firstDate" class="form-control form-control-sm"
+            [(ngModel)]="paymentFilter.startCreatedAt" (change)="filterDataPayment()" />
         </div>
         <div class="d-flex align-items-center gap-2">
           <span class="text-secondary">Hasta:</span>
-          <input
-            type="month"
-            formControlName="lastDate"
-            class="form-control form-control-sm"
-            [(ngModel)]="paymentFilter.endCreatedAt"
-            (change)="filterDataPayment()"
-          />
+          <input type="month" formControlName="lastDate" class="form-control form-control-sm"
+            [(ngModel)]="paymentFilter.endCreatedAt" (change)="filterDataPayment()" />
         </div>
       </form>
-
-      <button type="button" class="btn btn-outline-info" [ngbPopover]="popContent2"
-              [autoClose]="'outside'" placement = "bottom" >
+      <div *ngIf="dateFilterFormPayments.errors && dateFilterFormPayments.errors['dateRangeInvalid']" class="text-danger">
+        La fecha de fin debe ser mayor a la fecha de inicio.
+      </div>
+      <button type="button" class="btn btn-outline-info" [ngbPopover]="popContent2" [autoClose]="'outside'"
+        placement="bottom">
         <i class="bi bi-funnel-fill"></i>
       </button>
       <ng-template #popContent2>
-                <div class="row">
-                  <div class="col-4">
-                    <span class="text-secondary">Forma de pago:</span>
-                  </div>
-                  <div class="col-8">
-                  <select id="visitor-type" class="form-select" [(ngModel)]="paymentFilter.paymentMethod" (change)="filterDataPayment()">
-                      <option value="">Todos</option>
-                      <option value="TRANSFERENCE">Transferencia</option>
-                      <option value="MERCADO_PAGO">Mercado pago</option>
-                    </select>
-                  </div>
-                </div>
+        <div class="row">
+          <div class="col-4">
+            <span class="text-secondary">Forma de pago:</span>
+          </div>
+          <div class="col-8">
+            <select id="visitor-type" class="form-select" [(ngModel)]="paymentFilter.paymentMethod"
+              (change)="filterDataPayment()">
+              <option value="">Todos</option>
+              <option value="TRANSFERENCE">Transferencia</option>
+              <option value="MERCADO_PAGO">Mercado pago</option>
+            </select>
+          </div>
+        </div>
       </ng-template>
       <div class="d-flex gap-1">
         <button class="btn btn-outline-danger" (click)="resetFiltersPayment()">
@@ -145,9 +129,9 @@
   <!-- Grilla del dashboard -->
   <div class="row position-relative min-vh-75">
     <div [ngClass]="{ 'd-none': status !== DashboardStatus.All }">
-      <app-total-payments [filters]="paymentFilter" ></app-total-payments>
+      <app-total-payments [filters]="paymentFilter"></app-total-payments>
     </div>
   </div>
-
 </app-main-container>
 
+}

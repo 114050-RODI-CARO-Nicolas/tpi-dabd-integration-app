@@ -49,7 +49,8 @@ export class CadastreOwnerPlotListComponent {
   lastPage: boolean | undefined;
   totalItems: number = 0;
   plotId: number = NaN;
-  title: string = 'Lista de dueños historicos del lote: Manzana: ';
+  title: string = 'Lista de dueños historicos del lote';
+  subtitle: string = ' Manzana: '
   objectName: string = '';
   headers: string[] = [
     'Nombre',
@@ -104,7 +105,7 @@ export class CadastreOwnerPlotListComponent {
   getPlot() {
     this.plotService.getPlotById(this.plotId).subscribe(
       (response) => {
-        this.title += response.blockNumber + ' Nro: ' + response.plotNumber;
+        this.subtitle += response.blockNumber + ' Nro: ' + response.plotNumber;
       },
       (error) => {
         console.error('Error getting owners:', error);

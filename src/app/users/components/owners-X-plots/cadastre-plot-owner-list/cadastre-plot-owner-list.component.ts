@@ -10,13 +10,13 @@ import { OwnerService } from '../../../services/owner.service';
 import { NgbModal, NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 import { AsyncPipe, DatePipe, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { CadastrePlotOwnerFilterButtonsComponent } from '../cadastre-plot-owner-filter-buttons/cadastre-plot-owner-filter-buttons.component';
 import {
   Filter,
   FilterConfigBuilder,
   MainContainerComponent,
   ToastService,
 } from 'ngx-dabd-grupo01';
-import { CadastrePlotOwnerFilterButtonsComponent } from '../cadastre-plot-owner-filter-buttons/cadastre-plot-owner-filter-buttons.component';
 import { InfoComponent } from '../../commons/info/info.component';
 import { CadastreExcelService } from '../../../services/cadastre-excel.service';
 import { BehaviorSubject } from 'rxjs';
@@ -75,7 +75,8 @@ export class CadastrePlotOwnerListComponent {
   lastPage: boolean | undefined;
   totalItems: number = 0;
   ownerId: number = NaN;
-  title: string = 'Lista de lotes actuales de ';
+  title: string = 'Lista de lotes actuales';
+  subtitle: string = ''
 
   ownerFirstName: string = '';
   ownerLastName: string = '';
@@ -133,7 +134,7 @@ export class CadastrePlotOwnerListComponent {
 
   getOwnerById() {
     this.ownerService.getOwnerById(this.ownerId).subscribe((response) => {
-      this.title += response.firstName + ' ' + response.lastName;
+      this.subtitle += response.firstName + ' ' + response.lastName;
       this.ownerFirstName = response.firstName;
       this.ownerLastName = response.lastName;
     });

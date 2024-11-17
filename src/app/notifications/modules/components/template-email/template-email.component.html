@@ -10,7 +10,7 @@
   <form [formGroup]="form" (ngSubmit)="sendForm()" class="row g-3 container">
     <div class="mb-3">
       <label for="templateNameCustomValidation" class="form-label d-block">Nombre:</label>
-
+      
       <input style="max-width: 400px;"class="form-control" formControlName="templateName" [ngClass]="{
         'is-invalid':
           form.controls['templateName'].invalid &&
@@ -18,7 +18,7 @@
       }"/>
        @if (form.get('templateName')?.getError('required')) {
         <div class="invalid-feedback">El nombre  es requerido</div>
-        } 
+        }
         @if (form.get('templateName')?.errors?.['minlength']) {
           <div class="invalid-feedback">
             El nombre debe tener mas de 5 caracteres
