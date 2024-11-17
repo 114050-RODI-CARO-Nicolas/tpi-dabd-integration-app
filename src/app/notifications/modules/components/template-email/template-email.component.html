@@ -100,7 +100,7 @@
               #iaTemplateBodyModel="ngModel"
               class="form-control"
               [ngClass]="{
-                'is-invalid': iaTemplateBodyModel.invalid && (iaTemplateBodyModel.dirty || iaTemplateBodyModel.touched),
+                'is-invalid': iaTemplateBodyModel.invalid &&  (iaTemplateBodyModel.touched || iaTemplateBodyModel.dirty),
                 'is-valid': iaTemplateBodyModel.valid
               }"
               id="iaTemplateBodyModel"
@@ -111,7 +111,7 @@
               rows="12"
               placeholder="Describe aquí cómo te gustaría que sea tu plantilla, incluyendo detalles como el tono, el contenido, y cualquier especificación importante que desees..."></textarea>
 
-            <div *ngIf="iaTemplateBodyModel.invalid && (iaTemplateBodyModel.dirty || iaTemplateBodyModel.touched)">
+            <div *ngIf="iaTemplateBodyModel.invalid && (iaTemplateBodyModel.touched || iaTemplateBodyModel.dirty)">
               <div *ngIf="iaTemplateBodyModel.errors?.['required']" class="text-danger">
                 El contenido no puede estar vacío.
               </div>

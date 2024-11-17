@@ -14,6 +14,7 @@ import {
   FormGroup,
   FormsModule,
   NgForm,
+  NgModel,
   ReactiveFormsModule,
   ValidatorFn,
   Validators,
@@ -51,7 +52,8 @@ export class TemplateEmailComponent {
   previewVisible: boolean = false;
   showModalToRenderHTML: boolean = false;
   @ViewChild('iframePreview') iframePreview!: ElementRef;
-
+  @ViewChild('iaTemplateBodyModel') iaTemplateBodyModel!: NgModel;
+    
   constructor(private cdr: ChangeDetectorRef) {}
   ngAfterViewInit() {
     this.cdr.detectChanges();
@@ -155,10 +157,21 @@ export class TemplateEmailComponent {
 
   openIaModal() {
     this.isIaModalOpen = true;
+    const iaTemplateBodyControl = document.getElementById('iaTemplateBodyModel');
+    if (iaTemplateBodyControl) {
+      iaTemplateBodyControl.classList.remove('ng-dirty', 'ng-touched', 'is-invalid', 'is-valid');
+    }
   }
 
   closeIaModal() {
-    this.isIaModalOpen = false;
+    this.iaInputText = '';
+    this.iaResponse = '';
+    this.isIaModalOpen = false;  // Restablece el estado del modelo
+    if (this.iaTemplateBodyModel) {
+      this.iaTemplateBodyModel.control.markAsPristine(); // Limpia dirty
+      this.iaTemplateBodyModel.control.markAsUntouched(); // Limpia touched
+      this.iaTemplateBodyModel.control.updateValueAndValidity(); // Actualiza validaciones
+    }
   }
 
   sendToIa() {
@@ -210,6 +223,7 @@ export class TemplateEmailComponent {
     this.showModalToRenderHTML = true;
     setTimeout(() => {
       const iframe = this.iframePreview.nativeElement as HTMLIFrameElement;
+      console.log(this.iframePreview.nativeElement);
       iframe.srcdoc = this.iaResponse.toString(); // Asigna la respuesta de la IA al iframe
       iframe.onload = () => {
         const iframeDocument =
