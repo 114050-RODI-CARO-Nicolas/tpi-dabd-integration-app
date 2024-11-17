@@ -157,10 +157,6 @@ export class TemplateEmailComponent {
 
   openIaModal() {
     this.isIaModalOpen = true;
-    // const iaTemplateBodyControl = document.getElementById('iaTemplateBodyModel');
-    // if (iaTemplateBodyControl) {
-    //   iaTemplateBodyControl.classList.remove('ng-dirty', 'ng-touched', 'is-invalid', 'is-valid');
-    // }
   }
 
   closeIaModal() {
