@@ -81,119 +81,120 @@
       </div>
 
       <!-- KPIs: Fila de tarjetas -->
-<div class="row mb-4">
-  <div class="col-12 col-md-6 col-lg-6 mb-3">
-    <div class="card">
-      <div class="card-body" style="height: 150px;">
-        <div class="d-flex align-items-center mb-2">
-          <div class="icon-circle bg-success text-white me-3">
-            <i class="bi bi-check-circle"></i>
+      <div class="row mb-4">
+        <div class="col-12 col-md-6 col-lg-6 mb-3">
+          <div class="card">
+            <div class="card-body" style="height: 150px;">
+              <div class="d-flex align-items-center mb-2">
+                <div class="icon-circle bg-success text-white me-3">
+                  <i class="bi bi-check-circle"></i>
+                </div>
+                <h6 class="card-subtitle text-muted mb-0">Tasa de Visualización</h6>
+              </div>
+              <h2 class="card-title mb-0 text-success"> {{ viewedRate | number:'1.0-1' }}%</h2>
+              <small class="text-muted">
+                {{ viewedCount }} de {{ totalCount }} Notificaciones Visualizadas
+              </small>
+            </div>
           </div>
-          <h6 class="card-subtitle text-muted mb-0">Tasa de Visualización</h6>
         </div>
-        <h2 class="card-title mb-0 text-success"> {{ viewedRate | number:'1.0-1' }}%</h2>
-        <small class="text-muted">
-          {{ viewedCount }} de {{ totalCount }} Notificaciones Visualizadas
-        </small>
-      </div>
-    </div>
-  </div>
 
-  <div class="col-12 col-md-6 col-lg-6 mb-3">
-    <div class="card">
-      <div class="card-body" style="height: 150px;">
-        <div class="d-flex align-items-center mb-2">
-          <div class="icon-circle bg-primary text-white me-3">
-            <i class="bi bi-graph-up"></i>
+        <div class="col-12 col-md-6 col-lg-6 mb-3">
+          <div class="card">
+            <div class="card-body" style="height: 150px;">
+              <div class="d-flex align-items-center mb-2">
+                <div class="icon-circle bg-primary text-white me-3">
+                  <i class="bi bi-graph-up"></i>
+                </div>
+                <h6 class="card-subtitle text-muted mb-0">Promedio Diario</h6>
+              </div>
+              <h2 class="card-title mb-0">{{dailyAverage | number:'1.0-1'}}</h2>
+              <small class="text-muted">Notificaciones por día</small>
+            </div>
           </div>
-          <h6 class="card-subtitle text-muted mb-0">Promedio Diario</h6>
         </div>
-        <h2 class="card-title mb-0">{{dailyAverage | number:'1.0-1'}}</h2>
-        <small class="text-muted">Notificaciones por día</small>
       </div>
-    </div>
-  </div>
-</div>
 
-<div class="row mb-4">
-  <div class="col-12 col-md-6 col-lg-4 mb-3">
-    <div class="card">
-      <div class="card-body" style="height: 150px;">
-        <div class="d-flex align-items-center mb-2">
-          <div class="icon-circle bg-info text-white me-3">
-            <i class="bi bi-clock"></i>
+      <div class="row mb-4">
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
+          <div class="card">
+            <div class="card-body" style="height: 150px;">
+              <div class="d-flex align-items-center mb-2">
+                <div class="icon-circle bg-info text-white me-3">
+                  <i class="bi bi-clock"></i>
+                </div>
+                <h6 class="card-subtitle text-muted mb-0">Hora Pico</h6>
+              </div>
+              <h2 class="card-title mb-0">{{peakHour.hour}}:00</h2>
+              <small class="text-muted">{{peakHour.count}} notificaciones</small>
+            </div>
           </div>
-          <h6 class="card-subtitle text-muted mb-0">Hora Pico</h6>
         </div>
-        <h2 class="card-title mb-0">{{peakHour.hour}}:00</h2>
-        <small class="text-muted">{{peakHour.count}} notificaciones</small>
-      </div>
-    </div>
-  </div>
 
-  <div class="col-12 col-md-6 col-lg-4 mb-3">
-    <div class="card">
-      <div class="card-body" style="height: 150px;">
-        <div class="d-flex align-items-center mb-2">
-          <div class="icon-circle bg-danger text-white me-3">
-            <i class="bi bi-person"></i>
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
+          <div class="card">
+            <div class="card-body" style="height: 150px;">
+              <div class="d-flex align-items-center mb-2">
+                <div class="icon-circle bg-danger text-white me-3">
+                  <i class="bi bi-person"></i>
+                </div>
+                <h6 class="card-subtitle text-muted mb-0">Contacto más Frecuente</h6>
+              </div>
+              <small class="text-muted text-truncate d-block mt-4">{{frequentContact.email}}</small>
+            </div>
           </div>
-          <h6 class="card-subtitle text-muted mb-0">Contacto más Frecuente</h6>
         </div>
-        <small class="text-muted text-truncate d-block mt-4">{{frequentContact.email}}</small>
-      </div>
-    </div>
-  </div>
 
-  <div class="col-12 col-md-6 col-lg-4 mb-3">
-    <div class="card">
-      <div class="card-body" style="height: 150px;">
-        <div class="d-flex align-items-center mb-2">
-          <div class="icon-circle bg-violet text-white me-3">
-            <i class="bi bi-calendar-week"></i>
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
+          <div class="card">
+            <div class="card-body" style="height: 150px;">
+              <div class="d-flex align-items-center mb-2">
+                <div class="icon-circle bg-violet text-white me-3">
+                  <i class="bi bi-calendar-week"></i>
+                </div>
+                <h6 class="card-subtitle text-muted mb-0">Día más Activo</h6>
+              </div>
+              <h2 class="card-title mb-0">{{mostActiveDay.day}}</h2>
+              <small class="text-muted">{{mostActiveDay.count}} envíos ({{mostActiveDay.percentage |
+                number:'1.0-1'}}%)</small>
+            </div>
           </div>
-          <h6 class="card-subtitle text-muted mb-0">Día más Activo</h6>
         </div>
-        <h2 class="card-title mb-0">{{mostActiveDay.day}}</h2>
-        <small class="text-muted">{{mostActiveDay.count}} envíos ({{mostActiveDay.percentage | number:'1.0-1'}}%)</small>
       </div>
-    </div>
-  </div>
-</div>
 
-<!-- KPIs de Retención -->
-<div class="row mb-4">
-  <div class="col-12 col-md-6 col-lg-6 mb-3">
-    <div class="card">
-      <div class="card-body" style="height: 150px;">
-        <div class="d-flex align-items-center mb-2">
-          <div class="icon-circle bg-success text-white me-3">
-            <i class="bi bi-bell-fill"></i>
+      <!-- KPIs de Retención -->
+      <div class="row mb-4">
+        <div class="col-12 col-md-6 col-lg-6 mb-3">
+          <div class="card">
+            <div class="card-body" style="height: 150px;">
+              <div class="d-flex align-items-center mb-2">
+                <div class="icon-circle bg-success text-white me-3">
+                  <i class="bi bi-bell-fill"></i>
+                </div>
+                <h6 class="card-subtitle text-muted mb-0">Retención Promedio</h6>
+              </div>
+              <h2 class="card-title mb-0">{{retentionKPIs.averageRetention | number:'1.0-1'}}%</h2>
+              <small class="text-muted">De retención de suscripciones opcionales</small>
+            </div>
           </div>
-          <h6 class="card-subtitle text-muted mb-0">Retención Promedio</h6>
         </div>
-        <h2 class="card-title mb-0">{{retentionKPIs.averageRetention | number:'1.0-1'}}%</h2>
-        <small class="text-muted">De retención de suscripciones opcionales</small>
-      </div>
-    </div>
-  </div>
 
-  <div class="col-12 col-md-6 col-lg-6 mb-3">
-    <div class="card">
-      <div class="card-body" style="height: 150px;">
-        <div class="d-flex align-items-center mb-2">
-          <div class="icon-circle bg-primary text-white me-3">
-            <i class="bi bi-star-fill"></i>
+        <div class="col-12 col-md-6 col-lg-6 mb-3">
+          <div class="card">
+            <div class="card-body" style="height: 150px;">
+              <div class="d-flex align-items-center mb-2">
+                <div class="icon-circle bg-primary text-white me-3">
+                  <i class="bi bi-star-fill"></i>
+                </div>
+                <h6 class="card-subtitle text-muted mb-0">Alta Retención</h6>
+              </div>
+              <h2 class="card-title mb-0">{{retentionKPIs.highestRetention}}</h2>
+              <small class="text-muted">Suscripción con mayor retención</small>
+            </div>
           </div>
-          <h6 class="card-subtitle text-muted mb-0">Alta Retención</h6>
         </div>
-        <h2 class="card-title mb-0">{{retentionKPIs.highestRetention}}</h2>
-        <small class="text-muted">Suscripción con mayor retención</small>
+
       </div>
-    </div>
-  </div>
-  
-</div>
 
 
       <!-- Gráficos -->
@@ -218,8 +219,8 @@
                 <h5 class="card-title text-center hover-underline">Estado de Notificaciones</h5>
               </a>
               <div class="chart-container">
-                <canvas baseChart #statusChart="base-chart" [data]="chartDataNotificationStatus" [options]="chartOptionsNotificationStatus"
-                  [type]="'pie'">
+                <canvas baseChart #statusChart="base-chart" [data]="chartDataNotificationStatus"
+                  [options]="chartOptionsNotificationStatus" [type]="'pie'">
                 </canvas>
               </div>
             </div>
@@ -235,8 +236,8 @@
             <div class="card-body">
               <h5 class="card-title text-center">Actividad Semanal</h5>
               <div class="chart-container" style="height: 100%; width: 100%;">
-                <canvas baseChart #weeklyChart="base-chart" [data]="chartDataNotificationWeekly" [options]="chartOptionsNotificationWeekly"
-                  [type]="'bar'">
+                <canvas baseChart #weeklyChart="base-chart" [data]="chartDataNotificationWeekly"
+                  [options]="chartOptionsNotificationWeekly" [type]="'bar'">
                 </canvas>
               </div>
             </div>
@@ -250,14 +251,18 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title text-center">Tasa de Retención por Suscripción</h5>
-              <div style="height: 100%; width: 100%;">
-                <canvas baseChart [data]="chartDataSuscriptionRetention" [options]="chartOptionsSuscriptionRetention" [type]="'bar'">
+              <div style="height: 500px;">
+                <canvas baseChart [data]="chartDataSuscriptionRetention" [options]="chartOptionsSuscriptionRetention"
+                  [type]="'bar'">
                 </canvas>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+
+
 
       <!-- Gráfico de análisis de suscripciones -->
       <div class="row mb-4">
