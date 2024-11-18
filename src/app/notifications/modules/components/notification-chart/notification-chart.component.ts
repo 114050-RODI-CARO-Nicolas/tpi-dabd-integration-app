@@ -64,7 +64,7 @@ export class NotificationChartComponent implements OnInit {
     this.chartOptionsContactType = this.contactTypeMetricService.getContactTypeChartOptions();
     this.chartOptionsNotificationStatus = this.notificationStatusMetricService.getChartOptions();
     this.chartOptionsNotificationWeekly = this.weeklyMetricService.getChartOptions();
-    this.chartOptionsSuscriptionRetention = this.weeklyMetricService.getChartOptions();
+    this.chartOptionsSuscriptionRetention = this.subscriptionRetentionMetricService.getChartOptions();
     this.chartOptionsSubscriptionOptionalAnalysis = this.subscriptionOptionalAnalysisMetricService.getChartOptions();
 
 
@@ -250,7 +250,6 @@ export class NotificationChartComponent implements OnInit {
     this.kpiHighestRetentionService.getRetentionStats()
       .pipe(takeUntil(this.destroy$))
       .subscribe(stats => {
-        console.log('stats: ', stats)
         this.retentionKPIs.highestRetention = stats.highestRetentionSubscription || '';
       })
 
@@ -341,6 +340,7 @@ export class NotificationChartComponent implements OnInit {
     this.kpiAverageRetentionService.loadData();
     this.kpiHighestRetentionService.loadData();
     this.subscriptionOptionalAnalysisMetricService.loadData();
+    this.subscriptionRetentionMetricService.loadData();
 
   }
 

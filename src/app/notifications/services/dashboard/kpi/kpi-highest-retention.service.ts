@@ -38,7 +38,7 @@ interface RetentionRate {
 export class KpiHighestRetentionService {
 
 
-    
+
   private contactService = inject(ContactService);
 
   private readonly OPTIONAL_SUBSCRIPTIONS = [
@@ -58,7 +58,7 @@ export class KpiHighestRetentionService {
     dateUntil: null
   });
 
-  
+
 
   private retentionStats$ = new BehaviorSubject<RetentionStats>({
     averageRetention: 0,
@@ -68,7 +68,7 @@ export class KpiHighestRetentionService {
     highestRetentionRate: 0
   });
 
-  
+
 
   getRetentionStats(): Observable<RetentionStats> {
     return this.retentionStats$.asObservable();
@@ -89,21 +89,20 @@ export class KpiHighestRetentionService {
 
   updateDateFilter(filter: DateFilter): void {
     this.currentFilter$.next(filter);
-    this.loadData(); // Recargar datos cuando cambie el filtro
+    this.loadData();
   }
 
   private updateStats(contacts: any[]): void {
-    const activeContacts = contacts.filter(contact => contact.active);
-    const totalContacts = activeContacts.length;
 
-    console.log('Active contacts:', totalContacts);
+    const activeContacts = contacts.filter(contact => contact.active);
+
+    const totalContacts = activeContacts.length;
 
     if (totalContacts === 0) {
       this.resetStats();
       return;
     }
 
-    // Mapear cada suscripción con su tasa de retención
     const retentionRates : RetentionRate[] = this.OPTIONAL_SUBSCRIPTIONS.map(subscription => {
       const subscribedCount = activeContacts.filter(contact =>
         contact.subscriptions.includes(subscription)
@@ -113,17 +112,12 @@ export class KpiHighestRetentionService {
       return { subscription, retentionRate }; // Asociar suscripción con su tasa
     });
 
-    console.log('Retention rates:', retentionRates);
-
-    // Encontrar la suscripción con mayor tasa de retención
     const highestRetention = retentionRates.reduce((max, current) =>
       current.retentionRate > max.retentionRate ? current : max,
       { subscription: null, retentionRate: 0 }
     );
 
-    console.log('Highest retention:', highestRetention);
 
-    // Calcular promedio de retención
     const averageRetention = retentionRates.reduce((acc, rate) => acc + rate.retentionRate, 0) /
       this.OPTIONAL_SUBSCRIPTIONS.length;
 

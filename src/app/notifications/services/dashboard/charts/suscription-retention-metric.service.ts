@@ -15,11 +15,6 @@ interface RetentionChartState {
   providedIn: 'root'
 })
 export class SubscriptionRetentionMetricService {
-  private readonly CHART_COLORS = {
-    primary: 'rgba(98, 182, 143, 0.8)',
-    primaryBorder: 'rgba(98, 182, 143, 1)',
-    background: 'rgba(98, 182, 143, 0.1)'
-  };
 
   private chartState$ = new BehaviorSubject<RetentionChartState>({
     data: {
@@ -27,74 +22,44 @@ export class SubscriptionRetentionMetricService {
       datasets: [{
         data: [],
         label: 'Tasa de Retención (%)',
-        backgroundColor: this.CHART_COLORS.primary,
-        borderColor: this.CHART_COLORS.primaryBorder,
+        backgroundColor: '#4CAF50',
+        borderColor: '#4CAF50',
         borderWidth: 1,
-        barThickness: 'flex',
-        maxBarThickness: 35
+        barThickness: 20,
+        barPercentage: 2,
+        categoryPercentage: 0.9 
       }]
     },
     options: {
       indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
+      layout: {
+        padding: {
+          left: 20,
+          right: 20
+        }
+      },
       plugins: {
-        legend: {
-          display: false
-        },
-        tooltip: {
-          callbacks: {
-            label: (context) => `${context.parsed.x.toFixed(1)}% de retención`,
-            afterLabel: (context) => {
-              const metric = context.raw as RetentionMetric;
-              return `${metric.activeUsers} de ${metric.totalUsers} usuarios activos`;
-            }
-          }
-        },
         title: {
           display: true,
-          text: 'Tasa de Retención de Notificaciones Opcionales',
-          font: {
-            size: 16,
-            weight: 'bold'
-          },
-          padding: { bottom: 20 }
+          text: 'Tasa de Retención de Notificaciones Opcionales'
         }
       },
       scales: {
         x: {
           min: 0,
           max: 100,
-          grid: {
-            display: true,
-            color: this.CHART_COLORS.background
-          },
-          border: {
-            display: true
-          },
           title: {
             display: true,
-            text: 'Porcentaje de Retención',
-            font: {
-              size: 14,
-              weight: 'bold'
-            }
-          },
-          ticks: {
-            callback: (value) => `${value}%`
+            text: 'Porcentaje de Retención'
           }
         },
         y: {
-          grid: {
-            display: false
-          },
-          border: {
-            display: true
+          ticks: {
+            padding: 10
           }
         }
-      },
-      animation: {
-        duration: 750
       }
     }
   });
@@ -123,6 +88,7 @@ export class SubscriptionRetentionMetricService {
       }),
       catchError((error) => {
         console.error('Error loading retention metrics:', error);
+        this.resetData();
         throw error;
       })
     );
@@ -133,11 +99,10 @@ export class SubscriptionRetentionMetricService {
       .filter(sub => sub.isUnsubscribable)
       .map(sub => sub.name);
 
-    const totalUsers = contacts.length;
-
+    const totalUsers = contacts.filter(contact => contact.active).length;
     return optionalSubs.map(subName => {
       const activeUsers = contacts.filter(contact =>
-        contact.subscriptions.includes(subName)
+        contact.active && contact.subscriptions.includes(subName)
       ).length;
 
       return {
@@ -149,20 +114,21 @@ export class SubscriptionRetentionMetricService {
     });
   }
 
-  private updateChartData(metrics: RetentionMetric[]): void {
-    const newState = {
-      ...this.chartState$.value,
-      data: {
-        labels: metrics.map(m => this.subscriptionService.getSubscriptionNameInSpanish(m.subscriptionName)),
-        datasets: [{
-          ...this.chartState$.value.data.datasets[0],
-          data: metrics.map(m => m.retentionRate)
-        }]
-      }
-    };
 
-    this.chartState$.next(newState);
-  }
+ private updateChartData(metrics: RetentionMetric[]): void {
+  const newState = {
+    ...this.chartState$.value,
+    data: {
+      labels: metrics.map(m => this.subscriptionService.getSubscriptionNameInSpanish(m.subscriptionName)),
+      datasets: [{
+        ...this.chartState$.value.data.datasets[0],
+        data: metrics.map(m => m.retentionRate)
+      }]
+    }
+  };
+
+  this.chartState$.next(newState);
+}
 
   resetData(): void {
     const emptyState = {
