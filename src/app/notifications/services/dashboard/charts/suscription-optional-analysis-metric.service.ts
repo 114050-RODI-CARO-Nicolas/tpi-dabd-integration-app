@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
 import { ChartData, ChartOptions } from 'chart.js';
 import { SubscriptionService } from '../../subscription.service';
+import { ContactService } from '../../contact.service';
 
 interface SubscriptionStat {
   subscribed: number;
@@ -24,6 +25,10 @@ interface AnalysisChartState {
   providedIn: 'root'
 })
 export class SubscriptionOptionalAnalysisMetricService {
+
+  private contactService = inject(ContactService);
+  private subscriptionService = inject(SubscriptionService);
+
   private readonly CHART_COLORS = {
     subscribed: {
       background: '#36A2EB',
@@ -117,8 +122,6 @@ export class SubscriptionOptionalAnalysisMetricService {
     }
   });
 
-  constructor(private subscriptionService: SubscriptionService) {}
-
   getChartData(): Observable<ChartData<'bar'>> {
     return new Observable(observer => {
       observer.next(this.chartState$.value.data);
@@ -130,7 +133,22 @@ export class SubscriptionOptionalAnalysisMetricService {
     return this.chartState$.value.options;
   }
 
-  processSubscriptionData(contacts: any[], subscriptionTypes: any[]): void {
+  loadData(): void {
+    forkJoin({
+      contacts: this.contactService.getAllContacts(),
+      subscriptions: this.subscriptionService.getAllSubscriptions()
+    }).subscribe({
+      next: ({ contacts, subscriptions }) => {
+        this.processSubscriptionData(contacts, subscriptions);
+      },
+      error: (error) => {
+        console.error('Error loading subscription analysis data:', error);
+        this.resetData();
+      }
+    });
+  }
+
+  private processSubscriptionData(contacts: any[], subscriptionTypes: any[]): void {
     const optionalSubs = subscriptionTypes
       .filter(sub => sub.isUnsubscribable)
       .map(sub => sub.name);
@@ -142,14 +160,14 @@ export class SubscriptionOptionalAnalysisMetricService {
 
   private calculateSubscriptionStats(contacts: any[], optionalSubs: string[]): Record<string, SubscriptionStat> {
     const stats: Record<string, SubscriptionStat> = {};
+    const activeContacts = contacts.filter(contact => contact.active);
+    const totalContacts = activeContacts.length;
 
-    // Inicializar estadísticas
     optionalSubs.forEach(subName => {
-      stats[subName] = { subscribed: 0, unsubscribed: 0, total: contacts.length };
+      stats[subName] = { subscribed: 0, unsubscribed: 0, total: totalContacts };
     });
 
-    // Calcular suscripciones
-    contacts.forEach(contact => {
+    activeContacts.forEach(contact => {
       optionalSubs.forEach(subName => {
         if (contact.subscriptions.includes(subName)) {
           stats[subName].subscribed++;

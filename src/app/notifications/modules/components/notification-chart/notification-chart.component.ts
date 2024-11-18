@@ -11,7 +11,6 @@ import { IaService } from '../../../services/ia-service';
 import { ChartData, ChartOptions } from 'chart.js';
 import { RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { SubscriptionService } from '../../../services/subscription.service';
 import { ContactTypeMetricService } from '../../../services/dashboard/charts/contact-type-metric.service';
 import { NotificationStatusMetricService } from '../../../services/dashboard/charts/notification-status-metric.service';
 import { NotificationWeeklyMetricService } from '../../../services/dashboard/charts/notification-weekly-metric.service';
@@ -116,8 +115,6 @@ export class NotificationChartComponent implements OnInit {
   isBrowser = isPlatformBrowser(this.platformId);
   notificationService = inject(NotificationService);
   iaService = inject(IaService);
-  subscriptionService = inject(SubscriptionService);
-
 
   isModalOpen = false;
   modalTitle = '';
@@ -250,7 +247,7 @@ export class NotificationChartComponent implements OnInit {
         this.retentionKPIs.averageRetention = stats.averageRetention;
       });
 
-      this.kpiHighestRetentionService.getRetentionStats()
+    this.kpiHighestRetentionService.getRetentionStats()
       .pipe(takeUntil(this.destroy$))
       .subscribe(stats => {
         console.log('stats: ', stats)
@@ -343,13 +340,15 @@ export class NotificationChartComponent implements OnInit {
     this.kpiMostDayliActiveService.loadNotifications();
     this.kpiAverageRetentionService.loadData();
     this.kpiHighestRetentionService.loadData();
+    this.subscriptionOptionalAnalysisMetricService.loadData();
+
   }
 
   //END REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW
 
   showInfo() {
-    const message = '';
 
+    const message = '';
     this.showModal('Información', message);
   }
 
@@ -401,19 +400,6 @@ export class NotificationChartComponent implements OnInit {
         this.isLoading = false;
       }
     });
-  }
-
-
-
-
-
-  private calculateRetentionKPIs(metrics: RetentionMetric[]): RetentionKPIs {
-    return {
-      averageRetention: metrics.reduce((acc, m) => acc + m.retentionRate, 0) / metrics.length,
-      highestRetention: metrics[0].subscriptionName,
-      lowestRetention: metrics[metrics.length - 1].subscriptionName,
-      subscriptionsAbove80: metrics.filter(m => m.retentionRate > 80).length
-    };
   }
 
 

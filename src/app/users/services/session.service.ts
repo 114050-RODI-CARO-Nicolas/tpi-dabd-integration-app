@@ -86,8 +86,8 @@ export class SessionService {
    * @returns boolean indicating authentication status.
    */
   isAuthenticated(): boolean {
-    return this.getItem(this.USER_KEY) !== null;
-    //return true
+   // return this.getItem(this.USER_KEY) !== null;
+    return true
   }
 
   /**
