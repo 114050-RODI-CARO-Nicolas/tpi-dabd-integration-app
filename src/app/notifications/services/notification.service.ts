@@ -1,12 +1,13 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../environments/environment';
-import { Notification, NotificationModelChart } from '../models/notifications/notification';
-import { forkJoin, map, Observable, switchMap } from 'rxjs';
+import { Notification, NotificationKPIViewedModel, NotificationModelChart } from '../models/notifications/notification';
+import { forkJoin, map, Observable, switchMap, throwError } from 'rxjs';
 import { NotificationFilter } from '../models/notifications/filters/notificationFilter';
 import { PageRequest } from '../models/pagination/PageRequest';
 import { Page } from '../models/pagination/Page';
 import { SessionService } from '../../users/services/session.service';
+import { Contact } from '../../inventories/models/contact.model';
 
 
 @Injectable({
@@ -26,12 +27,11 @@ export class NotificationService {
   getNotificationByContact() {
     const user = this.sessionService.getItem('user');
     
-    //Concatenar todos
-    const contactId = user?.contacts[0].id; 
     
+    const contactId = user?.contacts?.find((contact: any) => contact.contact_type == 'EMAIL')?.id;
 
     if (!contactId) {
-      throw new Error('No contact ID found in session.');
+      return throwError(() =>  Error('No contact ID found in session.'));
     }
 
     const params = new HttpParams().set('contactId', contactId);
@@ -160,13 +160,12 @@ export class NotificationService {
     return date;
   }
 
-
-  getAllNotificationsNotFiltered(): Observable<NotificationModelChart[]> {
+  getAllNotificationsNotFiltered(): Observable<NotificationKPIViewedModel[]> {
 
     const url = `http://localhost:8011/notifications`;
 
 
-    return this.http.get<NotificationModelChart[]>(url);
+    return this.http.get<NotificationKPIViewedModel[]>(url);
 
   }
 

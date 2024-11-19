@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Service } from '../../../models/suppliers/service.model';
 import { ServiceService } from '../../../services/suppliers/service.service';
+import { ToastService } from 'ngx-dabd-grupo01';
 
 @Component({
   selector: 'app-provider-service-update',
@@ -20,6 +21,8 @@ export class ProviderServiceUpdateComponent implements OnInit {
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     enabled: new FormControl(true)
   });
+
+  private toastService = inject(ToastService);
 
   constructor(private serviceService: ServiceService) {}
 
@@ -48,6 +51,7 @@ export class ProviderServiceUpdateComponent implements OnInit {
         // Update existing service
         this.serviceService.updateService(serviceData).subscribe({
           next: () => {
+            this.toastService.sendSuccess('Servicio actualizado correctamente.');
             this.onClose();
           },
           error: (error) => {
@@ -58,6 +62,7 @@ export class ProviderServiceUpdateComponent implements OnInit {
         // Create new service
         this.serviceService.createService(serviceData).subscribe({
           next: () => {
+            this.toastService.sendSuccess('Servicio creado correctamente.');
             this.onClose();
           },
           error: (error) => {

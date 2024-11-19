@@ -202,7 +202,7 @@ export class BillService {
   //#endregion
 
   //#region Add and Update Bill Methods
-  addBill(bill: BillPostRequest): Observable<BillPostRequest> {
+  addBill(bill: BillPostRequest, userId: number): Observable<BillPostRequest> {
     const snakeCaseBill = {
       description: bill.description,
       amount: Number(bill.amount),
@@ -216,14 +216,14 @@ export class BillService {
       link_pdf: '',
     };
     const headers = new HttpHeaders({
-      'x-user-id': '1',
+      'x-user-id': userId,
     });
     return this.http.post<BillPostRequest>(this.url + 'bills', snakeCaseBill, { headers });
   }
 
-  updateBill(updatedBill: any, id: any): Observable<Bill> {
+  updateBill(updatedBill: any, id: any, userId: number): Observable<Bill> {
     const headers = new HttpHeaders({
-      'x-user-id': '1',
+      'x-user-id': userId,
     });
     return this.http.put<Bill>(`${this.url}bills/${id}`, updatedBill, { headers });
   }
@@ -267,13 +267,13 @@ export class BillService {
     return this.http.get<boolean>(`${this.url}bills/valid-date`, { params });
   }
 
-  patchBill(id: number, status: string):Observable<Bill>{
+  patchBill(id: number, status: string, userId: number):Observable<Bill>{
     const body: { billId: number, newStatus: string} = { "billId": id, "newStatus": status}
     const headers = new HttpHeaders({
-      'x-user-id': '1',
+      'x-user-id': userId,
     });
 
-    return this.http.patch<Bill>(`${this.url}bills/status`, body , { headers })
+    return this.http.put<Bill>(`${this.url}bills/status`, body , { headers })
   }
   //#endregion
 }

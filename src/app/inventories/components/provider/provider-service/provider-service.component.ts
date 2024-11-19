@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MainContainerComponent } from 'ngx-dabd-grupo01';
+import { ConfirmAlertComponent, MainContainerComponent, ToastService } from 'ngx-dabd-grupo01';
 import { ProviderServiceUpdateComponent } from "../provider-service-update/provider-service-update.component";
 import { ServiceService } from '../../../services/suppliers/service.service';
 import { Service } from '../../../models/suppliers/service.model';
@@ -32,6 +32,7 @@ export class ProviderServiceComponent implements OnInit {
 
   private modalService = inject(NgbModal);
   private serviceService = inject(ServiceService);
+  private toastService = inject(ToastService);
 
   @ViewChild('infoModal') infoModal!: TemplateRef<any>;
 
@@ -109,14 +110,25 @@ export class ProviderServiceComponent implements OnInit {
   }
 
   deleteService(id: number) {
-    this.serviceService.deleteService(id).subscribe({
-      next: () => {
-        this.loadServices();
-      },
-      error: (error) => {
-        console.error('Error deleting service:', error);
+    const modalresult = this.modalService.open(ConfirmAlertComponent); 
+    modalresult.componentInstance.alertTitle = 'Confirmación';
+    modalresult.componentInstance.alertMessage = '¿Está seguro que desea eliminar este servicio?';
+    modalresult.componentInstance.alertVariant = 'delete';
+
+    modalresult.result.then((result) => {
+      if(result){
+        this.serviceService.deleteService(id).subscribe({
+          next: () => {
+            this.toastService.sendSuccess('Servicio eliminado exitosamente');
+            this.loadServices();
+          },
+          error: (error) => {
+            this.toastService.sendError('Error al eliminar el servicio');
+            console.error('Error deleting service:', error);
+          }
+        });
       }
-    });
+    })
   }
 
     openModalFilter(): void {

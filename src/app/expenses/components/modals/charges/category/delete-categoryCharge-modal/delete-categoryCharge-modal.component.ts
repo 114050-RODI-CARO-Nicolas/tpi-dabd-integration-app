@@ -1,7 +1,10 @@
-import { Component,Input } from '@angular/core';
+import { Component,inject,Input } from '@angular/core';
 import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 import { CategoryCharge } from '../../../../../models/charge';
 import { ChargeService } from '../../../../../services/charge.service';
+import { User } from '../../../../../models/user';
+import { StorageService } from '../../../../../services/storage.service';
+import { URLTargetType } from '../../../../../../users/models/role';
 
 @Component({
   selector: 'app-delete-category-modal',
@@ -12,11 +15,17 @@ import { ChargeService } from '../../../../../services/charge.service';
 })
 export class DeleteCategoryModalComponent {
   @Input() category!: CategoryCharge;
+  user : User;
+  rolCode : boolean = false;
 
+  private storage = inject(StorageService);
   constructor(
     public activeModal: NgbActiveModal,
     private categoryService: ChargeService
-  ) {}
+  ) { 
+    this.user = this.storage.getFromSessionStorage('user') as User;
+    this.rolCode = this.user.value.roles.filter(rol => rol.code === URLTargetType.FINANCE).length == 1 ? true : false
+  }
 
   confirmDelete() {
 
@@ -30,7 +39,6 @@ export class DeleteCategoryModalComponent {
           });
         },
         error: (error) => {
-          console.error('Error al eliminar la categoría:', error);
           this.activeModal.close({
             success: false,
             message: 'Ha ocurrido un error al eliminar la categoría. Por favor, inténtelo de nuevo.',

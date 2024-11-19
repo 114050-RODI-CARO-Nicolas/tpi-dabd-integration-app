@@ -69,10 +69,6 @@ export class SanctionTypeListComponent {
     });
   }
 
-  userHasRole(role: string): boolean {
-    return this.userData.roles?.some((userRole) => userRole?.name === role);
-  }
-
   // Methods:
   ngOnInit(): void {
     this.loadUserData();

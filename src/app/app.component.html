@@ -1,19 +1,34 @@
 @if (isAuthenticated$ | async ) {
-<app-toasts aria-live="polite" aria-atomic="true"></app-toasts>"
-<app-main-layout [navbarMenu]="navbarMenu" (logoutButtonClick)="onLogoutButtonClick()"
-  (profileButtonClick)="openProfile()" (notificationButtonClick)="onNotificationClick()">
-</app-main-layout>
-
-@if (showNotifications) {
-  <app-notifications class="mt-5" style="position: fixed; bottom: 92%; right: 10%; width: 100%; z-index: 1000;">
+  <app-toasts aria-live="polite" aria-atomic="true"></app-toasts>"
+  <app-main-layout
+    [navbarMenu]="navbarMenu"
+    (logoutButtonClick)="onLogoutButtonClick()"
+    (profileButtonClick)="openProfile()"
+    (notificationButtonClick)="onNotificationClick()"
+  >
+    <button
+      class="btn btn-outline-light rounded-circle me-4"
+      (click)="toggleDarkMode()"
+    >
+      @if(darkModeEnabled) {
+      <i class="bi bi-moon"></i>
+      } @else {
+      <i class="bi bi-brightness-high"></i>
+      }
+  
+      {{ darkModeEnabled ? "" : "" }}
+    </button>
+  </app-main-layout>
+  @if (showNotifications) {
+  <app-notifications
+    class="mt-5"
+    style="position: fixed; bottom: 92%; right: 10%; width: 100%; z-index: 1000"
+  >
   </app-notifications>
-  }
-
-} @else {
-<!-- Faltaba agreagar la variable current url -->
-@if ((currentUrl$ | async) === '/forgotpassword') {
-<app-forgot-password></app-forgot-password>
-} @else {
-<app-login></app-login>
-}
-}
+  } } @else {
+  <!-- Faltaba agreagar la variable current url -->
+  @if ((currentUrl$ | async) === '/forgotpassword') {
+  <app-forgot-password></app-forgot-password>
+  } @else {
+  <app-login></app-login>
+  } }

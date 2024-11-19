@@ -25,6 +25,9 @@ import {authGuard} from '../users/guards/auth.guard';
 import {hasRoleCodeGuard} from '../users/guards/has-role-code.guard';
 import {URLTargetType} from '../users/models/role';
 import { ExpensesListCategoryChargesComponent } from './components/expenses-charges/expenses-list-category-charges/expenses-list-categorycharge.component';
+import {
+  ExpensesPeriodReportComponent
+} from './components/expenses-period/expenses-period-report/expenses-period-report.component';
 
 export const EXPENSES_ROUTES: Routes = [
   // Ruta periodos - manejo del estado del periodo
@@ -169,7 +172,7 @@ export const EXPENSES_ROUTES: Routes = [
   },
   {
     path: 'gastos/report',
-    component: ExpensesReportComponent,
+    component: ExpensesPeriodReportComponent,
     canActivate: [authGuard],
     canMatch: [hasRoleCodeGuard],
     data: {

@@ -10,7 +10,6 @@ import { BillService } from '../../../services/bill.service';
 import { CategoryService } from '../../../services/category.service';
 import { ProviderService } from '../../../services/provider.service';
 import {
-  FormBuilder,
   FormControl,
   FormGroup,
   FormsModule,
@@ -19,7 +18,6 @@ import {
 import { PeriodService } from '../../../services/period.service';
 import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule, DatePipe } from '@angular/common';
-import { PeriodSelectComponent } from '../../selects/period-select/period-select.component';
 import * as XLSX from 'xlsx';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -35,12 +33,12 @@ import {
   MainContainerComponent,
   TableColumn,
   TableComponent,
-  TableFiltersComponent,
   ToastService,
 } from 'ngx-dabd-grupo01';
 import { map, of } from 'rxjs';
 import { DeleteBillModalComponent } from '../../modals/bills/delete-bill-modal/delete-bill-modal.component';
 import {MonthService} from "../../../services/month.service";
+import {SessionService} from '../../../../users/services/session.service';
 
 @Component({
   selector: 'app-list-expenses_bills',
@@ -48,12 +46,10 @@ import {MonthService} from "../../../services/month.service";
   imports: [
     ReactiveFormsModule,
     NgbModule,
-    PeriodSelectComponent,
     FormsModule,
     NgPipesModule,
     CommonModule,
     MainContainerComponent,
-    TableFiltersComponent,
     TableComponent,
   ],
   templateUrl: './expenses-list-bills.component.html',
@@ -62,31 +58,37 @@ import {MonthService} from "../../../services/month.service";
 })
 export class ExpensesListBillsComponent implements OnInit {
 
+  //-------------------------------------------------------------------------------------------------------------------
+
+  //#region SERVICES
+  private readonly billService = inject(BillService);
+  private readonly categoryService = inject(CategoryService);
+  private readonly periodService = inject(PeriodService);
+  private readonly providerService = inject(ProviderService);
+  private readonly modalService = inject(NgbModal);
+  private readonly router = inject(Router);
   private readonly toastService = inject(ToastService);
   private readonly monthService = inject(MonthService);
+  private readonly sessionService = inject(SessionService);
+  //#endregion
 
+  //#region VARIABLES
   bills: Bill[] = [];
   filteredBills: Bill[] = [];
   currentPage: number = 1;
-
+  userId: number | undefined;
   filterConfig: Filter[] = [];
   categoryList: { value: string; label: string }[] = [];
   supplierList: { value: string; label: string }[] = [];
   periodsList: { value: string; label: string }[] = [];
   typesList: { value: string; label: string }[] = [];
-
-  private pageSize = 10;
   totalItems = 0;
   page = 1;
   size = 10;
-  sortField = 'billType.name';
-  sortDirection: 'asc' | 'desc' = 'asc';
-
   searchTerm: string = '';
   isLoading: boolean = false;
   today: Date = new Date();
   fileName: string = `Gastos_${this.today.toLocaleDateString()}.xlsx`;
-
   filters = new FormGroup({
     selectedCategory: new FormControl(0),
     selectedPeriod: new FormControl<number>(0),
@@ -95,6 +97,19 @@ export class ExpensesListBillsComponent implements OnInit {
     selectedStatus: new FormControl(''),
     selectedType: new FormControl(0),
   });
+  columns: TableColumn[] = [];
+  private allBills: Bill[] = [];
+  //#endregion
+
+  //#region TEMPLATES
+  @ViewChild('amountTemplate', { static: true }) amountTemplate!: TemplateRef<any>;
+  @ViewChild('dateTemplate', { static: true }) dateTemplate!: TemplateRef<any>;
+  @ViewChild('actionsTemplate', { static: true }) actionsTemplate!: TemplateRef<any>;
+  @ViewChild('periodTemplate', { static: true }) periodTemplate!: TemplateRef<any>;
+  @ViewChild('statusTemplate', { static: true }) statusTemplate!: TemplateRef<any>;
+  //#endregion
+
+  //-------------------------------------------------------------------------------------------------------------------
 
   toMonthAbbr(month:number){
     return this.monthService.getMonthAbbr(month);
@@ -128,98 +143,48 @@ export class ExpensesListBillsComponent implements OnInit {
     this.filteredBills = filtered.slice(startIndex, endIndex);
   }
 
-  filterTableBySelects(value: Record<string, any>) {
-    const filterCategory = value['category.name'] || 0;
-    const filterSupplier = value['supplier.name'] || 0;
-    const filterPeriod = value['period.id'] || 0;
-    const filterType = value['billType.name'] || 0;
-    let filterStatus = '';
-    if (value['isActive'] !== 'undefined')
-      filterStatus = value['isActive'] === 'true' ? 'Activo' : 'Cerrado';
-
-    const filtered = this.allBills.filter((bill) => {
-      const matchesCategory = filterCategory
-        ? bill.category?.category_id === filterCategory
-        : true;
-      const matchesSupplier = filterSupplier
-        ? bill.supplier?.id === filterSupplier
-        : true;
-      const matchesPeriod = filterPeriod
-        ? bill.period?.id === filterPeriod
-        : true;
-      const matchesType = filterType
-        ? bill.billType?.bill_type_id === filterType
-        : true;
-      const matchesStatus = filterStatus
-        ? bill.status === filterStatus
-        : true;
-
-      return matchesCategory && matchesSupplier && matchesPeriod &&
-             matchesType && matchesStatus;
-    });
-
-    this.totalItems = filtered.length;
-    const startIndex = (this.page - 1) * this.size;
-    const endIndex = startIndex + this.size;
-    this.filteredBills = filtered.slice(startIndex, endIndex);
-  }
-
   onSearchValueChange(searchTerm: string) {
     this.searchTerm = searchTerm;
     this.page = 1;
     this.filterTableByText(searchTerm);
   }
 
-  @ViewChild('amountTemplate', { static: true })
-  amountTemplate!: TemplateRef<any>;
-  @ViewChild('dateTemplate', { static: true }) dateTemplate!: TemplateRef<any>;
-  @ViewChild('actionsTemplate', { static: true })
-  actionsTemplate!: TemplateRef<any>;
-  @ViewChild('periodTemplate', { static: true })
-  periodTemplate!: TemplateRef<any>;
-  @ViewChild('statusTemplate', { static: true })
-  statusTemplate!: TemplateRef<any>;
-
-  columns: TableColumn[] = [];
-
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.columns = [
-        { headerName: 'Tipo', accessorKey: 'billType.name' },
-        { headerName: 'Proveedor', accessorKey: 'supplier.name' },
-        {
-          headerName: 'Monto',
-          accessorKey: 'amount',
-          cellRenderer: this.amountTemplate,
-          align: 'right'
-        },
-        {
-          headerName: 'Periodo',
-          accessorKey: 'period.end_date',
-          cellRenderer: this.periodTemplate,
-        },
-        { headerName: 'Categoría', accessorKey: 'category.name' },
-        {
-          headerName: 'Fecha',
-          accessorKey: 'date',
-          cellRenderer: this.dateTemplate,
-        },
-        {
-          headerName: 'Estado',
-          accessorKey: 'status',
-          cellRenderer: this.statusTemplate,
-
-        },
-        {
-          headerName: 'Acciones',
-          accessorKey: 'actions',
-          cellRenderer: this.actionsTemplate,
-        },
-      ];
-    });
-  }
-
   ngOnInit(): void {
+    this.columns = [
+      { headerName: 'Tipo', accessorKey: 'billType.name' },
+      { headerName: 'Proveedor', accessorKey: 'supplier.name' },
+      {
+        headerName: 'Monto',
+        accessorKey: 'amount',
+        cellRenderer: this.amountTemplate,
+        align: 'right'
+      },
+      {
+        headerName: 'Periodo',
+        accessorKey: 'period.end_date',
+        cellRenderer: this.periodTemplate,
+      },
+      { headerName: 'Categoría', accessorKey: 'category.name' },
+      {
+        headerName: 'Fecha',
+        accessorKey: 'date',
+        cellRenderer: this.dateTemplate,
+      },
+      {
+        headerName: 'Estado',
+        accessorKey: 'status',
+        cellRenderer: this.statusTemplate,
+
+      },
+      {
+        headerName: 'Acciones',
+        accessorKey: 'actions',
+        cellRenderer: this.actionsTemplate,
+      },
+    ];
+
+    
+    this.userId = Number(this.sessionService.getItem('user').id);
     this.filteredBills = this.bills;
     this.getAllLists();
     this.initializeFilters();
@@ -250,14 +215,6 @@ export class ExpensesListBillsComponent implements OnInit {
     this.filteredBills = [...this.bills];
   };
 
-  billService = inject(BillService);
-  categoryService = inject(CategoryService);
-  periodService = inject(PeriodService);
-  providerService = inject(ProviderService);
-  modalService = inject(NgbModal);
-  private fb = inject(FormBuilder);
-  private router = inject(Router);
-
   getCategories() {
     this.categoryService.getAllCategories().subscribe((categories) => {
       this.categoryList = categories.map((category: any) => ({
@@ -268,7 +225,6 @@ export class ExpensesListBillsComponent implements OnInit {
     });
   }
 
-
   getBillTypes() {
     this.billService.getBillTypes().subscribe((types) => {
       this.typesList = types.map((type: any) => ({
@@ -278,6 +234,7 @@ export class ExpensesListBillsComponent implements OnInit {
       this.initializeFilters();
     });
   }
+
   getProviders() {
     this.providerService.getAllProviders().subscribe((providers) => {
       this.supplierList = providers.map((provider: any) => ({
@@ -350,8 +307,6 @@ export class ExpensesListBillsComponent implements OnInit {
     this.loadBills();
   }
 
-  private allBills: Bill[] = [];
-
   private loadBills(): void {
     this.isLoading = true;
     const filters = this.filters.value;
@@ -409,7 +364,6 @@ export class ExpensesListBillsComponent implements OnInit {
         return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
 }
-
 
   viewBill(bill: Bill) {
     this.openViewModal(bill);
@@ -492,7 +446,7 @@ export class ExpensesListBillsComponent implements OnInit {
   imprimir() {
     const doc = new jsPDF();
     doc.setFontSize(18);
-    doc.text('Lista de Gastos', 14, 20);
+    doc.text('listado de Gastos', 14, 20);
 
     const filters = this.filters.value;
     this.billService
@@ -537,39 +491,6 @@ export class ExpensesListBillsComponent implements OnInit {
         );
       });
   }
-
-  // downloadTable() {
-  //   const filters = this.filters.value;
-  //   this.billService
-  //     .getAllBillsAndPaginationAny(
-  //       this.page,
-  //       this.size,
-  //       filters.selectedPeriod?.valueOf(),
-  //       filters.selectedCategory?.valueOf(),
-  //       filters.selectedSupplier?.valueOf(),
-  //       filters.selectedType?.valueOf(),
-  //       filters.selectedProvider?.valueOf().toString(),
-  //       filters.selectedStatus?.valueOf().toString(),
-  //     )
-  //     .subscribe((bills) => {
-  //       const data = bills.content.map((bill) => ({
-  //         Periodo: `${bill?.period?.month} / ${bill?.period?.year}`,
-  //         'Monto Total': `$ ${bill.amount}`,
-  //         Fecha: bill.date,
-  //         Proveedor: bill.supplier?.name,
-  //         Estado: bill.status,
-  //         Categoría: bill.category.name,
-  //         'Tipo de gasto': bill.bill_type?.name,
-  //         Descripción: bill.description,
-  //       }));
-
-  //       const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
-  //       const wb: XLSX.WorkBook = XLSX.utils.book_new();
-  //       XLSX.utils.book_append_sheet(wb, ws, 'Expenses');
-  //       XLSX.writeFile(wb, this.fileName);
-  //     });
-  // }
-
 
   getAllItems = () => {
     return this.billService.getAllBillsAndPaginationAny(

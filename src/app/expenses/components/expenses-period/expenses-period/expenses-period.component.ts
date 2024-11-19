@@ -104,22 +104,21 @@ export class ExpensesPeriodComponent implements OnInit {
   listExpenses: Expense[] = [];
 
   loadList() {
-    debugger
-    if (!this.periodId) {
-      console.error('periodId is not defined');
+      if (!this.periodId) {
+      this.toastService.sendError('Debe seleccionar un id de periodo');
       return;
     }
 
-    console.log("Period ID:", this.periodId);
+
 
     this.expenseService
       .getByPeriod(Number(this.periodId))
       .pipe(
         tap(() => {
-          console.log("getByPeriod called and completed");
+
         }),
         switchMap(() => {
-          console.log("Calling getExpenses...");
+
           return this.expenseService.getExpenses(
             this.currentPage - 1,
             this.size,
@@ -131,7 +130,6 @@ export class ExpensesPeriodComponent implements OnInit {
       )
       .subscribe(
         (data) => {
-          console.log("Data received from getExpenses:", data);
           this.listExpenses = data.content.map((expense) => {
             const expenses = this.keysToCamel(expense) as Expense;
             return { ...expenses };
@@ -139,7 +137,8 @@ export class ExpensesPeriodComponent implements OnInit {
           this.cantPages = data.totalElements;
         },
         (error) => {
-          console.error("Error in loadList:", error);
+
+          this.toastService.sendError('Error al cargar la listado de gastos');
         }
       );
   }

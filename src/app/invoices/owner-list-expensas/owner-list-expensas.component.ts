@@ -70,6 +70,8 @@ registerLocaleData(localeEs, 'es');
   ],
 })
 export class OwnerListExpensasComponent {
+
+  
   //#region ATT de PAGINADO
   currentPage: number = 0;
   pageSize: number = 10;
@@ -130,12 +132,12 @@ export class OwnerListExpensasComponent {
     description: '',
     totalPrice: 0,
     adminNameWhoApproves: '',
-    period:''
+    period: ''
   };
   isFilter: boolean = false; // to keep the status to avoid load all values from backend
 
   requestTicketOwner: RequestTicketOwner = {
-    ownerId: 1,
+    ownerId: 0,
     status: null,
     firstPeriod: null,
     lastPeriod: null,
@@ -146,18 +148,18 @@ export class OwnerListExpensasComponent {
     console.log($event); // Muestra los valores actuales de los filtros en la consola
     this.eventSaved = $event;
     this.isFilter = true;
-    if(!this.ticketService.isValidYearFilter($event['initYear']) || !this.ticketService.isValidYearFilter($event['endYear'])) {
+    if (!this.ticketService.isValidYearFilter($event['initYear']) || !this.ticketService.isValidYearFilter($event['endYear'])) {
       return;
     }
     const initYear = this.ticketService.cutYearFilter($event['initYear']);
     const endYear = this.ticketService.cutYearFilter($event['endYear']);
     const monthInit = $event['initMonth'];
     const monthEnd = $event['endMonth'];
-    
+
     const concatDateInit = !this.ticketService.isValidPeriod(initYear, monthInit) ? `${monthInit}/${initYear}` : '/';
     const concatDateEnd = !this.ticketService.isValidPeriod(monthEnd, endYear) ? `${monthEnd}/${endYear}` : '/';
 
-    if(!this.ticketService.isValidateFullDate($event['initYear'], $event['initMonth'])){
+    if (!this.ticketService.isValidateFullDate($event['initYear'], $event['initMonth'])) {
       return;
     }
 
@@ -224,7 +226,7 @@ export class OwnerListExpensasComponent {
     private excelService: PaymentExcelService,
     private fileService: FilesServiceService,
     private periodToMonthYearPipe: PeriodToMonthYearPipe,
-    private paymentService : PaymentServiceService
+    private paymentService: PaymentServiceService
   ) {
     this.fechasForm = this.formBuilder.group({
       fechaInicio: [''],
@@ -232,6 +234,20 @@ export class OwnerListExpensasComponent {
     });
   }
   ngOnInit() {
+
+
+    const userData = sessionStorage.getItem('user');
+
+    if (userData) {
+      const parsedData = JSON.parse(userData);
+
+      const userId = parsedData.value.owner_id;
+      this.requestTicketOwner.ownerId = userId;
+     
+      console.log('User ID:', userId);
+    } else {
+      console.log('No user data found in sessionStorage.');
+    }
     this.ticketService.getAllByOwner(this.requestTicketOwner, this.currentPage, this.pageSize).subscribe(
       (response) => {
         console.log('Tickets del propietario:', response);
@@ -367,7 +383,7 @@ export class OwnerListExpensasComponent {
           console.log('File uploaded successfully!', response);
           this.isUploading = false;
           this.uploadSuccess = true;
-          
+
         },
         (error) => {
           console.error('Error uploading file:', error);
@@ -421,6 +437,20 @@ export class OwnerListExpensasComponent {
 
   // Método para obtener todos los tickets usando el servicio
   getTickets(): void {
+
+
+    const userData = sessionStorage.getItem('user');
+
+    if (userData) {
+      const parsedData = JSON.parse(userData);
+
+      const userId = parsedData.value.owner_id;
+      this.requestTicketOwner.ownerId = userId;
+     
+      console.log('User ID:', userId);
+    } else {
+      console.log('No user data found in sessionStorage.');
+    }
     this.ticketService
       .getAllByOwner(this.requestTicketOwner, this.currentPage, this.pageSize)
       .subscribe({

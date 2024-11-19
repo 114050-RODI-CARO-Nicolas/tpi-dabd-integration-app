@@ -3,10 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule, Location } from '@angular/common';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LiquidationExpenseService } from '../../../services/liquidation-expense.service';
-import { PeriodSelectComponent } from '../../selects/period-select/period-select.component';
 import { ExpensesModalComponent } from '../../modals/expenses-modal/expenses-modal.component';
 import LiquidationExpense from '../../../models/liquidationExpense';
-import { TableComponent, ToastService } from 'ngx-dabd-grupo01';
 import { NgModalComponent } from '../../modals/ng-modal/ng-modal.component';
 import { InfoModalComponent } from '../../modals/info-modal/info-modal.component';
 import { FormsModule } from '@angular/forms';
@@ -15,16 +13,14 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import moment from 'moment';
+import { ToastService } from 'ngx-dabd-grupo01';
 
 @Component({
   selector: 'app-expenses-liquidation-expenses-list',
   standalone: true,
   imports: [
-    PeriodSelectComponent,
     CommonModule,
     ExpensesModalComponent,
-    TableComponent,
-    NgModalComponent,
     InfoModalComponent,
     FormsModule,
     NgPipesModule,
@@ -38,8 +34,10 @@ export class ExpensesLiquidationComponent implements OnInit {
   );
 
   private readonly location = inject(Location);
+  private modalService = inject(NgbModal);
+
+
   toastService: ToastService = inject(ToastService);
-  //table
 
   items: any[] = [];
   sizeOptions: number[] = [];
@@ -51,8 +49,7 @@ export class ExpensesLiquidationComponent implements OnInit {
   selectedItemId: number | null = null;
   isModalVisible = false;
   selectedPeriodId: number | null = null;
-  //USO DEL MODAL CORRECTO.
-  private modalService = inject(NgbModal);
+
 
   searchTerm = '';
 
@@ -66,7 +63,7 @@ export class ExpensesLiquidationComponent implements OnInit {
       ariaLabelledBy: 'modal-basic-title',
     });
   }
-  //modal
+
   changeStateQuery(text: string) {
     this.type = text;
     this.loadLookList();
@@ -97,7 +94,6 @@ export class ExpensesLiquidationComponent implements OnInit {
         .subscribe((data: LiquidationExpense[]) => {
           this.liquidationExpensesList = data;
           this.loadLookList();
-          console.log(data)
         });
     }
   }
@@ -133,9 +129,9 @@ export class ExpensesLiquidationComponent implements OnInit {
     }
   }
 
-  seeDetail(categoryId:number) {
+  seeDetail(categoryId: number) {
     let id = this.listLooking[0].expense_id;
-    console.log(categoryId)
+
     this.router.navigate([`expenses/expense/periodo/${this.id}/liquidacion/${id}/${categoryId}`]);
   }
 
@@ -156,10 +152,10 @@ export class ExpensesLiquidationComponent implements OnInit {
   }
 
   imprimir() {
-    console.log('Imprimiendo');
+
     const doc = new jsPDF();
 
-    // Título del PDF
+
     doc.setFontSize(18);
     doc.text('Reposrte de Liquidación de Expensas', 14, 20);
 
@@ -169,11 +165,11 @@ export class ExpensesLiquidationComponent implements OnInit {
         .subscribe((data: LiquidationExpense[]) => {
           const doc = new jsPDF();
 
-          // Título del PDF
+
           doc.setFontSize(18);
           doc.text('Reposrte de Liquidación de Expensas', 14, 20);
 
-          // Usando autoTable para agregar la tabla
+
           autoTable(doc, {
             startY: 30,
             head: [['Categoria', 'Tipo', 'Cantidad', 'Monto']],
@@ -188,19 +184,15 @@ export class ExpensesLiquidationComponent implements OnInit {
               )
             ),
           });
-
-          // Guardar el PDF después de agregar la tabla
           const fecha = new Date();
-          console.log(fecha);
-          const finalFileName = this.fileName+"-"+ moment(fecha).format("DD-MM-YYYY_HH-mm") +".pdf";
+          const finalFileName = this.fileName + "-" + moment(fecha).format("DD-MM-YYYY_HH-mm") + ".pdf";
           doc.save(finalFileName);
-          console.log('Impreso')
+
         });
     }
   }
 
   downloadTable() {
-    // Mapear los datos a un formato tabular adecuado
     const data = this.listLooking[0].liquidation_expenses_details.map(
       (liquidationExpense) => ({
         Categoria: `${liquidationExpense.category}`,
@@ -209,13 +201,11 @@ export class ExpensesLiquidationComponent implements OnInit {
         Monto: `${liquidationExpense.amount}`,
       })
     );
-
     const fecha = new Date();
-     const finalFileName = this.fileName+"-"+ moment(fecha).format("DD-MM-YYYY_HH-mm");
-
-      const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
-      const wb: XLSX.WorkBook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Liquidación de Expensas');
-      XLSX.writeFile(wb, `${finalFileName}.xlsx`);
+    const finalFileName = this.fileName + "-" + moment(fecha).format("DD-MM-YYYY_HH-mm");
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Liquidación de Expensas');
+    XLSX.writeFile(wb, `${finalFileName}.xlsx`);
   }
 }

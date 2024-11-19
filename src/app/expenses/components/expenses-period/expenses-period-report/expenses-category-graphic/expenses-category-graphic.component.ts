@@ -47,10 +47,10 @@ Chart.register(
   styleUrl: './expenses-category-graphic.component.css',
 })
 export class ExpensesCategoryGraphicComponent {
-  @Input() periods: Resume[] = []; // Los datos de Resume
-  @Input() typeFilter: string = 'Promedio'; // Filtro de tipo (Porcentaje, Promedio, Total)
+  @Input() periods: Resume[] = []; 
+  @Input() typeFilter: string = 'Promedio'; 
   @Input() type:"Ordinary"|"Extraordinary"="Ordinary"
-  // Propiedades para la configuración de los gráficos
+ 
   chartDataOrdinary: ChartData<'bar'> = {
     labels: [],
     datasets: [],
@@ -59,10 +59,10 @@ export class ExpensesCategoryGraphicComponent {
     labels: [],
     datasets: [],
   };
-  chartType: ChartType = 'bar'; // Tipo de gráfico
+  chartType: ChartType = 'bar'; 
   chartOptions: ChartOptions = {
     responsive: true,
-    indexAxis: 'y', // Barra horizontal
+    indexAxis: 'y', 
     plugins: {
       title: {
         display: true,
@@ -120,7 +120,7 @@ export class ExpensesCategoryGraphicComponent {
       };
     };
 
-    // Función para preparar los datos del gráfico
+    
     const prepareChartData = (
       categoryData: CategoryData[],
       labelPrefix: string,
@@ -149,26 +149,26 @@ export class ExpensesCategoryGraphicComponent {
       });
     };
 
-    // Datos para los gráficos Ordinarias
+    
     const ordinaryData = prepareChartData(
       this.periods[0]?.ordinary || [],
       'Ordinarias',
       false
     );
-    // Datos para los gráficos Extraordinarias
+    
     const extraordinaryData = prepareChartData(
       this.periods[0]?.extraordinary || [],
       'Extraordinarias',
       true
     );
 
-    // Crear los datos para los gráficos Ordinarias
+    
     this.chartDataOrdinary = {
       labels: labelsOrdinary,
       datasets: ordinaryData,
     };
 
-    // Crear los datos para los gráficos Extraordinarias
+    
     this.chartDataExtraordinary = {
       labels: labelsExtraordinary,
       datasets: extraordinaryData,

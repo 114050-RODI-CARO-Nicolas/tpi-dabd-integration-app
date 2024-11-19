@@ -1,15 +1,14 @@
-<app-main-container title="Dashboard de Inventario" (infoButtonClick)="showInfo()">
+<app-main-container title="Reportes de Inventario" (infoButtonClick)="showInfo()">
 
   <!-- Filtros de fecha y unidad -->
   <div class="row mb-4">
     <div class="col-12">
       <div class="card shadow-sm">
         <div class="card-body">
-          <h5 class="card-title mb-3">Filtros</h5>
-          <form [formGroup]="filtersForm" class="row g-3 align-items-end">
+          <form [formGroup]="filtersForm" class="row g-3">
             <!-- Filtro de Unidad de Medida -->
-            <div class="col-md-4">
-              <label class="form-label">Unidad de Medida</label>
+            <div class="col-md-3 d-flex align-items-center">
+              <label class="form-label me-2">Medida:</label>
               <select class="form-select" formControlName="unit">
                 <option value="UNITS">Unidades</option>
                 <option value="LITERS">Litros</option>
@@ -18,24 +17,24 @@
             </div>
 
             <!-- Filtro de Fecha Desde -->
-            <div class="col-md-4">
-              <label class="form-label">Fecha desde</label>
+            <div class="col-md-3 d-flex align-items-center">
+              <label class="form-label me-2">Desde:</label>
               <input type="date" class="form-control" formControlName="startDate">
             </div>
 
             <!-- Filtro de Fecha Hasta -->
-            <div class="col-md-4">
-              <label class="form-label">Fecha hasta</label>
+            <div class="col-md-3 d-flex align-items-center">
+              <label class="form-label me-2">Hasta:</label>
               <input type="date" class="form-control" formControlName="endDate">
             </div>
 
             <!-- Botones de Acción -->
-            <div class="col-12 text-end">
+            <div class="col-md-3 d-flex align-items-center">
               <button type="button" class="btn btn-outline-danger me-2" (click)="resetFilters()">
-                <i class="bi bi-trash"></i> Limpiar
+                <i class="bi bi-trash"></i>
               </button>
               <button type="button" class="btn btn-primary" (click)="applyFilters()">
-                <i class="bi bi-filter"></i> Aplicar filtros
+                <i class="bi bi-search"></i>
               </button>
             </div>
           </form>
@@ -43,6 +42,7 @@
       </div>
     </div>
   </div>
+
 
 
   <!-- KPIs Principales -->
@@ -74,7 +74,7 @@
 
     <!-- Valor de Inventario -->
     <div class="col-md-3">
-      <div class="card shadow-sm">
+      <div class="card shadow-sm" (click)="showInventoryItems()" style="cursor: pointer;">
         <div class="card-body">
           <div class="d-flex align-items-center mb-2">
             <div class="icon-circle bg-success text-white me-3">
@@ -96,7 +96,7 @@
 
     <!-- Stock Bajo -->
     <div class="col-md-3">
-      <div class="card shadow-sm">
+      <div class="card shadow-sm" (click)="showInventoryItems()" style="cursor: pointer;">
         <div class="card-body">
           <div class="d-flex align-items-center mb-2">
             <div class="icon-circle bg-danger text-white me-3">
@@ -118,7 +118,7 @@
 
     <!-- Artículo Más Utilizado -->
     <div class="col-md-3">
-      <div class="card shadow-sm">
+      <div class="card shadow-sm" (click)="showInventoryItems()" style="cursor: pointer;">
         <div class="card-body">
           <div class="d-flex align-items-center mb-2">
             <div class="icon-circle bg-warning text-white me-3">

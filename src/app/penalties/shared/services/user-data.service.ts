@@ -7,6 +7,7 @@ import { OwnerPlotService } from '../../../users/services/owner-plot.service';
 import { UserService } from '../../../users/services/user.service';
 import { Role } from '../../../users/models/role';
 import { Plot } from '../../../users/models/plot';
+import { HttpHeaders } from '@angular/common/http';
 
 export interface UserData {
   id: number;
@@ -53,5 +54,16 @@ export class UserDataService {
         return of(null);
       })
     );
+  }
+
+  getHeaders(): HttpHeaders {
+    const user: User = this.sessionService.getItem('user');
+    const userId = user?.id || 1;
+
+    return new HttpHeaders().set('x-user-id', userId.toString());
+  }
+
+  userHasRole(userData: UserData, role: string): boolean {
+    return userData?.roles?.some((userRole) => userRole.name === role || userRole.name === 'SUPERADMIN');
   }
 }

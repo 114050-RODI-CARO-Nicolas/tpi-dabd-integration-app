@@ -10,21 +10,20 @@ import {
 } from "@ng-bootstrap/ng-bootstrap";
 import {EditCategoryModalComponent} from "../../modals/bills/edit-category-modal/edit-category-modal.component";
 import {DeleteCategoryModalComponent} from "../../modals/bills/delete-category-modal/delete-category-modal.component";
-import {RouterLink} from "@angular/router";
 import {CategoryBillInfoComponent} from "../../modals/info/category-bill-info/category-bill-info.component";
 import {
   Filter, FilterConfigBuilder,
   MainContainerComponent,
   TableColumn,
   TableComponent,
-  TableFiltersComponent,
   ToastService
 } from "ngx-dabd-grupo01";
-import {AsyncPipe, CommonModule, DatePipe} from "@angular/common";
+import { CommonModule, DatePipe} from "@angular/common";
 import * as XLSX from 'xlsx';
 import moment from "moment/moment";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import {map} from 'rxjs';
 
 @Component({
   selector: 'app-expenses-category-bill',
@@ -33,13 +32,9 @@ import autoTable from "jspdf-autotable";
     ReactiveFormsModule,
     FormsModule,
     NgPipesModule,
-    RouterLink,
     MainContainerComponent,
-    TableFiltersComponent,
     TableComponent,
-    AsyncPipe,
     CommonModule,
-    DatePipe,
     NgbDropdownModule
   ],
   providers: [DatePipe],
@@ -47,6 +42,7 @@ import autoTable from "jspdf-autotable";
   styleUrl: './expenses-category-bill.component.css'
 })
 export class ExpensesCategoryBillComponent implements OnInit, AfterViewInit {
+
   // SERVICES
   private toastService = inject(ToastService);
   private categoryService = inject(CategoryService);
@@ -62,6 +58,7 @@ export class ExpensesCategoryBillComponent implements OnInit, AfterViewInit {
   sortField = 'name';
   sortDirection: 'asc' | 'desc' = 'asc';
   searchParams: { [key: string]: any } = {};
+
   // TABLE PROPERTIES
   searchTerm = '';
   isLoading = false;
@@ -74,10 +71,10 @@ export class ExpensesCategoryBillComponent implements OnInit, AfterViewInit {
       'isDeleted',
       'Seleccione el Estado',
       [
-                {value: "" , label: "Todas"},
-                {value: 'false', label: 'Activas'},
-                {value: 'true', label: 'Inactivas'}
-              ]
+        {value: "" , label: "Todas"},
+        {value: 'false', label: 'Activas'},
+        {value: 'true', label: 'Inactivas'}
+      ]
     ).build()
 
   onFilterValueChange(filters: Record<string, any>) {
@@ -140,7 +137,7 @@ export class ExpensesCategoryBillComponent implements OnInit, AfterViewInit {
       },
       error: (error) => {
         this.toastService.sendError('Error al cargar categorías');
-        this.categories = []; // Reset a array vacío en caso de error
+        this.categories = [];
         this.totalItems = 0;
       },
       complete: () => {
@@ -213,11 +210,16 @@ export class ExpensesCategoryBillComponent implements OnInit, AfterViewInit {
   }
 
   downloadTable() {
-    this.categoryService.getPaginatedCategories(0,this.totalItems,this.sortField,this.sortDirection,this.searchParams)
-      .subscribe(categories =>
-        {
+    return this.categoryService.getPaginatedCategories(
+      0,
+      this.totalItems,
+      this.sortField,
+      this.sortDirection,
+      this.searchParams
+    ).pipe(
+      map((response) => {
           // Mapear los datos a un formato tabular adecuado
-          const data = categories.content.map(category => ({
+          const data = response.content.map(category => ({
             'Nombre': category.name,
             'Descripcion': category.description
           }));
@@ -227,8 +229,10 @@ export class ExpensesCategoryBillComponent implements OnInit, AfterViewInit {
           const wb: XLSX.WorkBook = XLSX.utils.book_new();
           XLSX.utils.book_append_sheet(wb, ws, 'Categorias de Gastos');
           XLSX.writeFile(wb, `${finalName}.xlsx`);
+          return response.content;
         }
       )
+    )
   }
 
   imprimirPDF() {

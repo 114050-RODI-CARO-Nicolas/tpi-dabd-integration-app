@@ -127,12 +127,10 @@ export class OwnerFormComponent implements OnInit {
     ),
     documentType: new FormControl('', [Validators.required]),
     cuit: new FormControl('', [
-      Validators.required,
       Validators.pattern('^[0-9]*$'),
       cuitValidator,
     ]),
     bankAccount: new FormControl('', [
-      Validators.required,
       Validators.pattern('^[0-9]*$'),
     ]),
     birthdate: new FormControl('', [

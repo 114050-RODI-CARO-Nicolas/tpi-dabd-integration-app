@@ -2,13 +2,15 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Service, ServiceRequest } from "../../models/suppliers/service.model";
 import { Observable } from "rxjs";
+import { PORTSuppliers } from "../../utils/const";
 
 @Injectable({
     providedIn: "root"
 })
 export class ServiceService {
 
-    private apiServiceUrl = 'http://localhost:8013/service';
+    //private apiServiceUrl = 'http://localhost:8013/service';
+    private apiServiceUrl = PORTSuppliers + 'service';
 
     constructor(private http: HttpClient) { }
 

@@ -7,7 +7,7 @@
   align-items: center;
   justify-content: center;
   }
-  
+
   .icon-circle i {
   font-size: 1.25rem;
   }
@@ -15,22 +15,22 @@
   display: block;
   width: 100%;
   }
-  
+
   .card {
   height: 100%;
-  
+
   .card-body.fixed-height {
     height: 400px;
     display: flex;
     flex-direction: column;
   }
   }
-  
+
   .chart-wrapper {
   position: relative;
   flex: 1;
-  min-height: 0; 
-  height: 300px; 
+  min-height: 0;
+  height: 300px;
   }
 
 :host {
@@ -82,3 +82,4 @@ canvas {
   font-size: 1rem;
   color: #000000;
 }
+

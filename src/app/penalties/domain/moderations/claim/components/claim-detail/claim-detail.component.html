@@ -27,9 +27,9 @@
         [disabled]="!editing"
         required
       >
-        @if (plots) { @for (plot of plots; track plot.plot_number) {
-        <option value="{{ plot.plot_number }}">
-          {{ plot.plot_number }} - {{ plot.plot_type }}
+        @if (plots) { @for (plot of plots; track plot.id) {
+        <option value="{{ plot.id }}">
+          {{ plot.plotNumber }} - {{ plot.blockNumber }} - {{ plot.plotType }}
         </option>
         } } @else {
         <option value="1">1</option>

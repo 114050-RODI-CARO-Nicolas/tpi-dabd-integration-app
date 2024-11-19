@@ -1,0 +1,65 @@
+
+
+
+  <!-- Information modal-->
+  <div class="modal-header fs-6 py-1">
+    <h4 class="modal-title">
+      Información del {{ modalType === 'payment' ? 'Pago' : 'Reporte de Tickets' }}
+    </h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+  </div>
+  <div class="modal-body fs-6 py-2">
+    <div class="container-fluid">
+      <div class="alert alert-info mb-2 py-2">
+        <h5 class="alert-heading">¿Qué es esta información?</h5>
+        <p class="mb-0 small">
+          Aquí se muestra un resumen de las estadísticas actuales relacionadas con 
+          {{ modalType === 'payment' ? 'los pagos pendientes' : 'los tickets emitidos' }}.
+        </p>
+      </div>
+  
+      <!-- Contenido específico según el tipo de modal -->
+      <ng-container *ngIf="modalType === 'payment'">
+        <div class="card mb-2">
+          <div class="card-header py-1">
+            <h5 class="mb-0">Estadísticas de Pagos</h5>
+          </div>
+          <div class="card-body py-2">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item py-1"><strong>Monto total pendiente de pago:</strong>Monto total de dinero que falta abonar</li>
+              <li class="list-group-item py-1"><strong>Expensas pendientes de pago:</strong> Cantidad de expensas que faltan pagar</li>
+              <li class="list-group-item py-1"><strong>Cantidad de transferencias a validar:</strong>Transferencias que faltan pagar</li>
+              <li class="list-group-item py-1"><strong>Deuda Total de Propietarios:</strong>Deuda que tienen los propietarios en variacion a periodos</li>
+              <li class="list-group-item py-1"><strong>Informe de Total Cobrado:</strong>Montos cobrados por perriodo</li>
+            </ul>
+          </div>
+        </div>
+      </ng-container>
+  
+      <ng-container *ngIf="modalType === 'ticket'">
+        <div class="card mb-2">
+          <div class="card-header py-1">
+            <h5 class="mb-0">Estadísticas de Tickets</h5>
+          </div>
+          <div class="card-body py-2">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item py-1"><strong>Tickets Emitidos:</strong>Cantidad de ticket que se emitieron no importa el estado</li>
+              <li class="list-group-item py-1"><strong>Tiempo Promedio de Resolución de Tickets:</strong>Tiempo entre se emite y se paga</li>
+              <li class="list-group-item py-1"><strong>Monto total facturado:</strong>Monto total de dinero que se facturo en su total</li>
+              <li class="list-group-item py-1"><strong>Expensas cobradas por periodo:</strong>Monto de expensas cobradas separadas por periodo</li>
+              <li class="list-group-item py-1"><strong>Deuda total de propietarios:</strong> Deudas por periodo</li>
+            </ul>
+          </div>
+        </div>
+      </ng-container>
+  
+      <div class="alert alert-warning py-2 mb-0">
+        <h5 class="alert-heading">Nota:</h5>
+        <p class="mb-0 small">Los campos mostrados aquí son sólo para referencia.</p>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer py-2">
+    <button type="button" class="btn btn-primary" (click)="activeModal.close()">Entendido</button>
+  </div>
+  

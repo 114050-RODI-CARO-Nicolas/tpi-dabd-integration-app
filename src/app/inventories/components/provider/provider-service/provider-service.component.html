@@ -138,10 +138,17 @@
 
     <!-- Componente de Alta/Edición -->
     @if (showServiceTypeUpdate) {
-      <app-provider-service-update 
-        [service]="selectedService" 
-        (closeModal)="onServiceTypeUpdateClose()">
-      </app-provider-service-update>
+      <div class="modal-backdrop fade show"></div>
+      <div class="modal fade show d-block" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <app-provider-service-update 
+              [service]="selectedService" 
+              (closeModal)="onServiceTypeUpdateClose()">
+            </app-provider-service-update>
+          </div>
+        </div>
+      </div>
     }
 
     <ng-template #infoModal let-modal>

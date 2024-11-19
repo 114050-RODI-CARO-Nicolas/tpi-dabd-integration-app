@@ -3,13 +3,22 @@ import { inject, Injectable } from '@angular/core';
 import { PaginatedResponse } from '../models/api-response';
 import { Action, EmployeeAccess } from '../models/employeeAccess';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmployeeAssistanceService {
   private readonly httpClient = inject(HttpClient);
-  private readonly apiUrl = "http://localhost:8001/access";
+  //private readonly apiUrl = "http://localhost:8001/access"; //Url de la API de acceso microservicio
+  //private readonly apiUrl = "http://localhost:8080/access/access"; //Url de la API de acceso compose
+  private readonly apiUrl = environment.apis.accesses + "access"  ? environment.apis.accesses + "access" : "http://localhost:8080/access/access"; //Url de la API de acceso compose
+  
+  //si la variable de produccion es true, entonces se usa la url de produccion (eso lo indica la importacion de environment.prod)
+  //private apiUrl: string = environment.production
+  //? ${environment.apis.accesses}access
+  //: 'http://localhost:8001/access';
+  
 
   getAllEmployeesPaged(
     page: number = 0,

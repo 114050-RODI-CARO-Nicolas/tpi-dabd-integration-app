@@ -40,11 +40,8 @@ import { BaseChartDirective } from 'ng2-charts';
 import Chart from 'chart.js/auto';
 import { BillService } from '../../../../services/bill.service';
 import { PeriodService } from '../../../../services/period.service';
-import BillType from '../../../../models/billType';
-import { expenseReport } from '../../../../models/expenseReport';
-import { map } from 'rxjs/operators';
+
 import * as XLSX from 'xlsx';
-import { InfoExpensesListComponent } from '../../../modals/info-expenses-list/info-expenses-list.component';
 import { InfoExpenseReportComponent } from '../../../modals/info-expense-report/info-expense-report.component';
 import Period from '../../../../models/period';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -80,7 +77,7 @@ Chart.register(ChartDataLabels);
   styleUrl: './expenses-report.component.css',
 })
 export class ExpensesReportComponent {
-  private readonly billService = inject(BillService);
+  
   private readonly periodService = inject(PeriodService);
   total: number | undefined;
   averageAmount: number | undefined;
@@ -126,7 +123,7 @@ export class ExpensesReportComponent {
         } else {
           this.toast.sendError('No existe ese periodo');
         }
-        console.log(period)
+        
         this.loadExpenseData();
         this.loadKpis();
       }
@@ -168,16 +165,15 @@ export class ExpensesReportComponent {
     return monthNames[month - 1];
   }
   loadSelect() {
-    let formattedPeriods: string[] = [];
+    
     this.periodService.get().subscribe((data: Period[]) => {
       this.periods = data;
       this.selectedPeriodId=data[data.length-1].id
-
     });
-    // @ts-ignore
-    this.categories.push({ value: 1, label: 'Lotes que mas pagaron' });
-    // @ts-ignore
-    this.categories.push({ value: 2, label: 'Lotes que menos pagaron' });
+    
+    this.categories.push({ value: "1", label: 'Lotes que mas pagaron' });
+    
+    this.categories.push({ value: "2", label: 'Lotes que menos pagaron' });
   }
 
   public barChartType: ChartType = 'bar';
@@ -363,7 +359,7 @@ export class ExpensesReportComponent {
     if (this.top == null) {
       this.top = true;
     }
-    let lotNumbersWithPercentage: String[];
+    
     this.service
       .getExpensesByLot(this.top, this.selectedPeriodId, this.countPlots)
       .subscribe((expenseReport) => {
@@ -373,7 +369,7 @@ export class ExpensesReportComponent {
         const totalAmounts = expenseReport.expenses.map((expenseReport) =>
           Number((expenseReport.totalAmount / 1000000).toFixed(3))
         );
-        // Usar Object.values() y Object.keys() para objetos regulares
+        
         const valuesArray: number[] = Object.values(
           expenseReport.totalAmountPerTypePlot
         )
@@ -387,13 +383,12 @@ export class ExpensesReportComponent {
         )
           .map((num) => Number(num / 100000))
           .reverse();
-        console.log(expenseReport.percentages);
+        
         const labelsArrayLine: string[] = Object.keys(
           expenseReport.totalAmountPerPeriod
         ).reverse();
 
-        // Debug para verificar los datos
-        // Reasignar el objeto completo para forzar la detección de cambios
+        
         this.kpiChart1Data = {
           labels: labelsArrayLine,
           datasets: [
@@ -456,14 +451,13 @@ export class ExpensesReportComponent {
             responsive: true,
             plugins: {
               datalabels: {
-                // Mostrar el porcentaje en los datalabels
                 formatter: (value) => {
                   const total = valuesArray.reduce(
                     (acc, curr) => acc + curr,
                     0
                   );
                   const percentage = ((value / total) * 100).toFixed(2) + '%';
-                  return percentage; // Muestra el porcentaje en la etiqueta del gráfico
+                  return percentage;
                 },
                 labels: {
                   title: {
@@ -476,7 +470,7 @@ export class ExpensesReportComponent {
             },
             scales: {
               y: {
-                beginAtZero: true, // Asegura que la escala Y comienza desde cero
+                beginAtZero: true,
               },
             },
           } as ChartOptions);
@@ -515,9 +509,7 @@ export class ExpensesReportComponent {
       });
   }
 
-  /**
-   * boton info
-   */
+  
   showInfo() {
     this.modalService.open(InfoExpenseReportComponent, {
       size: 'lg',
@@ -542,8 +534,11 @@ export class ExpensesReportComponent {
           day: '2-digit',
           month: '2-digit',
           year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
         });
-        // Convertir los datos tabulares a una hoja de cálculo
+        
         const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
         const wb: XLSX.WorkBook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'Expenses');
@@ -578,8 +573,7 @@ export class ExpensesReportComponent {
 
   onPeriodChange($event: Event): void {
     const selectedIndex = ($event.target as HTMLSelectElement).value;
-    this.selectedPeriodId = Number(selectedIndex);
-    console.log(this.selectedPeriodId); // Convierte a número
+    this.selectedPeriodId = Number(selectedIndex); 
     this.loadExpenseData();
     this.loadKpis();
   }

@@ -47,7 +47,7 @@ export const routes: Routes = [
       import('./notifications/notification.routes').then(
         (m) => m.NOTIFICATION_ROUTES
       ),
-    canActivate: [authGuard],
+     canActivate: [authGuard],
   },
   {
     path: 'users',

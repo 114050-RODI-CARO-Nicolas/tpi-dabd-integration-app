@@ -58,10 +58,6 @@ export class RulesComponent {
     });
   }
 
-  userHasRole(role: string): boolean {
-    return this.userData.roles.some((userRole) => userRole.name === role);
-  }
-
   ngOnInit(): void {
     this.loadUserData();
     this.loadRules();

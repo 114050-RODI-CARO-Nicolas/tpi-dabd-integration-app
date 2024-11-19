@@ -13,7 +13,7 @@ export class ConfigurationService {
   private httpMethods = inject(HttpClient)
 
   getDays():Observable<number> {
-    return this.httpMethods.get<number>(environment.apis.moderations+"/configuration/appeal-days")
+    return this.httpMethods.get<number>(environment.apis.moderations+"infraction-config/appeal-days")
   }
 
   putDays(days:number, id:number):Observable<number> {
@@ -22,7 +22,7 @@ export class ConfigurationService {
       'userId': id.toString(),
       'Content-Type': 'application/json'});
 
-    return this.httpMethods.put<number>(environment.apis.moderations+`/Configuration/appeal-days?daysToAppeal=${days}`,
+    return this.httpMethods.put<number>(environment.apis.moderations+`infraction-config/appeal-days?daysToAppeal=${days}`,
       null,
       {headers: header});
   }

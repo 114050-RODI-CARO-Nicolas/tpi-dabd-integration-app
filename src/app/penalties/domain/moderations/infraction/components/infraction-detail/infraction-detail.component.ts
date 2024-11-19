@@ -65,10 +65,6 @@ export class InfractionDetailComponent implements OnInit {
     });
   }
 
-  userHasRole(role: string): boolean {
-    return this.userData.roles.some((userRole) => userRole.name === role);
-  }
-
   async ngOnInit(): Promise<void> {
     this.loadUserData();
 
@@ -105,7 +101,7 @@ export class InfractionDetailComponent implements OnInit {
   }
   showRejectButton(): boolean {
     return (
-      this.userHasRole('FINES_ADMIN') &&
+      this.userDataService.userHasRole(this.userData, 'FINES_ADMIN') &&
       (this.infraction!.infraction_status ===
         ('APPEALED' as InfractionStatusEnum) ||
         this.infraction!.infraction_status ===
@@ -115,14 +111,14 @@ export class InfractionDetailComponent implements OnInit {
 
   showAppealButton(): boolean {
     return (
-      this.userHasRole('OWNER') &&
+      this.userDataService.userHasRole(this.userData, 'OWNER') &&
       this.infraction!.infraction_status === ('CREATED' as InfractionStatusEnum)
     );
   }
 
   showApproveButton(): boolean {
     return (
-      this.userHasRole('FINES_ADMIN') &&
+      this.userDataService.userHasRole(this.userData, 'FINES_ADMIN') &&
       this.infraction!.infraction_status ===
         ('APPEALED' as InfractionStatusEnum)
     );

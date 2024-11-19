@@ -14,7 +14,6 @@ import {
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ClaimService } from '../../service/claim.service';
 import { SanctionTypeService } from '../../../sanction-type/services/sanction-type.service';
-import { CadastreService } from '../../../../cadastre/services/cadastre.service';
 import { SanctionType } from '../../../sanction-type/models/sanction-type.model';
 import { CommonModule, NgClass } from '@angular/common';
 import { ToastService } from 'ngx-dabd-grupo01';
@@ -73,10 +72,6 @@ export class NewClaimModalComponent implements OnInit {
     });
   }
 
-  userHasRole(role: string): boolean {
-    return this.userData.roles.some((userRole) => userRole.name === role);
-  }
-
   ngOnInit() {
     this.loadUserData();
     this.loadPlots();
@@ -129,7 +124,7 @@ export class NewClaimModalComponent implements OnInit {
         formData.append('files', imageBlob, 'captured-image.png');
       }
 
-      this.claimService.createClaim(formData, this.userData.id).subscribe({
+      this.claimService.createClaim(formData).subscribe({
         next: (response) => {
           this.activeModal.close(response);
           this.toastService.sendSuccess(

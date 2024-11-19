@@ -4,10 +4,11 @@
       <!-- Nombre -->
       <div class="col-md-6">
         <div class="flex-row d-flex align-items-center">
-          <label class="form-label">Nombre*</label>
-        </div>
-        <input type="text" class="form-control" formControlName="name"
+          <label class="col-form-label col-md-2">Nombre<label class="text-danger">*</label></label>
+          <input type="text" class="form-control m-2" formControlName="name"
         [ngClass]="{'is-invalid': isFieldInvalid('name'), 'is-valid': providerForm.get('name')?.valid && providerForm.get('name')?.touched}">
+        </div>
+        
       @if (isFieldInvalid('name')) {
         <small class="text-danger">
           {{ getErrorMessage('name') }}
@@ -18,10 +19,11 @@
       <!-- CUIL -->
       <div class="col-md-6">
         <div class="flex-row d-flex align-items-center">
-          <label class="form-label">CUIL*</label>
+          <label class="col-form-label col-md-2">CUIL<label class="text-danger">*</label></label>
+          <input type="text" class="form-control m-2" formControlName="cuil"
+          [ngClass]="{'is-invalid': isFieldInvalid('cuil'), 'is-valid': providerForm.get('cuil')?.valid && providerForm.get('cuil')?.touched}">
         </div>
-        <input type="text" class="form-control" formControlName="cuil"
-        [ngClass]="{'is-invalid': isFieldInvalid('cuil'), 'is-valid': providerForm.get('cuil')?.valid && providerForm.get('cuil')?.touched}">
+        
       @if (isFieldInvalid('cuil')) {
         <small class="text-danger">
           {{ getErrorMessage('cuil') }}
@@ -32,15 +34,16 @@
       <!-- Servicio -->
       <div class="col-md-6">
         <div class="flex-row d-flex align-items-center">
-          <label class="form-label">Servicio*</label>
-        </div>
-        <select class="form-select" formControlName="service"
+          <label class="col-form-label col-md-2">Servicio<label class="text-danger">*</label></label>
+          <select class="form-select m-2" formControlName="service"
           [ngClass]="{'is-invalid': isFieldInvalid('service'), 'is-valid': providerForm.get('service')?.valid && providerForm.get('service')?.touched}">
           <option [ngValue]="null">Seleccione un servicio</option>
            <option *ngFor="let service of services" [ngValue]="service.id">
             {{service.name}}
           </option>
         </select>
+        </div>
+        
         @if (isFieldInvalid('service')) {
           <small class="text-danger">El servicio es requerido</small>
         }
@@ -49,15 +52,16 @@
       <!-- Compañía -->
       <div class="col-md-6">
         <div class="flex-row d-flex align-items-center">
-          <label class="form-label">Compañía*</label>
-        </div>
-        <select class="form-select" formControlName="company"
+          <label class="col-form-label col-md-2">Compañía<label class="text-danger">*</label></label>
+          <select class="form-select m-2" formControlName="company"
         [ngClass]="{'is-invalid': isFieldInvalid('company'), 'is-valid': providerForm.get('company')?.valid && providerForm.get('company')?.touched}">
          <option [ngValue]="null">Seleccione una compañía</option>
           <option *ngFor="let company of companies" [ngValue]="company.id">
             {{company.name}}
           </option>
         </select>
+        </div>
+        
         @if (isFieldInvalid('company')) {
           <small class="text-danger">La compañía es requerida</small>
         }
@@ -66,10 +70,11 @@
       <!-- Contacto -->
       <div class="col-md-6">
         <div class="flex-row d-flex align-items-center">
-          <label class="form-label">Contacto*</label>
-        </div>
-        <input type="text" class="form-control" formControlName="contact"
+          <label class="col-form-label col-md-2">Contacto<label class="text-danger">*</label></label>
+          <input type="text" class="form-control m-2" formControlName="contact"
           [ngClass]="{'is-invalid': isFieldInvalid('contact'), 'is-valid': providerForm.get('contact')?.valid && providerForm.get('contact')?.touched}">
+        </div>
+        
         @if (isFieldInvalid('contact')) {
           <small class="text-danger">
             {{ getErrorMessage('contact') }}
@@ -80,10 +85,11 @@
       <!-- Dirección -->
       <div class="col-md-6">
         <div class="flex-row d-flex align-items-center">
-          <label class="form-label">Dirección*</label>
-        </div>
-        <input type="text" class="form-control" formControlName="address"
+          <label class="col-form-label col-md-2">Dirección<label class="text-danger">*</label></label>
+          <input type="text" class="form-control m-2" formControlName="address"
           [ngClass]="{'is-invalid': isFieldInvalid('address'), 'is-valid': providerForm.get('address')?.valid && providerForm.get('address')?.touched}">
+        </div>
+        
         @if (isFieldInvalid('address')) {
           <small class="text-danger">
             {{ getErrorMessage('address') }}
@@ -94,10 +100,11 @@
       <!-- Detalles -->
       <div class="col-12">
         <div class="flex-row d-flex">
-          <label class="form-label">Detalles*</label>
-        </div>
-        <textarea class="form-control" formControlName="details" rows="3"
+          <label class="form-label-detail ">Detalles<label class="text-danger">*</label></label>
+          <textarea class="form-control m-2" formControlName="details" rows="3"
         [ngClass]="{'is-invalid': isFieldInvalid('details'), 'is-valid': providerForm.get('details')?.valid && providerForm.get('details')?.touched}"></textarea>
+        </div>
+        
       @if (isFieldInvalid('details')) {
         <small class="text-danger">
           {{ getErrorMessage('details') }}
@@ -107,7 +114,7 @@
   
       <!-- Botones -->
       <div class="col-12 d-flex justify-content-end">
-        <button type="button" class="btn btn-secondary mx-2" (click)="resetForm()">Cancelar</button>
+        <button type="button" class="btn btn-danger mx-2" (click)="resetForm()">Cancelar</button>
         <button type="submit" class="btn btn-primary" [disabled]="!providerForm.valid">
           {{ isEditMode ? 'Actualizar' : 'Guardar' }}
         </button>

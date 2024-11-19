@@ -24,6 +24,8 @@ export class ConstructionDocumentationFormComponent implements OnInit {
 
   // Properties:
   @Input() constructionId: number | undefined = undefined;
+  @Input() userId: number | undefined = undefined;
+
   isButtonOutside: boolean = true;
   file: any;
   currentUser: number = 1;
@@ -69,7 +71,7 @@ export class ConstructionDocumentationFormComponent implements OnInit {
     formValue.construction_id = this.constructionId;
     formValue.created_by = this.currentUser;
     this.constructionDocumentationService
-      .uploadDocumentation(formValue)
+      .uploadDocumentation(formValue, this.userId!)
       .subscribe({
         next: (result) => {
           this.activeModal.close(result);

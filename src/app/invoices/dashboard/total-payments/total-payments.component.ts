@@ -56,7 +56,7 @@ export class TotalPaymentsComponent implements OnInit{
     this.kpi3 = { title: "Cantidad de transferencias a validar", desc: "", value: "0", icon: "bi bi-person-circle", color: "bg-warning" };
     this.kpi4 = { title: "Tasa de Retención de Pagos", desc: "", value: "0%", icon: "bi bi-person-circle", color: "bg-warning" };
 
-    this.graph1 = { title: "Informe de Total Cobrado", subtitle: "", data: [], options: null };
+    this.graph1 = { title: "Expensas cobradas por periodo", subtitle: "", data: [], options: null };
     this.graph2 = { title: "Deuda Total de Propietarios", subtitle: "", data: [], options: null };
   }
 

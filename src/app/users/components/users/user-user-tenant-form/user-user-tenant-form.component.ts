@@ -99,16 +99,28 @@ export class UserUserTenantFormComponent {
   });
   //#endregion
 
+  hasContactEmail():boolean{
+    let hasEmail= this.contacts.filter(c => c.contactType === "EMAIL")
+    return hasEmail !== null && hasEmail.length > 0;
+  }
+
   //#region ON SUBMIT
   onSubmit(): void {
     // debe tener al menos una direccion
     if(this.addresses.length <= 0) {
       this.toastService.sendError("Debes cargar al menos una dirección")
+      return;
+    } else if(this.contacts.length <= 0) {
+      this.toastService.sendError("Debes cargar al menos un contacto")
+      return;
+    } else if (!this.hasContactEmail()) {
+      this.userForm.markAllAsTouched();
+      this.toastService.sendError("Debes agregar al menos un email de contacto");
+      return;
     } else {
-      
       if (this.isFormValid()) {
         this.id === null ? this.createUser() : this.updateUser()
-        
+
       } else {
         this.toastService.sendError("Tienes errores en el formulario");
         this.userForm.controls['email'].markAsTouched();
@@ -118,18 +130,18 @@ export class UserUserTenantFormComponent {
         this.userForm.controls['documentType'].markAsTouched();
         this.userForm.controls['documentNumber'].markAsTouched();
         this.userForm.controls['birthdate'].markAsTouched();
-        
+
       }
     }
   }
 
   isFormValid(){
-    if(this.userForm.controls['email'].errors ||  
-    this.userForm.controls['firstName'].errors ||  
-    this.userForm.controls['lastName'].errors ||  
-    this.userForm.controls['userName'].errors ||  
-    this.userForm.controls['documentType'].errors ||  
-    this.userForm.controls['documentNumber'].errors ||  
+    if(this.userForm.controls['email'].errors ||
+    this.userForm.controls['firstName'].errors ||
+    this.userForm.controls['lastName'].errors ||
+    this.userForm.controls['userName'].errors ||
+    this.userForm.controls['documentType'].errors ||
+    this.userForm.controls['documentNumber'].errors ||
     this.userForm.controls['birthdate'].errors) {
       return false
     } else {
@@ -278,10 +290,10 @@ export class UserUserTenantFormComponent {
   removeContact(index: number): void {
     this.contacts.splice(index, 1);
   }
-  
+
 
   changeContactType(event: any) {
-    
+
     const type = event.target.value;
     if(type) {
       this.userForm.controls['contactsForm'].controls['contactValue'].addValidators(Validators.required);
@@ -416,7 +428,7 @@ export class UserUserTenantFormComponent {
   //#endregion
 
   //#region FUNCION ADDRESS
-  
+
   // Acceder directamente al valor del país en el FormControl
   get isArgentinaSelected(): boolean {
     return this.userForm.get('addressForm')?.get('country')?.value === 'ARGENTINA';

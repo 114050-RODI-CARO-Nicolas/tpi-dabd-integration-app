@@ -32,7 +32,6 @@ export class EditCategoryModalComponent implements OnInit{
   }
 
   ngOnInit() {
-    // Inicializar el formulario con los datos de la categoría
     this.editCategoryForm.patchValue({
       name: this.category.name,
       description: this.category.description
@@ -49,7 +48,6 @@ export class EditCategoryModalComponent implements OnInit{
 
       this.categoryService.updateCategory(this.category.category_id!, updatedCategory).subscribe({
         next: (response: any) => {
-          console.log('Actualizado correctamente', response);
           this.activeModal.close({
             success: true,
             message: 'La categoría se ha actualizado correctamente.',
@@ -57,7 +55,6 @@ export class EditCategoryModalComponent implements OnInit{
           });
         },
         error: (error: any) => {
-          console.error('Error en el update', error);
           let errorMessage = 'Ha ocurrido un error al actualizar la categoría. Por favor, inténtelo de nuevo.';
 
           if (error.status === 409) {

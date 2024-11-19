@@ -21,3 +21,14 @@ export interface NotificationModelChart {
   dateSend: string;
   statusSend: string;
 }
+
+export interface NotificationKPIViewedModel {
+  id: number;
+  recipient: string;
+  subject: string;
+  templateId: number;
+  templateName: string;
+  dateSend: string;
+  statusSend: 'SENT' | 'VISUALIZED';
+}
+

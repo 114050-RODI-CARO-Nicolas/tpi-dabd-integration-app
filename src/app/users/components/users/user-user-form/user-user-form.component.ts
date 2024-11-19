@@ -19,6 +19,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {OwnerPlotService} from '../../../services/owner-plot.service';
 import {plotForUserValidator} from '../../../validators/cadastre-plot-for-users';
 import {birthdateValidation} from '../../../validators/birthdate.validations';
+import { SessionService } from '../../../services/session.service';
 
 @Component({
   selector: 'app-user-user-form',
@@ -37,6 +38,7 @@ export class UserUserFormComponent {
     private router = inject(Router)
     private toastService = inject(ToastService)
     private modalService = inject(NgbModal)
+    private sessionService = inject(SessionService)
     //#endregion
 
     //#region ATT
@@ -56,6 +58,8 @@ export class UserUserFormComponent {
     countryOptions!: any;
     editMode: boolean = false;
     emailInput: string = ""
+    isSuperAdmin: boolean = false;
+    adminRoles: number[] = [999];
     //#endregion
 
   onEmailChange(userEmail: string): void {
@@ -108,17 +112,29 @@ export class UserUserFormComponent {
     });
     //#endregion
 
+  hasContactEmail():boolean{
+    let hasEmail= this.contacts.filter(c => c.contactType === "EMAIL")
+    return hasEmail !== null && hasEmail.length > 0;
+  }
+
     //#region ON SUBMIT
     onSubmit(): void {
-      
+
       // debe tener al menos una direccion
       if(this.addresses.length <= 0) {
         this.toastService.sendError("Debes cargar al menos una dirección")
+        return;
+      } else if(this.contacts.length <= 0) {
+        this.toastService.sendError("Debes cargar al menos un contacto")
+        return;
+      } else if (!this.hasContactEmail()) {
+        this.userForm.markAllAsTouched();
+        this.toastService.sendError("Debes agregar al menos un email de contacto");
+        return;
       } else {
-        
         if (this.isFormValid()) {
           this.id === null ? this.createUser() : this.updateUser()
-          
+
         } else {
           this.toastService.sendError("Tienes errores en el formulario");
           this.userForm.controls['email'].markAsTouched();
@@ -128,18 +144,18 @@ export class UserUserFormComponent {
           this.userForm.controls['documentType'].markAsTouched();
           this.userForm.controls['documentNumber'].markAsTouched();
           this.userForm.controls['birthdate'].markAsTouched();
-          
+
         }
       }
     }
 
     isFormValid(){
-      if(this.userForm.controls['email'].errors ||  
-      this.userForm.controls['firstName'].errors ||  
-      this.userForm.controls['lastName'].errors ||  
-      this.userForm.controls['userName'].errors ||  
-      this.userForm.controls['documentType'].errors ||  
-      this.userForm.controls['documentNumber'].errors ||  
+      if(this.userForm.controls['email'].errors ||
+      this.userForm.controls['firstName'].errors ||
+      this.userForm.controls['lastName'].errors ||
+      this.userForm.controls['userName'].errors ||
+      this.userForm.controls['documentType'].errors ||
+      this.userForm.controls['documentNumber'].errors ||
       this.userForm.controls['birthdate'].errors) {
         return false
       } else {
@@ -160,6 +176,7 @@ export class UserUserFormComponent {
         this.userForm.controls['email'].setAsyncValidators(emailValidator(this.userService))
       }
       this.setEnums()
+      this.checkVisibility();
       this.getAllRoles()
     }
 
@@ -289,7 +306,7 @@ export class UserUserFormComponent {
 
 
     changeContactType(event: any) {
-    
+
       const type = event.target.value;
       if(type) {
         this.userForm.controls['contactsForm'].controls['contactValue'].addValidators(Validators.required);
@@ -306,6 +323,11 @@ export class UserUserFormComponent {
     //#endregion
 
     //#region FUNCION ROLES
+
+    checkVisibility() {
+      this.isSuperAdmin = this.sessionService.hasRoleCodes(this.adminRoles);
+    }
+
     getRolValue() {
       const rolFormGroup = this.userForm.get('rolesForm') as FormGroup;
       return {
@@ -331,15 +353,21 @@ export class UserUserFormComponent {
 
     getAllRoles() {
       this.roleService.getAllRoles(0, 2147483647, true).subscribe(
-        response => this.rolesForCombo = response.content
-      )
+        response => {
+          if (!this.isSuperAdmin) {
+            this.rolesForCombo = response.content.filter(role => role.name !== 'SUPERADMIN');
+          } else {
+            this.rolesForCombo = response.content;
+          }
+        }
+      );
     }
 
     transformRoles(user: User): number[] | undefined {
       return user.roles?.map(role => role.code);
     }
 
-    
+
     //#endregion
 
     //#region CREATE / UPDATE
@@ -402,10 +430,10 @@ export class UserUserFormComponent {
     }
     //#endregion
 
-    
+
 
     //#region FUNCION ADDRESS
-    
+
   // Acceder directamente al valor del país en el FormControl
   get isArgentinaSelected(): boolean {
     return this.userForm.get('addressForm')?.get('country')?.value === 'ARGENTINA';
@@ -416,7 +444,7 @@ export class UserUserFormComponent {
   }
 
   getAddressValue(): Address {
-    
+
     const address: Address = {
       streetAddress:
         this.userForm.get('addressForm.streetAddress')?.value || '',
@@ -454,7 +482,7 @@ export class UserUserFormComponent {
   addAddress(): void {
 
     console.log(this.userForm.get('addressForm'));
-    
+
 
     if (this.userForm.get('addressForm')?.valid) {
       const addressValue = this.getAddressValue()

@@ -55,12 +55,9 @@ export class FineDetailComponent {
     this.userDataService.loadNecessaryData().subscribe((response) => {
       if (response) {
         this.userData = response;
+        this.updateIsAdminAndOnAssembly();
       }
     });
-  }
-
-  userHasRole(role: string): boolean {
-    return this.userData.roles.some((userRole) => userRole.name === role);
   }
 
   async ngOnInit() {
@@ -82,14 +79,17 @@ export class FineDetailComponent {
         FineStatusEnum.ON_ASSEMBLY
       );
 
-      this.isAdminAndOnAssembly =
-        this.userHasRole('ADMIN') &&
-        fine!.fine_state === ('ON_ASSEMBLY' as FineStatusEnum);
+      this.updateIsAdminAndOnAssembly();
     } catch (error) {
       console.error(error);
     }
 
     this.fineId = +this.route.snapshot.paramMap.get('id')!;
+  }
+  updateIsAdminAndOnAssembly() {
+    this.isAdminAndOnAssembly =
+      this.userDataService.userHasRole(this.userData, 'FINES_ADMIN') &&
+      this.fine!.fine_state === ('ON_ASSEMBLY' as FineStatusEnum);
   }
 
   private async getFineById(fineId: number): Promise<Fine | undefined> {
@@ -104,12 +104,10 @@ export class FineDetailComponent {
 
   save(fineStatus: FineStatusEnum) {
     let fine: UpdateFineStateDTO = {
-      id: this.fine?.id,
-      updatedBy: this.userData.id!,
       fineState: fineStatus,
     };
 
-    this.fineService.updateState(fine).subscribe({
+    this.fineService.updateState(fine, this.fine!.id).subscribe({
       next: (response) => {
         this.toastService.sendSuccess('Se actualizó el estado con éxito.');
         this.ngOnInit();

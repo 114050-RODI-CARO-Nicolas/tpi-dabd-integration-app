@@ -11,12 +11,17 @@ import {
 } from 'rxjs';
 import { ClaimDTO, ClaimNew, UpdateClaimDTO } from '../models/claim.model';
 import { environment } from '../../../../../../environments/environment';
+import { SessionService } from '../../../../../users/services/session.service';
+import { User } from '../../../../../users/models/user';
+import { UserDataService } from '../../../../shared/services/user-data.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ClaimService {
   private http = inject(HttpClient);
+  private userDataService = inject(UserDataService);
+
   private apiUrl = environment.apis.moderations.slice(0, -1); // URL de la API
 
   // private oneClaim = new BehaviorSubject<OneConstruction>(undefined);
@@ -42,17 +47,19 @@ export class ClaimService {
     this.totalItemsSubject.next(total);
   }
 
-  createClaim(claimData: FormData, userId: number): Observable<any> {
-    const headers = new HttpHeaders({
-      'x-user-id': userId.toString(),
+  
+  private readonly sessionService = inject(SessionService);
+
+
+  createClaim(claimData: FormData): Observable<any> {
+
+    return this.http.post(`${this.apiUrl}/claims`, claimData,{
+      headers: this.userDataService.getHeaders(),
     });
-    return this.http.post(`${this.apiUrl}/claims`, claimData, { headers });
   }
 
-  updateClaim(claimDTO: ClaimDTO, userId: number): Observable<ClaimDTO> {
-    const headers = new HttpHeaders({
-      'x-user-id': userId.toString(),
-    });
+  updateClaim(claimDTO: ClaimDTO): Observable<ClaimDTO> {
+
     return this.http
       .put<ClaimDTO>(
         `${this.apiUrl}/claims/${claimDTO.id}`,
@@ -61,7 +68,9 @@ export class ClaimService {
           plot_id: claimDTO.plot_id,
           sanction_type_entity_id: claimDTO.sanction_type.id,
         },
-        { headers }
+        {
+          headers: this.userDataService.getHeaders(),
+        }
       )
       .pipe(
         map((newItem) => {

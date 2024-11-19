@@ -78,7 +78,7 @@ export class ConstructionListComponent {
   // Methods:
   updateFiltersAccordingToUser() {
     if (this.userData) {
-      if (!this.userHasRole('CONSTRUCTION_ADMIN')) {
+      if (!this.userDataService.userHasRole(this.userData, 'CONSTRUCTION_ADMIN')) {
         this.searchParams = {
           ...this.searchParams,
           plotsIds: this.userData.plotIds,
@@ -102,10 +102,6 @@ export class ConstructionListComponent {
         this.loadItems();
       }
     });
-  }
-
-  userHasRole(role: string): boolean {
-    return this.userData?.roles?.some((userRole) => userRole?.name === role);
   }
 
   ngOnInit(): void {

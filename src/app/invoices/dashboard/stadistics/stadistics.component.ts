@@ -14,6 +14,7 @@ import { InfoComponent } from '../../info/info.component';
 import { DistributionPaymentMethodsComponent } from "../distribution-payment-methods/distribution-payment-methods.component";
 import { TotalPaymentsComponent } from '../total-payments/total-payments.component';
 import { ActivatedRoute } from '@angular/router';
+import { InfomodalStadisticsComponent } from '../infomodal-stadistics/infomodal-stadistics.component';
 // import { DashBoardFilters } from '../../models/dashboard.model';
 
 @Component({
@@ -249,7 +250,9 @@ export class StadisticsComponent implements OnInit {
   }
 
 
-  onInfoButtonClick() {
-    this.modalService.open(this.infoModal, { size: 'lg' });
+  
+  onInfoButtonClick(type: string) {
+    const modalRef = this.modalService.open(InfomodalStadisticsComponent, { size: 'lg' });
+    modalRef.componentInstance.modalType = type;
   }
 }

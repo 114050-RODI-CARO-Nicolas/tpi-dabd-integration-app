@@ -3,3 +3,429 @@
 /* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/bootstrap';
 @import '@ng-select/ng-select/themes/default.theme.css';
+
+/* General modo oscuro */
+.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+  }
+  
+  .dark-mode .navbar {
+    background-color: #333;
+    color: #e0e0e0;
+  }
+  
+  .dark-mode .card,
+  .dark-mode .modal-content,
+  .dark-mode .dropdown-menu {
+    background-color: #333;
+    color: #e0e0e0;
+    border-color: #444;
+  } 
+  
+  .dark-mode .popover-body,
+  .dark-mode .ngb-popover-window{
+    background-color: #333;
+    color: #e0e0e0;
+    border-color: #444;
+  } 
+  .dark-mode .card-title,
+  .dark-mode h5,
+  .dark-mode h3,
+  .dark-mode p {
+    color: #e0e0e0;
+  }
+  
+  /* Mantener los campos de entrada en color claro */
+  .dark-mode input.form-control,
+  .dark-mode textarea.form-control,
+  .dark-mode select.form-select {
+    background-color: white;
+    color: #333;
+    border-color: #555;
+  }
+  
+  .dark-mode input.form-control::placeholder,
+  .dark-mode textarea.form-control::placeholder {
+    color: #888;
+  }
+  
+  /* Mantener el color original de los botones */
+  .dark-mode .btn {
+    background-color: initial;
+    color: inherit;
+    border-color: inherit;
+  }
+  
+  /* Estilos para tablas */
+   .dark-mode .table {
+    color: #e0e0e0;
+    background-color: #1f1f1f;
+  } 
+  
+  .dark-mode .table th,
+  .dark-mode .table td {
+    border-color: #555;
+  } 
+  
+  /* Aplica fondo oscuro solo cuando esté en modo oscuro */
+  .dark-mode app-main-container {
+    background-color: #1e1e1e !important;
+    color: #e0e0e0 !important;
+  }
+  
+  .dark-mode {
+    background-color: #1e1e1e; /* Fondo oscuro general */
+    color: #e0e0e0; /* Color de texto claro */
+  }
+  
+  .dark-mode input,
+  .dark-mode select,
+  .dark-mode textarea,
+  .dark-mode button {
+    background-color: #333333 !important; /* Fondo oscuro en los inputs */
+    color: #e0e0e0 !important; /* Texto claro */
+    border-color: #555555 !important; /* Borde oscuro */
+  }
+  
+  .dark-mode .form-control,
+  .dark-mode .form-select {
+    background-color: #333333 !important; /* Fondo oscuro para controles de formulario */
+    color: #e0e0e0 !important;
+    border-color: #555555 !important;
+  }
+  
+  .dark-mode .btn-primary {
+    background-color: #0066cc !important; /* Color del botón primario */
+    border-color: #005bb5 !important;
+  }
+  
+  .dark-mode .btn-danger {
+    background-color: #cc0000 !important; /* Color del botón de peligro */
+    border-color: #990000 !important;
+  }
+  
+  .dark-mode .card {
+    background-color: #1f1f1f !important; /* Fondo oscuro para las tarjetas */
+    color: #e0e0e0 !important;
+    border: none;
+  }
+  
+  .dark-mode .modal-content {
+    background-color: #2b2b2b; /* Fondo oscuro para modales */
+    color: #e0e0e0;
+  }
+  
+  .dark-mode label,
+  .dark-mode small {
+    color: #cccccc !important; /* Texto de etiquetas y mensajes */
+  }
+  
+  /* contenedor */
+  .dark-mode ::ng-deep app-main-container {
+    background-color: #1e1e1e !important;
+  }
+  
+  .dark-mode ::ng-deep app-main-container * {
+    background-color: inherit !important;
+    color: inherit !important;
+  }
+  
+  .dark-mode .col.mt-4.content {
+    background-color: #2c2c2c !important; /* Fondo oscuro */
+    color: #ffffff !important; /* Color de texto claro */
+    border: 1px solid #444 !important; /* Borde oscuro */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Opcional: sombra para resaltar el borde */
+  }
+  
+  /* lista */
+  /* Estilos para modo oscuro en las tablas */
+  .dark-mode table {
+      background-color: #333 !important; /* Fondo oscuro para la tabla */
+      color: #ffffff !important; /* Color claro para el texto */
+  }
+  
+  .dark-mode table th,
+  .dark-mode table td {
+      background-color: #444 !important; /* Fondo más oscuro para celdas */
+      color: #ffffff !important; /* Texto claro */
+      border-color: #555 !important; /* Color del borde en modo oscuro */
+  }
+  
+  /* Estilo de fondo para filas alternas en modo oscuro */
+  .dark-mode table tr:nth-child(even) {
+      background-color: #383838 !important; /* Fondo alternativo en modo oscuro */
+  }
+  /* search */
+  .dark-mode .input-group-text {
+    background-color: #333333 !important; /* Fondo oscuro */
+    color: #e0e0e0 !important; /* Color claro para el texto */
+  }
+  
+  .dark-mode .bi-search {
+    color: #e0e0e0 !important; /* Cambia el color del ícono de búsqueda */
+  }
+  .dark-mode .provider-item.p-3.mb-2.rounded-3 {
+    background-color: #2b2b2b !important; /* Fondo oscuro para los elementos de la lista */
+    color: #e0e0e0 !important; /* Texto claro */
+    border: 1px solid #444444; /* Borde oscuro para destacar */
+  }
+  
+  .dark-mode .provider-item.p-3.mb-2.rounded-3 .d-flex.align-items-center {
+    color: #e0e0e0 !important; /* Color claro para el contenido */
+  }
+  
+  .dark-mode .provider-item.p-3.mb-2.rounded-3.bg-light {
+    background-color: #3b3b3b !important; /* Fondo alternativo para las filas pares */
+  }
+  .dark-mode .col-6 .p-3.rounded-3.bg-light {
+    background-color: #333333 !important; /* Fondo oscuro para la tarjeta */
+    color: #e0e0e0 !important; /* Texto claro */
+    border: 1px solid6y #444444; /* Borde oscuro para resaltar */
+  }
+  
+  .dark-mode .col-6 .p-3.rounded-3.bg-light .icon-circle {
+    background-color: #555555 !important; /* Fondo oscuro para el círculo del icono */
+    color: #e0e0e0 !important; /* Color claro para el icono */
+  }
+  
+  .dark-mode .col-6 .p-3.rounded-3.bg-light h6 {
+    color: #e0e0e0 !important; /* Título claro */
+  }
+  
+  .dark-mode .col-6 .p-3.rounded-3.bg-light .text-primary {
+    color: #66a3ff !important; /* Ajuste de color para el texto primario */
+  }
+  
+  .dark-mode .col-6 .p-3.rounded-3.bg-light .text-muted {
+    color: #b3b3b3 !important; /* Color más claro para el texto de subtítulo */
+  }
+
+  /* correcciones en la integracion */
+.dark-mode h3.mb-0,
+.dark-mode h3,
+.dark-mode .text-dark,
+.dark-mode .fw-bold,
+.dark-mode .text-muted {
+  color: #e0e0e0 !important; /* Texto claro para títulos y subtítulos */
+}
+
+/* Estilo para el div.contact-value */
+.dark-mode .contact-value {
+  color: #e0e0e0 !important; /* Asegura texto claro en contacto */
+}
+
+/* Estilo para el div.card-body.bg-white */
+.dark-mode .card-body.bg-white {
+  background-color: #444444 !important; /* Fondo oscuro para cards blancas */
+  color: #e0e0e0 !important; /* Texto claro */
+  border-color: #444 !important; /* Borde oscuro */
+}
+
+/* Mejora para el contraste de los títulos */
+.dark-mode .h3.mb-0,
+.dark-mode h3 {
+  color: #ffffff !important; /* Blanco puro para asegurar contraste */
+  font-weight: bold; /* Para resaltar aún más */
+}
+
+/* Estilos para pequeños detalles en spans */
+.dark-mode span.input-group-text {
+  background-color: #444 !important; /* Fondo oscuro */
+  color: #e0e0e0 !important; /* Texto claro */
+  border-color: #555 !important; /* Borde oscuro */
+}
+.dark-mode h6.card-subtitle.mb-2 {
+  color: #e0e0e0 !important; /* Texto claro */
+}
+/* Estilos para el modo oscuro */
+.dark-mode .welcome-section {
+    background: linear-gradient(90deg, #2c3e50, #34495e); /* Gradiente oscuro */
+    color: #e0e0e0; /* Texto claro */
+    border-radius: 12px; /* Mantener las esquinas redondeadas */
+    padding: 12.8px 0px; /* Mantener el padding original */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5); /* Agregar una sombra */
+  }
+  
+  /* Ajuste para el texto dentro de la sección */
+  .dark-mode .welcome-section h1,
+  .dark-mode .welcome-section h2,
+  .dark-mode .welcome-section h3,
+  .dark-mode .welcome-section p {
+    color: #000000 !important; /* Asegurarse de que el texto sea claro */
+  }
+  
+  /* Ajuste para enlaces dentro de la sección */
+  .dark-mode .welcome-section a {
+    color: #000000; /* Enlaces con un tono azulado */
+    text-decoration: none; /* Sin subrayado */
+  }
+  
+  .dark-mode .welcome-section a:hover {
+    text-decoration: underline; /* Subrayar al pasar el mouse */
+  }
+  
+  /* Estilo en modo oscuro para modal-header */
+.dark-mode .modal-header {
+    background-color: #2b2b2b !important; /* Fondo oscuro */
+    color: #e0e0e0 !important; /* Texto claro */
+    border-bottom: 1px solid #444 !important; /* Borde oscuro */
+  }
+  
+  /* Estilo en modo oscuro para modal-footer */
+  .dark-mode .modal-footer {
+    background-color: #2b2b2b !important; /* Fondo oscuro */
+    color: #e0e0e0 !important; /* Texto claro */
+    border-top: 1px solid #444 !important; /* Borde oscuro */
+  }
+/* Estilo en modo oscuro para ngb-popover-window */
+.dark-mode .ngb-popover-window {
+    background-color: #2b2b2b !important; /* Fondo oscuro */
+    color: #e0e0e0 !important; /* Texto claro */
+    border: 1px solid #444 !important; /* Oscurece el borde blanco */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6) !important; /* Sombra para resaltar */
+  }
+  
+  /* Ajusta los bordes internos del popover */
+  .dark-mode .ngb-popover-window * {
+    border-color: #555 !important; /* Bordes internos oscuros */
+  }
+  /* Card y alertas */
+.dark-mode .card-body,
+.dark-mode .card-header,
+.dark-mode .alert-info {
+    background-color: #2c2c2c; /* Fondo oscuro */
+    color: #e0e0e0; /* Texto claro */
+    border-color: #444; /* Borde oscuro */
+}
+
+/* Listas dentro de las tarjetas */
+.dark-mode li.list-group-item {
+    background-color: #2c2c2c; /* Fondo oscuro */
+    color: #e0e0e0; /* Texto claro */
+    border-color: #444; /* Borde oscuro */
+}
+
+/* Bordes en las tarjetas */
+.dark-mode .card-body.py-2 {
+    background-color: #2c2c2c !important;
+    border: 1px solid #444; /* Borde oscuro */
+}
+
+/* Títulos y textos dentro de las tarjetas */
+.dark-mode h5.alert-heading,
+.dark-mode h5.mb-0.fw-bold,
+.dark-mode p.mb-0.text-muted,
+.dark-mode p.mb-0.small {
+    color: #e0e0e0; /* Texto claro */
+}
+
+/* Popovers */
+.dark-mode .ngb-popover-window {
+    background-color: #2c2c2c; /* Fondo oscuro */
+    color: #e0e0e0; /* Texto claro */
+    border: 1px solid #444; /* Borde oscuro */
+}
+
+/* Modal */
+.dark-mode .modal-footer,
+.dark-mode .modal-header {
+    background-color: #2c2c2c; /* Fondo oscuro */
+    color: #e0e0e0; /* Texto claro */
+    border-color: #444; /* Borde oscuro */
+}
+
+/* Componentes de información */
+.dark-mode .alert-info.mb-2 {
+    background-color: #3c3c3c; /* Fondo más oscuro */
+    color: #e0e0e0; /* Texto claro */
+    border-color: #444; /* Borde oscuro */
+}
+
+/* Headers y subtítulos */
+.dark-mode h6.card-subtitle {
+    color: #e0e0e0 !important; /* Texto claro */
+}
+
+/* Otros textos dentro de las tarjetas */
+.dark-mode .text-muted {
+    color: #cccccc; /* Texto tenue */
+}
+.dark-mode .card-header.bg-light.py-2 {
+    background-color: #2c2c2c !important; /* Fondo oscuro */
+    color: #e0e0e0 !important; /* Texto claro */
+    border: 1px solid #444 !important; /* Borde oscuro */
+}
+.dark-mode .alert.alert-light.border.mb-0 {
+    background-color: #2c2c2c !important; /* Fondo oscuro */
+    color: #e0e0e0 !important; /* Texto claro */
+    border: 1px solid #444 !important; /* Borde oscuro */
+}
+.dark-mode .alert.alert-warning.py-2.mb-0 {
+    background-color: #3c3c3c !important; /* Fondo oscuro */
+    color: #ffc107 !important; /* Texto amarillo para mantener el estilo de advertencia */
+    border: 1px solid #555 !important; /* Borde oscuro */
+}
+.dark-mode .alert.alert-warning.mb-0 {
+    background-color: #3c3c3c !important; /* Fondo oscuro */
+    color: #ffc107 !important; /* Texto amarillo */
+    border: 1px solid #555 !important; /* Borde oscuro */
+}
+.dark-mode .ng-select-container {
+    background-color: #2c2c2c !important; /* Fondo oscuro */
+    color: #e0e0e0 !important; /* Texto claro */
+    border: 1px solid #444 !important; /* Borde oscuro */
+}
+
+.dark-mode .ng-select-container .ng-arrow {
+    color: #e0e0e0 !important; /* Flecha con color claro */
+}
+
+.dark-mode .ng-select-container .ng-value {
+    color: #e0e0e0 !important; /* Color del texto seleccionado */
+}
+
+.dark-mode .ng-select-container .ng-placeholder {
+    color: #888 !important; /* Color del texto placeholder */
+}
+.dark-mode .popover {
+    background-color: #2c2c2c !important; /* Fondo oscuro */
+    color: #e0e0e0 !important; /* Texto claro */
+    border: 1px solid #444 !important; /* Borde oscuro */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5); /* Sombra para efecto */
+}
+
+.dark-mode .popover-header {
+    background-color: #333 !important; /* Fondo del encabezado */
+    color: #e0e0e0 !important; /* Texto del encabezado */
+}
+
+.dark-mode .popover-body {
+    background-color: #2c2c2c !important; /* Fondo del cuerpo */
+    color: #e0e0e0 !important; /* Texto del cuerpo */
+}
+
+.dark-mode .popover .btn {
+    background-color: #444 !important; /* Fondo de botones */
+    color: #e0e0e0 !important; /* Texto de botones */
+    border-color: #555 !important; /* Bordes de botones */
+}
+.dark-mode .popover .popover-arrow::after {
+    border-top-color: #4e4e4e !important; /* Color del fondo oscuro para la flecha */
+    border-right-color: #2c2c2c !important; /* Ajuste adicional si aplica bordes */
+    border-left-color: #2c2c2c !important; /* Ajuste adicional si aplica bordes */
+    border-bottom-color: #4e4e4e !important; /* Ajuste adicional si aplica bordes */
+}
+/* Estilo para el paginador en modo oscuro */
+.dark-mode li.page-item.disabled {
+    background-color: #333333 !important; /* Fondo oscuro */
+    color: #888888 !important; /* Texto gris claro */
+    border-color: #555555 !important; /* Borde oscuro */
+    cursor: not-allowed;
+}
+
+.dark-mode li.page-item.disabled a,
+.dark-mode li.page-item.disabled span {
+    color: #888888 !important; /* Texto gris claro */
+    pointer-events: none; /* Desactivar interacción */
+}

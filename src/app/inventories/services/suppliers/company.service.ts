@@ -2,13 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Company, CompanyRequest } from '../../models/suppliers/company.model';
+import { PORTSuppliers } from '../../utils/const';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CompanyService {
 
-  private apiCompanyUrl = 'http://localhost:8013/suppliers/companies';
+  //private apiCompanyUrl = 'http://localhost:8013/suppliers/companies';
+  private apiCompanyUrl = PORTSuppliers + 'suppliers/companies';
+  
 
   constructor(private http: HttpClient) { }
 

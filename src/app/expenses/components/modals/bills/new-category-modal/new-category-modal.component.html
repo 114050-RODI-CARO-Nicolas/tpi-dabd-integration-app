@@ -19,7 +19,6 @@
             }"
           >
 
-          <!-- Mensajes de error -->
           @if(newCategoryForm.get('name')?.errors?.['required'] && newCategoryForm.get('name')?.touched){
             <div class="invalid-feedback">
               Por favor, ingrese un nombre para la categoría.

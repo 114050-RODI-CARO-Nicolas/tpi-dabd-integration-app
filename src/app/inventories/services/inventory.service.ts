@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { Article, ArticleCateg, ArticleCategory, ArticleCategPost, ArticleCondition, ArticleInventoryPost, ArticlePost, ArticleType } from '../models/article.model';
 import { Inventory, StatusType, Transaction, TransactionPost } from '../models/inventory.model';
+import { PORTInventory } from '../utils/const';
 
 @Injectable({
   providedIn: 'root'
@@ -10,10 +11,16 @@ import { Inventory, StatusType, Transaction, TransactionPost } from '../models/i
 export class InventoryService {
 
 
-   private apiArticlesUrl = 'http://localhost:8009/articles'; // URL de la API para los ítems DEL BACK
-   private apiArticleCategoriesUrl = 'http://localhost:8009/articleCategories';
-   private apiInventoriesUrl = 'http://localhost:8009/inventories'; // URL de la API para los inventarios
-   private apiTransactionsUrl = 'http://localhost:8009/transactions'; // URL de la API para las transacciones
+  //  private apiArticlesUrl = 'http://localhost:8009/articles'; // URL de la API para los ítems DEL BACK
+  //  private apiArticleCategoriesUrl = 'http://localhost:8009/articleCategories';
+  //  private apiInventoriesUrl = 'http://localhost:8009/inventories'; // URL de la API para los inventarios
+  //  private apiTransactionsUrl = 'http://localhost:8009/transactions'; // URL de la API para las transacciones
+
+   private apiArticlesUrl = PORTInventory + 'articles'; // URL de la API para los ítems DEL BACK
+   private apiArticleCategoriesUrl = PORTInventory + 'articleCategories';
+   private apiInventoriesUrl = PORTInventory + 'inventories'; // URL de la API para los inventarios
+   private apiTransactionsUrl = PORTInventory + 'transactions'; // URL de la API para las transacciones
+
 
   constructor(private http: HttpClient) {}
 

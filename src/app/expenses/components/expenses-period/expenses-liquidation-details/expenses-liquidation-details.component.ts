@@ -1,13 +1,8 @@
 import { Component, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
-import { CurrencyPipe } from '@angular/common';
 import { NgbActiveModal, NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { LiquidationExpenseService } from '../../../services/liquidation-expense.service';
-import LiquidationExpense from '../../../models/liquidationExpense';
-import { FormsModule, NgControl, ReactiveFormsModule } from '@angular/forms';
-import { InfoModalComponent } from '../../modals/info-modal/info-modal.component';
-import { NgModalComponent } from '../../modals/ng-modal/ng-modal.component';
+import { FormsModule } from '@angular/forms';
 import { BillService } from '../../../services/bill.service';
 import { Bill } from '../../../models/bill';
 import { CategoryService } from '../../../services/category.service';
@@ -16,7 +11,7 @@ import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import moment from 'moment';
-import { ConfirmAlertComponent, MainContainerComponent, TableFiltersComponent, TableComponent, Filter, SelectFilter, FilterOption, TableColumn, ToastService, RadioFilter} from 'ngx-dabd-grupo01';
+import { ConfirmAlertComponent, MainContainerComponent, TableComponent, Filter, SelectFilter, FilterOption, TableColumn, ToastService, RadioFilter} from 'ngx-dabd-grupo01';
 import { ProviderService } from '../../../services/provider.service';
 import Period from '../../../models/period';
 import { EditBillModalComponent } from '../../modals/bills-modal/edit-bill-modal/edit-bill-modal.component';
@@ -27,49 +22,30 @@ import { DeleteBillModalComponent } from '../../modals/bills/delete-bill-modal/d
   selector: 'app-expenses-liquidation-details',
   standalone: true,
   imports: [
-    CurrencyPipe,
     DatePipe,
     CommonModule,
     FormsModule,
-    InfoModalComponent,
-    NgModalComponent,
     NgPipesModule,
     NgbModule,
     TableComponent,
-    TableFiltersComponent,
     MainContainerComponent,
-    ConfirmAlertComponent
   ],
   providers: [DatePipe, NgbActiveModal],
   templateUrl: './expenses-liquidation-details.component.html',
   styleUrl: './expenses-liquidation-details.component.css',
 })
 export class LiquidationExpenseDetailsComponent implements OnInit {
-  //
-  //  Services
-  //
+ 
   private readonly toastService = inject(ToastService)
   private readonly billsService = inject(BillService);
   private readonly categoryService = inject(CategoryService);
   private readonly supplierService = inject(ProviderService);
   private readonly billTypeService = inject(BillService);
-
   private modalService = inject(NgbModal);
-
-  //
-  // routing
-  //
 
   private readonly route = inject(ActivatedRoute);
 
-
-  //
-  // Table
-  //
-
   isLoading: boolean = true;
-
-  // items
 
   @ViewChild('amountTemplate', { static: true }) amountTemplate!: TemplateRef<any>;
   @ViewChild('dateTemplate', { static: true }) dateTemplate!: TemplateRef<any>;
@@ -79,13 +55,10 @@ export class LiquidationExpenseDetailsComponent implements OnInit {
 
   billsFiltered: Bill[] = [];
   originalBills: Bill[] = [];
-
   period: Period = new Period();
   fechaTitulo = '';
-
   columns: TableColumn[] = [];
 
-  // filters
   isFiltering: boolean = false;
   categories: FilterOption[] = [];
   suppliers: FilterOption[] = [];
@@ -107,22 +80,15 @@ export class LiquidationExpenseDetailsComponent implements OnInit {
     ])
   ];
 
-  // pagination
+ 
   originalTotalItems = 0;
   totalItems = 0;
   page = 1;
   size = 10;
 
-  // other variables
-
   periodId: number | null = null;
 
   fileName = 'reporte-gastos-liquidación';
-
-
-  //
-  // Methods
-  //
 
   ngOnInit(): void {
     this.fechaTitulo = ''
@@ -144,7 +110,6 @@ export class LiquidationExpenseDetailsComponent implements OnInit {
     ];
   }
 
-  //  load lists
   private loadBillTypes() {
     this.billTypeService.getBillTypes().subscribe((data) => {
       data.forEach(e => {
@@ -221,8 +186,6 @@ export class LiquidationExpenseDetailsComponent implements OnInit {
   }
 
 
-  // Filter data
-
   filterTableByText(value: string) {
     debugger
     const filterValue = value?.toLowerCase() || '';
@@ -278,10 +241,6 @@ export class LiquidationExpenseDetailsComponent implements OnInit {
       });
   }
 
-
-
-  // Pagination
-
   onPageChange = (page: number) => {
     this.page = page;
     if (this.isFiltering) {
@@ -300,10 +259,9 @@ export class LiquidationExpenseDetailsComponent implements OnInit {
   };
 
 
-  // PDF Y Excel
+
 
   downloadTable() {
-    // Mapear los datos a un formato tabular adecuado
     const data = this.billsFiltered.map((bill) => ({
       Categoría: `${bill.category.name}`,
       Tipo: `${bill.billType.name}`,
@@ -327,11 +285,11 @@ export class LiquidationExpenseDetailsComponent implements OnInit {
   imprimir() {
     const doc = new jsPDF();
 
-    // Título del PDF
+    
     doc.setFontSize(18);
     doc.text('Reporte de Gastos de Liquidación', 14, 20);
 
-    // Usando autoTable para agregar la tabla
+    
     autoTable(doc, {
       startY: 30,
       head: [['Categoría', 'Tipo','Fecha', 'Proveedor', 'Monto', 'Descripcion']],
@@ -351,8 +309,6 @@ export class LiquidationExpenseDetailsComponent implements OnInit {
         bill?.description || 'N/A',
       ]),
     });
-
-    // Guardar el PDF después de agregar la tabla
     const fecha = new Date();
     const finalFileName =
       this.fileName +
@@ -361,11 +317,6 @@ export class LiquidationExpenseDetailsComponent implements OnInit {
       '.pdf';
     doc.save(finalFileName);
   }
-
-
-
-  // Modals
-
   showModal() {
     const modalRef = this.modalService.open(ConfirmAlertComponent);
 
@@ -386,7 +337,7 @@ export class LiquidationExpenseDetailsComponent implements OnInit {
     modalRef.componentInstance.bill = bill;
   }
 
-  //  Pther buttons
+  
   edit(bill: Bill) {
     this.openEditModal(bill);
   }

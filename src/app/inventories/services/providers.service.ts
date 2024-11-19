@@ -5,13 +5,17 @@ import { Supplier } from '../models/suppliers/supplier.model';
 import { PaginatedResponse } from '../models/api-response';
 import { Company } from '../models/suppliers/company.model';
 import { Service } from '../models/suppliers/service.model';
+import { PORTSuppliers } from '../utils/const';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ProvidersService {
-  private apiUrl = 'http://localhost:8013/suppliers';
-  private apiurlService = 'http://localhost:8013/service';
+ export class ProvidersService {
+//   private apiUrl = 'http://localhost:8013/suppliers';
+//   private apiurlService = 'http://localhost:8013/service';
+
+  private apiUrl = PORTSuppliers + 'suppliers';
+  private apiurlService = PORTSuppliers + 'service';
 
   constructor(private http: HttpClient) {}
 

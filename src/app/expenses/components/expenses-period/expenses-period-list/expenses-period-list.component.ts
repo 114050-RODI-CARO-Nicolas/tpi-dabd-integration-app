@@ -2,13 +2,10 @@ import {
   Component,
   inject,
   OnInit,
-  TemplateRef,
-  ViewChild,
 } from '@angular/core';
 import { PeriodService } from '../../../services/period.service';
 import Period from '../../../models/period';
-import { DatePipe, NgClass } from '@angular/common';
-import { ExpensesModalComponent } from '../../modals/expenses-modal/expenses-modal.component';
+import { DatePipe } from '@angular/common';
 import {
   NgbActiveModal,
   NgbModal,
@@ -27,12 +24,10 @@ import {
   MainContainerComponent,
   TableFiltersComponent,
   Filter,
-  TableComponent,
 } from 'ngx-dabd-grupo01';
 import * as XLSX from 'xlsx';
 import { NgPipesModule } from 'ngx-pipes';
 import moment from 'moment';
-import { InfoModalComponent } from '../../modals/info-modal/info-modal.component';
 import { RouterModule } from '@angular/router';
 import { LiquidationExpenseService } from '../../../services/liquidation-expense.service';
 import { forkJoin, mergeMap } from 'rxjs';
@@ -48,18 +43,13 @@ import { User } from '../../../models/user';
   standalone: true,
   imports: [
     ExpensesStatePeriodStyleComponent,
-    NgClass,
     ConfirmAlertComponent,
-    ExpensesModalComponent,
-    NgModalComponent,
     NgbModule,
     NgPipesModule,
     FormsModule,
-    InfoModalComponent,
     TableFiltersComponent,
     MainContainerComponent,
     RouterModule,
-    TableComponent,
   ],
   providers: [DatePipe, NgbActiveModal, NgbModule, NgbModal],
   templateUrl: './expenses-period-list.component.html',
@@ -91,11 +81,12 @@ export class ExpensesPeriodListComponent implements OnInit {
   year: number | null = null;
   month: number | null = null;
 
+  user: User | null = null;
+
   ngOnInit(): void {
-    let user = this.storage.getFromSessionStorage('user') as User;
+    this.user = this.storage.getFromSessionStorage('user') as User;
 
-    this.rolCode = user.value.roles.filter(rol => rol.code === URLTargetType.FINANCE).length == 1 ? true : false
-
+    this.rolCode = this.user.value.roles.filter(rol => rol.code === URLTargetType.FINANCE || rol.code === URLTargetType.SUPERADMIN ).length == 1 ? true : false
     this.loadPaged(1);
   }
   searchTerm = '';
@@ -265,7 +256,9 @@ export class ExpensesPeriodListComponent implements OnInit {
 
   closePeriod() {
     if (this.idClosePeriod) {
-      this.periodService.closePeriod(this.idClosePeriod).subscribe({
+      if (this.user?.value.id == null) return
+      
+      this.periodService.closePeriod(this.idClosePeriod, this.user?.value.id).subscribe({
         next: (data) => {
           this.idClosePeriod = null;
         },
@@ -283,7 +276,7 @@ export class ExpensesPeriodListComponent implements OnInit {
   }
 
   filterChange($event: Record<string, any>) {
-    const { year, month, estate } = $event; // this.year = null;
+    const { year, month, estate } = $event; 
     this.year = year;
     this.month = month;
     estate === 'null' ? (this.state = null) : (this.state = estate);
@@ -295,7 +288,6 @@ export class ExpensesPeriodListComponent implements OnInit {
     this.periodService
       .getPage(500000, 0, this.state, this.month, this.year)
       .subscribe((period) => {
-        // Mapear los datos a un formato tabular adecuado
         const data = period.content.map((peri) => ({
           Fecha: `${peri.month + ' / ' + peri.year}`,
           'Total Extraordinarias': `${
@@ -316,8 +308,6 @@ export class ExpensesPeriodListComponent implements OnInit {
           }`,
           Estado: `${peri.state}`,
         }));
-
-        // Convertir los datos tabulares a una hoja de cálculo
         const fecha = new Date();
         const finalFileName =
           this.fileName + '-' + moment(fecha).format('DD-MM-YYYY_HH-mm');
@@ -331,16 +321,11 @@ export class ExpensesPeriodListComponent implements OnInit {
 
   imprimir() {
     const doc = new jsPDF();
-
-    // Título del PDF
     doc.setFontSize(18);
     doc.text('Reporte de Periodos de Liquidación', 14, 20);
-
-    // Llamada al servicio para obtener las expensas
     this.periodService
       .getPage(500000, 0, this.state, this.month, this.year)
       .subscribe((period) => {
-        // Usando autoTable para agregar la tabla
         autoTable(doc, {
           startY: 30,
           head: [
@@ -363,7 +348,6 @@ export class ExpensesPeriodListComponent implements OnInit {
             peri.state,
           ]),
         });
-        // Guardar el PDF después de agregar la tabla
         const fecha = new Date();
         const finalFileName =
           this.fileName +

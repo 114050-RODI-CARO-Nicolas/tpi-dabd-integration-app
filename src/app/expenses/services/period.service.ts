@@ -69,9 +69,9 @@ export class PeriodService {
 
   }
 
-  new(body: {end_date: string}):Observable<void>{
+  new(body: {end_date: string}, userId: number):Observable<void>{
     const headers = new HttpHeaders({
-      'x-user-id': '1'
+      'x-user-id': userId
     });
 
 
@@ -80,9 +80,9 @@ export class PeriodService {
 
   }
 
-  updatePeriod(id:number, body: {end_date: string}):Observable<void>{
+  updatePeriod(id:number, body: {end_date: string}, userId: number):Observable<void>{
     const headers = new HttpHeaders({
-      'x-user-id': '1'
+      'x-user-id': userId
     });
 
 
@@ -94,9 +94,9 @@ export class PeriodService {
     return this.http.get<{period: string}>(`${this.apiUrl}/future`)
   }
 
-  closePeriod(id:number):Observable<void>{
+  closePeriod(id:number, userId: number):Observable<void>{
     const headers = new HttpHeaders({
-      'x-user-id': '1'
+      'x-user-id': userId
     });
 
     return this.http.put<void>(`${this.apiUrl}/close/${id}`, null, { headers });

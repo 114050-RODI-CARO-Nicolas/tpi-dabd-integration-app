@@ -347,7 +347,7 @@ export class HomeComponent implements OnInit {
             []
           );
 
-          this.forecast = dailyForecasts.slice(0, 2);
+          this.forecast = dailyForecasts.slice(0, 3);
         },
         (error) => {console.error('Error fetching forecast data', error)
           this.toastService.sendError('Ocurrió un error al cargar el clima');

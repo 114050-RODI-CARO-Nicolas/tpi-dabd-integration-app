@@ -15,12 +15,13 @@ export class TicketService {
     // Base URL para el servicio de tickets
   private readonly baseUrl = environment.apis.tickets;
   // private readonly baseUrl = 'https://lbsm4xgt-8080.brs.devtunnels.ms/tickets/tickets';//DEV
+  // private readonly baseUrl = 'https://lbsm4xgt-8080.brs.devtunnels.ms/tickets/tickets';//DEV
 
   // Endpoints específicos prod
   private readonly apiUrl = this.baseUrl;
-  private readonly apiUrlPdf = this.baseUrl + 'generateTicket/';
-  private readonly apiGetAllByOwner = this.baseUrl + 'getAllTicketsByOwner';
-  private readonly apiGetAll = this.baseUrl + 'getAll';
+  private readonly apiUrlPdf = this.baseUrl + 'tickets/generateTicket/';
+  private readonly apiGetAllByOwner = this.baseUrl + 'tickets/getAllTicketsByOwner';
+  private readonly apiGetAll = this.baseUrl + 'tickets/getAll';
   // // Endpoints específicos
   // private readonly apiUrl = this.baseUrl;
   // private readonly apiUrlPdf = this.baseUrl + '/generateTicket/';
@@ -29,8 +30,9 @@ export class TicketService {
     
   userId : Number;
     constructor(private http: HttpClient) { 
-      this.userId = sessionStorage.getItem('userId') ? Number(sessionStorage.getItem('userId')) : 1;
-      console.log(this.userId);
+      let session = JSON.parse(sessionStorage.getItem('user')!)
+      this.userId = session.value.id;
+      console.log('sesion', this.userId);
     }
 
     filtrarfechas(dtobusqueda: any): Observable<any> {
@@ -188,7 +190,8 @@ export class TicketService {
     let params = new HttpParams();
       params.set('page', page.toString())
       .set('size', size.toString());
-    console.log(params);
+    console.log('size', size);
+    console.log('page', page);
       
     const header = {
       'x-user-id': this.userId.toString(),
@@ -227,7 +230,7 @@ export class TicketService {
   }
 
   updateTicketStatus(id: number, status: string): Observable<TicketDto> {
-    const url = `${this.baseUrl}/updateTicketStatus/${id}`;
+    const url = `${this.baseUrl}/tickets/updateTicketStatus/${id}`;
     const params = new HttpParams().set('status', status);
     return this.http.put<TicketDto>(url, null, { params });
   }

@@ -257,17 +257,22 @@
       La obra ya fue rechazada }
       <!-- REVIEW -->
       @else if(construction?.construction_status === 'ON_REVISION' &&
-      userHasRole('OWNER')) {
+      userDataService.userHasRole(userData, 'OWNER')) {
       <i class="bi bi-exclamation-circle"></i>
       La obra fue enviada a revisión }
       <!-- ALL APPROVED -->
-      @else if(isConstructionAbleToApprove()) {
+      @else if(isConstructionAbleToApprove() &&
+      userDataService.userHasRole(userData,'CONSTRUCTION_ADMIN')) {
       <i class="bi bi-check-circle"></i>
       Todos los documentos están aprobados, puede aprobar la obra }
       <!-- DOCUMENTS NOT APPROVED -->
-      @else {
+      @else if (userDataService.userHasRole(userData,'CONSTRUCTION_ADMIN')) {
       <i class="bi bi-exclamation-circle"></i>
       No podrá aprobar la obra hasta que todos los documentos estén aprobados}
+      @else if (userDataService.userHasRole(userData,'OWNER')) {
+      <i class="bi bi-exclamation-circle"></i>
+      Debe cargar al menos un documento, una vez cargado puede enviar a
+      revisión.}
     </div>
     } @if(mode === "edit") {
     <div></div>
@@ -275,8 +280,9 @@
     <div>
       @if(mode === "detail") {
       <!-- OWNER -->
-      @if(userHasRole("OWNER") && construction?.construction_status !==
-      "APPROVED" && construction?.construction_status !== "IN_PROGRESS" &&
+      @if(userDataService.userHasRole(userData,"OWNER") &&
+      construction?.construction_status !== "APPROVED" &&
+      construction?.construction_status !== "IN_PROGRESS" &&
       construction?.construction_status !== "COMPLETED" ) {
       <button
         class="btn btn-success me-2"
@@ -288,16 +294,16 @@
       </button>
       }
       <!--  -->
-      @if(userHasRole("OWNER") && construction?.construction_status ===
-      "APPROVED") {
+      @if(userDataService.userHasRole(userData,"OWNER") &&
+      construction?.construction_status === "APPROVED") {
       <button class="btn btn-primary me-2" (click)="onStartConstruction()">
         <i class="bi bi-tools"></i>
         Iniciar obra
       </button>
       }
       <!--  -->
-      @if(userHasRole("OWNER") && construction?.construction_status ===
-      "IN_PROGRESS") {
+      @if(userDataService.userHasRole(userData,"OWNER") &&
+      construction?.construction_status === "IN_PROGRESS") {
       <button
         class="btn btn-info me-2 text-white"
         (click)="onFinishConstruction()"
@@ -307,7 +313,7 @@
       </button>
       }
       <!-- ADMIN -->
-      @if (userHasRole("CONSTRUCTION_ADMIN")) {
+      @if (userDataService.userHasRole(userData,"CONSTRUCTION_ADMIN")) {
       <button
         class="btn btn-primary me-2"
         (click)="approveConstruction()"
@@ -326,7 +332,8 @@
       >
         <i class="bi bi-clipboard-x"></i> Rechazar obra
       </button>
-      } } @if(mode === "edit" && userHasRole("OWNER")) {
+      } } @if(mode === "edit" && userDataService.userHasRole(userData,"OWNER"))
+      {
       <button
         class="btn btn-success me-2"
         [disabled]="!editForm.form.valid"

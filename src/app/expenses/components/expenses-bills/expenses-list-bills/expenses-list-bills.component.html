@@ -81,7 +81,7 @@
 
 
 
-<app-main-container title="Lista de Gastos" (infoButtonClick)="showInfo()">
+<app-main-container title="listado de Gastos" (infoButtonClick)="showInfo()">
   <app-table [items]="filteredBills" [columns]="columns" [pagination]="{
     totalItems: totalItems,
     page: page,
@@ -90,6 +90,6 @@
     onPageSizeChange: onPageSizeChange
   }" [showSearchBar]="true" [isLoading]="isLoading" (searchValueChange)="onSearchValueChange($event)"
     (headerButtonClick)="nuevoGasto()" [showHeaderButton]="true" (filterValueChange)="onFilterValueChange($event)"
-    [tableFilters]="filterConfig" (pdfButtonClick)="imprimir() "[headerButtonIcon]="'bi bi-plus'" [headerButtonText]="''" [getAllItems]="getAllItems">
+    [tableFilters]="filterConfig" (pdfButtonClick)="imprimir()" [headerButtonIcon]="'bi bi-plus'" [headerButtonText]="''" [getAllItems]="getAllItems">
   </app-table>
 </app-main-container>

@@ -221,11 +221,25 @@ export class ProfileComponent {
   }
   //#endregion
 
+  hasContactEmail():boolean{
+    let hasEmail= this.contacts.filter(c => c.contactType === "EMAIL")
+    return hasEmail !== null && hasEmail.length > 0;
+  }
 
   //#region ON SUBMIT
   onSubmit(): void {
     if (this.addresses.length <= 0) {
       this.toastService.sendError("Debes cargar al menos una dirección")
+    } if(this.addresses.length <= 0) {
+      this.toastService.sendError("Debes cargar al menos una dirección")
+      return;
+    } else if(this.contacts.length <= 0) {
+      this.toastService.sendError("Debes cargar al menos un contacto")
+      return;
+    } else if (!this.hasContactEmail()) {
+      this.userForm.markAllAsTouched();
+      this.toastService.sendError("Debes agregar al menos un email de contacto");
+      return;
     } else {
       if (this.isFormValid()) {
         this.updateUser()
@@ -285,7 +299,7 @@ export class ProfileComponent {
     this.router.navigate(["users/profile/detail"])
   }
   //#endregion
- 
+
   ngOnInit(): void {
 
     this.id = this.getUserId()
@@ -295,7 +309,7 @@ export class ProfileComponent {
       this.setEditValues();
     }
   }
-  
+
   getUserId() {
     let user: User = this.sessionService.getItem('user')
 

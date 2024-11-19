@@ -82,15 +82,17 @@ export class ConstructionDocumentationService {
       );
   }
 
-  uploadDocumentation(formData: any): Observable<any> {
+  uploadDocumentation(formData: any, userId: number): Observable<any> {
     const form = new FormData();
     form.append('documentation_type_id', formData.documentation_type_id);
     form.append('construction_id', formData.construction_id);
     form.append('created_by', formData.created_by);
     form.append('file', formData.file);
+    const headers= new HttpHeaders().set('x-user-id', userId.toString());
+
 
     return this.http
-      .post<any>(`${this.apiUrl}/constructions/documentation`, form)
+      .post<any>(`${this.apiUrl}/constructions/documentation`, form, {headers})
       .pipe(
         map(
           (newDocumentation) => {

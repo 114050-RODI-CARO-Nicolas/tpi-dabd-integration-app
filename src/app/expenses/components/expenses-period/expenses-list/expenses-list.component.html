@@ -1,8 +1,7 @@
-<app-main-container title="Lista de Expensas" (infoButtonClick)="showInfo()">
+<app-main-container title="listado de Expensas" (infoButtonClick)="showInfo()">
     <div class="row" style="align-items:end" >
 
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <!-- Sección de búsqueda y filtros -->
         <div class="d-flex align-items-center mb-2" role="group">
           <div class="col-sm-12 col-md-8 col-xl-12">
             <div class="input-group">
@@ -20,9 +19,9 @@
             </div>
           </div>
         </div>
-        <!-- Botones de Activo, Inactivo, Todo y "+" en el mismo grupo -->
+
         <div class="d-flex align-items-center">
-          <!-- Línea vertical y botones de exportación -->
+
           <div class="vertical-line mx-3"></div>
           <button class="btn btn-success me-2" (click)="downloadTable()">
             <i class="bi bi-file-earmark-excel"></i>
@@ -34,7 +33,7 @@
       </div>
 
 
-<!-- Modal con los selectores -->
+
 <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
   <div class="modal-dialog" style=" z-index: 1040;">
     <div class="modal-content">
@@ -43,8 +42,6 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <!-- Selectores dentro del modal -->
-
         <div class="row">
           <div class="col-12 mb-3 d-flex align-items-center">
             <label for="periodo" class="me-2" style="width: 100px;">Periodo</label>
@@ -82,7 +79,7 @@
               <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
             </svg>
           </button>
-         <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>-->
+
           <button type="button" class="btn btn-outline-primary" (click)="applyFilters()" data-bs-dismiss="modal">
             <i class="bi bi-search"></i>
           </button>
@@ -148,19 +145,19 @@
         <div class="col d-flex justify-content-end align-items-center">
           <nav aria-label="Page navigation example">
             <ul class="pagination mb-0">
-              <!-- Botón de página anterior -->
+
               <li class="page-item" [class.disabled]="currentPage === 0">
                 <a class="page-link" (click)="onPageChange(currentPage - 1)" aria-label="Previous">
                   <span aria-hidden="true">&laquo;</span>
                 </a>
               </li>
 
-              <!-- Páginas visibles limitadas -->
+
               <li class="page-item" *ngFor="let page of visiblePages" [class.active]="page === currentPage">
                 <a class="page-link" (click)="onPageChange(page)">{{ page + 1 }}</a>
               </li>
 
-              <!-- Botón de página siguiente -->
+
               <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
                 <a class="page-link" (click)="onPageChange(currentPage + 1)" aria-label="Next">
                   <span aria-hidden="true">&raquo;</span>

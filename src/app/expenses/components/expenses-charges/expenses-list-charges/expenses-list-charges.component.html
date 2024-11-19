@@ -1,4 +1,4 @@
-<app-main-container title="Lista de Cargos" (infoButtonClick)="showInfo()">
+<app-main-container title="listado de Cargos" (infoButtonClick)="showInfo()">
     <div class="d-flex justify-content-between align-items-center mb-3 mt-16">
       <!-- Sección de búsqueda y filtros -->
       <div class="btn-group me-5" role="group">
@@ -73,55 +73,57 @@
               }) }}</td>
             }
             <td  style="text-align: left; justify-content: center;" >
-              @if(isFine(charge.categoryCharge.name)  ||charge.period.state == "CLOSE") {
+              @if (rolCode) {
+                @if(isFine(charge.categoryCharge.name)  ||charge.period.state == "CLOSE") {
   
-                <button class="btn btn-primary btn-sm m-1" (click)="openViewModal(charge)">
-                  <i class="bi bi-eye"></i>
-                </button>
-  
-              } @else {
-                <div class="btn-group" role="group">
-                  <button
-                    type="button"
-                    class="btn btn-sm btn-secondary dropdown-toggle"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    <i class="bi bi-three-dots-vertical"></i>
+                  <button class="btn btn-primary btn-sm m-1" (click)="openViewModal(charge)">
+                    <i class="bi bi-eye"></i>
                   </button>
-                  <ul class="dropdown-menu">
-                    <li>
-                      <a
-                        class="dropdown-item btn btn-primary"
-                        (click)="openViewModal(charge)"
-                        >Ver</a
-                      ><!--aca modal ver cargo-->
-                    </li>
-                    @if (charge.period.state != "CLOSE") {
-                    <li>
-                      <a
-                        class="dropdown-item btn btn-info"
-                        (click)="openUpdateModal(charge)"
-                        >Editar</a
-                      ><!--aca modal editar cargo-->
-                    </li>
-                    <li>
-                      <a
-                        class="dropdown-item btn btn-danger"
-                        data-bs-target="#exampleModal"
-                        data-bs-toggle="modal"
-                        (click)="open(modalTemplate, charge.chargeId)"
-                        >Eliminar</a
-                      >
-                    </li>
-                    }
-                  </ul>
-                </div>
-  
-              }
+    
+                } @else {
+                  <div class="btn-group" role="group">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-secondary dropdown-toggle"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li>
+                        <a
+                          class="dropdown-item btn btn-primary"
+                          (click)="openViewModal(charge)"
+                          >Ver</a
+                        ><!--aca modal ver cargo-->
+                      </li>
+                      @if (charge.period.state != "CLOSE") {
+                      <li>
+                        <a
+                          class="dropdown-item btn btn-info"
+                          (click)="openUpdateModal(charge)"
+                          >Editar</a
+                        ><!--aca modal editar cargo-->
+                      </li>
+                      <li>
+                        <a
+                          class="dropdown-item btn btn-danger"
+                          data-bs-target="#exampleModal"
+                          data-bs-toggle="modal"
+                          (click)="open(modalTemplate, charge.chargeId)"
+                          >Eliminar</a
+                        >
+                      </li>
+                      }
+                    </ul>
+                  </div>
+    
+                }
+              }              
             </td>
-  
-  
+
+
         </tr>
         }@empty {
             <td colspan="7" class="text-center">
@@ -136,17 +138,15 @@
       </table>
     </div>
    </div>
-  
+
 
   <div class="row d-flex justify-content-end " style="margin-right: 20px;">
     <div class="col">
-      <!-- <label for="rowsPerPageSelect">Mostrar </label> -->
       <select class="form-select m-lg-1 w-auto d-inline" [(ngModel)]="pageSize" (ngModelChange)="changesPageSize($event)">
         <option value=10>10</option>
         <option value=25>25</option>
         <option value=50>50</option>
       </select>
-      <!-- <span> registros por página de {{this.totalItems}}</span> -->
     </div>
     <div class=" col">
       <nav aria-label="Page navigation example" style="cursor: pointer;">
@@ -172,26 +172,8 @@
     </div>
   </div>
 
-  <!--POSIBLE IMPLEMENTACIÓN-->
-
 </app-main-container>
-<!-- <app-table
-  [items]="chargesCompleted"
-  [columns]="columns"
-  [showSearchBar]="true"
-  [showHeaderButton]="true"
-  (excelButtonClick)="downloadTable()"
-  (pdfButtonClick)="imprimir()"
-  [tableFilters]="filters"
-  [pagination]="{
-      totalItems: totalItems,
-      page: currentPage,
-      size: pageSize,
-      onPageChange: onPageChange,
-      onPageSizeChange: changesPageSize
-    }"
->
-</app-table> -->
+
 
 
 <ng-template #modalTemplate let-modal >

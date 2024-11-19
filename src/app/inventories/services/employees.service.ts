@@ -4,6 +4,8 @@ import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import { Employee, EmployeeFilter, EmployeePayment, EmployeeSchedule, StatusType } from '../models/employee.model';
 import { MapperService } from './MapperCamelToSnake/mapper.service';
 import { PaginatedResponse } from '../models/api-response';
+import { environment } from '../../../environments/environment.prod';
+import { PORTEmployees } from '../utils/const';
 
 
 @Injectable({
@@ -11,14 +13,23 @@ import { PaginatedResponse } from '../models/api-response';
 })
 export class EmployeesService {
 
-   private apiUrl = 'http://localhost:8007/employees'; // URL de la API para empleados
-  //private apiUrl = 'http://localhost:3000/employees'; // URL de la API para empleados
+   //private apiUrl = 'http://localhost:8007/employees'; // URL de la API para empleados
+   //private apiUrlSHIFT = 'http://localhost:8007/shift'; // URL de la API para empleados
 
+    //private apiUrl = 'http://localhost:8080/employees/employees'; // URL de la API para compose
+    //private apiUrlSHIFT = 'http://localhost:8080/employees/shift'; // URL de la API para compose
+   
+    //private apiUrl = environment.apis.employees + 'employees'; // URL de la API para compose
+    //private apiUrlSHIFT = environment.apis.employees + 'shift'; // URL de la API para compose
+
+    private apiUrl = PORTEmployees + 'employees'; // URL de la API para compose
+    private apiUrlSHIFT = PORTEmployees + 'shift'; // URL de la API para compose
+   
   private http = inject(HttpClient);
   private selectedEmployee = new BehaviorSubject<Employee | null>(null);
   private mapperService = inject(MapperService);
 
-  private apiUrlSHIFT = 'http://localhost:8007/shift'; // URL de la API para empleados
+ 
 
 
   //FILTROS DASHBOARD

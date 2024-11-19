@@ -20,13 +20,13 @@ import { BillService } from '../../../services/bill.service';
 import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
 import BillType from '../../../models/billType';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { NgModalComponent } from '../../modals/ng-modal/ng-modal.component';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { BillInfoComponent } from '../../modals/info/bill-info/bill-info.component';
 import { NewCategoryModalComponent } from '../../modals/bills/new-category-modal/new-category-modal.component';
 import { MainContainerComponent, ToastService } from 'ngx-dabd-grupo01';
 import { NgArrayPipesModule } from 'ngx-pipes';
-import { NgOptionComponent, NgSelectComponent } from '@ng-select/ng-select';
+import { NgSelectComponent } from '@ng-select/ng-select';
+import {SessionService} from '../../../../users/services/session.service';
 
 @Component({
   selector: 'app-expenses-add-bill',
@@ -36,18 +36,17 @@ import { NgOptionComponent, NgSelectComponent } from '@ng-select/ng-select';
     ReactiveFormsModule,
     AsyncPipe,
     NgClass,
-    RouterLink,
     NgArrayPipesModule,
     MainContainerComponent,
     NgSelectComponent,
-    NgOptionComponent,
   ],
   templateUrl: './expenses-add-bill.component.html',
   styleUrl: './expenses-add-bill.component.css',
   providers: [DatePipe],
 })
 export class ExpensesAddBillComponent implements OnInit {
-  // #region Dependencies
+
+  //#region Dependencies
   private fb = inject(FormBuilder);
   private categoryService = inject(CategoryService);
   private providerService = inject(ProviderService);
@@ -56,25 +55,28 @@ export class ExpensesAddBillComponent implements OnInit {
   private modalService = inject(NgbModal);
   private toastService = inject(ToastService);
   private router = inject(Router);
-  // #endregion
+  private readonly sessionService = inject(SessionService)
+  //#endregion
 
-  // #region Form Groups and ViewChild
+  //#region Form Groups and ViewChild
   billForm: FormGroup;
   newCategoryForm: FormGroup;
   @ViewChild('newCategoryModal') newCategoryModal: any;
-  // #endregion
+  //#endregion
 
-  // #region Properties
+  //#region Properties
   searchTerm: any;
   periodId: number = 0;
   categories: Observable<Category[]> | undefined;
   providers: Observable<Provider[]> | undefined;
   periods: Observable<Period[]> | undefined;
   types: Observable<BillType[]> | undefined;
-  // #endregion
+  userID: number;
+  //#endregion
 
   constructor() {
-    // #region Initialize Forms
+    this.userID = Number(this.sessionService.getItem('user').id);
+    //#region Initialize Forms
     this.billForm = this.fb.group({
       categoryId: ['', Validators.required],
       description: [''],
@@ -97,10 +99,10 @@ export class ExpensesAddBillComponent implements OnInit {
     this.billForm.get('period')?.valueChanges.subscribe(() => {
       this.billForm.get('date')?.updateValueAndValidity();
     });
-    // #endregion
+    //#endregion
   }
 
-  // #region Lifecycle Hooks
+  //#region Lifecycle Hooks
   ngOnInit() {
     this.loadSelectOptions();
     this.periods = this.periods?.pipe(
@@ -112,9 +114,9 @@ export class ExpensesAddBillComponent implements OnInit {
       )
     );
   }
-  // #endregion
+  //#endregion
 
-  // #region Validators
+  //#region Validators
   dateValidator(control: AbstractControl): ReturnType<AsyncValidatorFn> {
     if (!control.value) return Promise.resolve(null);
 
@@ -126,24 +128,24 @@ export class ExpensesAddBillComponent implements OnInit {
       .validateDate(control.value, numericPeriodId)
       .pipe(map((isValid) => (!isValid ? { invalidDate: true } : null)));
   }
-  // #endregion
+  //#endregion
 
-  // #region Data Loading
+  //#region Data Loading
   loadSelectOptions() {
     this.categories = this.categoryService.getAllCategories();
     this.providers = this.providerService.getAllProviders();
     this.periods = this.periodService.getOpenPeriods();
     this.types = this.billService.getBillTypes();
   }
-  // #endregion
+  //#endregion
 
-  // #region Utility Functions
+  //#region Utility Functions
   comparePeriodFn(period1: any, period2: any) {
     return period1 && period2 ? period1.id === period2.id : period1 === period2;
   }
-  // #endregion
+  //#endregion
 
-  // #region Form Submission
+  //#region Form Submission
   onSubmit() {
     if (this.billForm.valid) {
       of(this.billForm.value)
@@ -154,7 +156,6 @@ export class ExpensesAddBillComponent implements OnInit {
             billRequest.description = formValue.description;
             billRequest.amount = Number(formValue.amount);
             billRequest.date = `${formValue.date}T00:00:00Z`;
-            //billRequest.status = 'Nuevo';
             billRequest.supplierId = Number(formValue.supplierId);
             billRequest.supplierEmployeeType = 'SUPPLIER';
             billRequest.typeId = Number(formValue.typeId);
@@ -162,14 +163,13 @@ export class ExpensesAddBillComponent implements OnInit {
             billRequest.linkPdf = '';
             return billRequest;
           }),
-          switchMap((billRequest) => this.billService.addBill(billRequest))
+          switchMap((billRequest) => this.billService.addBill(billRequest, this.userID))
         )
         .subscribe({
           next: (response: any) => {
             this.toastService.sendSuccess(
               'El gasto se ha añadido correctamente.'
             );
-            this.resetForm();
             this.router.navigate([`expenses/gastos`]);
           },
           error: (error: any) => {
@@ -188,19 +188,15 @@ export class ExpensesAddBillComponent implements OnInit {
       );
     }
   }
-  // #endregion
+  //#endregion
 
+  //#region Form Utilities
   onBack() {
     this.router.navigate([`expenses/gastos`]);
   }
-  // #region Form Utilities
-  resetForm() {
-    //this.billForm.reset();
-    //this.loadSelectOptions();
-  }
-  // #endregion
+  //#endregion
 
-  // #region Modal Handling
+  //#region Modal Handling
   openNewCategoryModal() {
     const modalRef = this.modalService.open(NewCategoryModalComponent, {
       ariaLabelledBy: 'modal-basic-title',
@@ -227,5 +223,5 @@ export class ExpensesAddBillComponent implements OnInit {
       scrollable: true,
     });
   }
-  // #endregion
+  //#endregion
 }

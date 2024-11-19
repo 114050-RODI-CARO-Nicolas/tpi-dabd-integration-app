@@ -1,5 +1,5 @@
 <app-main-container title="Reglamento">
-  @if (userHasRole('FINES_ADMIN')) {
+  @if (userDataService.userHasRole(userData, 'FINES_ADMIN')) {
   <div class="w-100 d-flex justify-content-end mb-3">
     @if (editMode) {
     <button class="btn btn-danger" (click)="toggleEdit()">

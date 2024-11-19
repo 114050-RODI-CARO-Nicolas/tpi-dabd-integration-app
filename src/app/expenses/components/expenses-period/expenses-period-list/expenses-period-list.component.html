@@ -1,9 +1,8 @@
 <app-main-container
-  title="Lista de Periodos"
+  title="listado de Periodos"
   (infoButtonClick)="showModal()"
 >
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <!-- Sección de búsqueda y filtros -->
         <div class="d-flex align-items-center mb-2" role="group">
             <div class="col-sm-12 col-md-8 col-xl-12">
                 <div class="input-group">
@@ -22,12 +21,8 @@
                 </div>
             </div>
         </div>
-        <!-- Botones de Activo, Inactivo, Todo y "+" en el mismo grupo -->
         <div class="d-flex align-items-center">
-            <!-- Botón "+" -->
             <button type="button" class="btn btn-outline-primary" (click)="newPeriod(null, null)">+</button>
-
-            <!-- Línea vertical y botones de exportación -->
             <div class="vertical-line mx-3"></div>
             <button class="btn btn-success me-2" (click)="downloadTable()">
                 <i class="bi bi-file-earmark-excel"></i>
@@ -217,7 +212,7 @@
       [alertTitle]="'Confirmación requerida'"
       [alertType]="'info'"
       [alertMessage]="
-        'Se muestra una lista con todos los periodos, con su estado y sus montos de liquidaciones de expensas tanto ordinarias como extraordinarias. En la fila del periodo se visualizan distintas acciones para cerrar los periodos en vigencia y poder visualizar mayor detalle de los mismos.'
+        'Se muestra una listado con todos los periodos, con su estado y sus montos de liquidaciones de expensas tanto ordinarias como extraordinarias. En la fila del periodo se visualizan distintas acciones para cerrar los periodos en vigencia y poder visualizar mayor detalle de los mismos.'
       "
       [alertVariant]="'default'"
       [contentPlacement]="'top'"

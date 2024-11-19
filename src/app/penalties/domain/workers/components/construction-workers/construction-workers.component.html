@@ -2,7 +2,7 @@
   <button
     class="btn btn-danger btn-sm me-2"
     (click)="unAssignWorker(item)"
-    [disabled]="!userHasRole('OWNER')"
+    [disabled]="!userDataService.userHasRole(userData, 'OWNER')"
   >
     Remover
   </button>
@@ -21,7 +21,7 @@
     (headerButtonClick)="openFormModal()"
     [showSearchBar]="false"
     [showHeaderButton]="
-      userHasRole('OWNER') && constructionStatus !== 'COMPLETED'
+      userDataService.userHasRole(userData, 'OWNER') && constructionStatus !== 'COMPLETED'
     "
     [headerButtonIcon]="'bi bi-plus'"
     [headerButtonText]="''"

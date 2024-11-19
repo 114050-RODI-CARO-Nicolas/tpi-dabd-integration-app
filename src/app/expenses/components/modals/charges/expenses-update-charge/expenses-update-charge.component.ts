@@ -10,6 +10,10 @@ import Lot from '../../../../models/lot';
 import { CommonModule } from '@angular/common';
 import Period from '../../../../models/period';
 import { forkJoin, map, Observable, tap } from 'rxjs';
+import { User } from '../../../../models/user';
+import { StorageService } from '../../../../services/storage.service';
+import { URLTargetType } from '../../../../../users/models/role';
+
 
 @Component({
   selector: 'app-expenses-update-charge',
@@ -19,6 +23,11 @@ import { forkJoin, map, Observable, tap } from 'rxjs';
   styleUrl: './expenses-update-charge.component.css',
 })
 export class ExpensesUpdateChargeComponent implements OnInit {
+  //VARIABLE DE USER
+  user : User;
+  rolCode: boolean= false;
+  private storage = inject(StorageService);
+
   chargeForm: FormGroup;
   private chargeService = inject(ChargeService);
   public activeModal = inject(NgbActiveModal);
@@ -43,9 +52,13 @@ export class ExpensesUpdateChargeComponent implements OnInit {
       amount: [{ value: '', disabled: true }, Validators.required],
       description: [{ value: '', disabled: true }],
     });
+    this.user = this.storage.getFromSessionStorage('user') as User;
+
+    this.rolCode = this.user.value.roles.filter(rol => rol.code === URLTargetType.FINANCE).length == 1 ? true : false
   }
 
   ngOnInit() {
+    this.rolCode = this.user.value.roles.filter(rol => rol.code === URLTargetType.FINANCE).length == 1 ? true : false
     this.loadSelect();
     this.loadCategoryCharge();
     this.loadData();
@@ -138,13 +151,11 @@ export class ExpensesUpdateChargeComponent implements OnInit {
         ...this.chargeForm.value,
       };
       const charge = this.camelToSnake(updatedCharge);
-      this.chargeService.updateCharge(updatedCharge).subscribe(
+      this.chargeService.updateCharge(updatedCharge,this.user.value.id).subscribe(
         (response) => {
-          console.log('Cargo actualizado con éxito:', response);
           this.activeModal.close(true);
         },
         (error) => {
-          console.error('Error al actualizar el cargo:', error);
         }
       );
     }

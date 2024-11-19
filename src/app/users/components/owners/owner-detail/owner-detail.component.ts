@@ -44,9 +44,9 @@ export class OwnerDetailComponent implements OnInit {
     ownerType: new FormControl({value:'', disabled: true}, [Validators.required]),
     documentNumber: new FormControl({value:'', disabled: true}, [Validators.required, Validators.pattern('^[0-9]*$')]),
     documentType: new FormControl({value:'', disabled: true}, [Validators.required]),
-    cuit: new FormControl({value:'', disabled: true}, [Validators.required, Validators.pattern('^[0-9]*$')]),
-    bankAccount: new FormControl({value:'', disabled: true}, [Validators.required, Validators.pattern('^[0-9]*$')]),
-    birthdate: new FormControl({value:'', disabled: true}, [Validators.required]), // falta valdiar que sea pasada
+    cuit: new FormControl({value:'', disabled: true}, [Validators.pattern('^[0-9]*$')]),
+    bankAccount: new FormControl({value:'', disabled: true}, [Validators.pattern('^[0-9]*$')]),
+    birthdate: new FormControl({value:'', disabled: true}, [Validators.required]),
     kycStatus: new FormControl({value:StateKYC.INITIATED, disabled: true}),
     isActive: new FormControl({value:true, disabled: true}),
     contactsForm: new FormArray([]),

@@ -12,8 +12,6 @@ import {
   NgbInputDatepicker,
   NgbModal,
 } from '@ng-bootstrap/ng-bootstrap';
-import { CadastreService } from '../../../../cadastre/services/cadastre.service';
-import { Plot } from '../../../../cadastre/plot/models/plot.model';
 import {
   FormBuilder,
   FormGroup,
@@ -28,6 +26,8 @@ import { CommonModule, NgClass } from '@angular/common';
 import { ClaimDTO } from '../../../claim/models/claim.model';
 import { TruncatePipe } from '../../../../../shared/pipes/truncate.pipe';
 import { ToastService } from 'ngx-dabd-grupo01';
+import { PlotService } from '../../../../../../users/services/plot.service';
+import { Plot } from '../../../../../../users/models/plot';
 
 @Component({
   selector: 'app-new-infraction-modal',
@@ -46,9 +46,9 @@ import { ToastService } from 'ngx-dabd-grupo01';
 export class NewInfractionModalComponent {
   //services
   activeModal = inject(NgbActiveModal);
-  private cadastreService = inject(CadastreService);
   private sanctionService = inject(SanctionTypeService);
   private infractionService = inject(InfractionServiceService);
+  private plotService = inject(PlotService);
 
   toastService = inject(ToastService);
 
@@ -61,7 +61,6 @@ export class NewInfractionModalComponent {
   @Input() plotId: number | undefined;
   @Input() userId: number | undefined;
 
-
   description: string | undefined;
 
   // Modal logic
@@ -69,11 +68,7 @@ export class NewInfractionModalComponent {
   closeResult = '';
 
   open(content: TemplateRef<any>) {
-    this.cadastreService.getPlots().subscribe({
-      next: (response) => {
-        this.plots = response.content;
-      },
-    });
+    this.loadPlots();
 
     this.sanctionService.getPaginatedSanctionTypes(1, 10).subscribe({
       next: (response) => {
@@ -96,6 +91,14 @@ export class NewInfractionModalComponent {
     }
   }
 
+  loadPlots() {
+    this.plotService.getAllPlots(0, 100000, true).subscribe((response) => {
+      if (response) {
+        this.plots = response.content;
+      }
+    });
+  }
+
   submitInfraction() {
     if (this.plotId && this.sanctionTypeNumber && this.description) {
       const newInfraction: InfractionDto = {
@@ -105,18 +108,20 @@ export class NewInfractionModalComponent {
         claims_ids: this.claims.map((claim) => claim.id),
       };
 
-      this.infractionService.createInfraction(newInfraction, this.userId!).subscribe({
-        next: (response) => {
-          this.toastService.sendSuccess(
-            'Infracción ' + response.id + ' creada exitosamente'
-          );
+      this.infractionService
+        .createInfraction(newInfraction, this.userId!)
+        .subscribe({
+          next: (response) => {
+            this.toastService.sendSuccess(
+              'Infracción ' + response.id + ' creada exitosamente'
+            );
 
-          this.activeModal.close(response);
-        },
-        error: (error) => {
-          this.toastService.sendError('Error al crear la infracción');
-        },
-      });
+            this.activeModal.close(response);
+          },
+          error: (error) => {
+            this.toastService.sendError('Error al crear la infracción');
+          },
+        });
     } else {
     }
   }

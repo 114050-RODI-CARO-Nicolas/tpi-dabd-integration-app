@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { PeriodService } from '../../../../services/period.service';
 import { ToastService } from 'ngx-dabd-grupo01';
+import { StorageService } from '../../../../services/storage.service';
+import { User } from '../../../../models/user';
 
 function periodValidator(nextDate: string): ValidatorFn {
   return (control) => {
@@ -47,6 +49,7 @@ export class DatePeriodModalComponent implements OnInit {
   period: FormGroup;
 
   private readonly toastService = inject(ToastService);
+  private readonly storage = inject(StorageService)
 
   constructor(
     private formBuilder: FormBuilder,
@@ -73,18 +76,20 @@ export class DatePeriodModalComponent implements OnInit {
 
   savePeriod() {
     if (this.period.valid) {
+      let user = this.storage.getFromSessionStorage('user') as User;
+
       const period = { end_date: new Date(this.period.value.endDate).toISOString() };
 
       let saveObservable;
 
       if (this.id != null) {
         saveObservable = this.id == null
-          ? this.periodService.new(period)
-          : this.periodService.updatePeriod(this.id, period);
+          ? this.periodService.new(period, user.value.id)
+          : this.periodService.updatePeriod(this.id, period, user.value.id);
       } else {
         saveObservable = this.id == null
-          ? this.periodService.new(period)
-          : this.periodService.new(period);
+          ? this.periodService.new(period, user.value.id)
+          : this.periodService.new(period, user.value.id);
       }
 
       saveObservable.subscribe({

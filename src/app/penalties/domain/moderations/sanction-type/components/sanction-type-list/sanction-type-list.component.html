@@ -1,5 +1,5 @@
 <ng-template #actionsTemplate let-item>
-  @if(userHasRole('FINES_ADMIN')) {
+  @if(userDataService.userHasRole(userData, 'FINES_ADMIN')) {
   <button
     class="btn btn-warning btn-sm me-2"
     (click)="goToDetails(item.id, 'edit')"
@@ -38,11 +38,11 @@
     (headerButtonClick)="openFormModal()"
     [headerButtonIcon]="'bi bi-plus'"
     [headerButtonText]="''"
-    [showHeaderButton]="userHasRole('FINES_ADMIN')"
+    [showHeaderButton]="userDataService.userHasRole(userData, 'FINES_ADMIN')"
     [showExportOptions]="false"
     [showTableFiltersButton]="false"
   >
-    @if (userHasRole('FINES_ADMIN')){
+    @if (userDataService.userHasRole(userData, 'FINES_ADMIN')){
     <app-appeal-days-form></app-appeal-days-form>
     }
   </app-table>

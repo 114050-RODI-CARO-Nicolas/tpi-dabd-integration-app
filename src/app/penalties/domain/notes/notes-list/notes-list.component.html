@@ -14,7 +14,7 @@
     [headerButtonText]="'Nuevo'"
     (headerButtonClick)="openFormModal()"
     [showSearchBar]="false"
-    [showHeaderButton]="userHasRole('FINES_ADMIN')"
+    [showHeaderButton]="userDataService.userHasRole(userData, 'FINES_ADMIN')"
   >
   </app-table>
 </div>

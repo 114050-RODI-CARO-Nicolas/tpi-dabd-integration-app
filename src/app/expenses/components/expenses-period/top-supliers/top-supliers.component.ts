@@ -1,6 +1,6 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {ReportPeriodService} from "../../../services/report-period/report-period.service";
-import {MainContainerComponent, TableFiltersComponent} from "ngx-dabd-grupo01";
+import {MainContainerComponent, TableFiltersComponent, ToastService} from "ngx-dabd-grupo01";
 import {CurrencyPipe, NgForOf, NgIf} from "@angular/common";
 
 @Component({
@@ -9,8 +9,6 @@ import {CurrencyPipe, NgForOf, NgIf} from "@angular/common";
   imports: [
     MainContainerComponent,
     TableFiltersComponent,
-    NgIf,
-    NgForOf,
     CurrencyPipe
   ],
   templateUrl: './top-supliers.component.html',
@@ -20,6 +18,7 @@ export class TopSupliersComponent implements OnInit{
   topSuppliers: any[] = [];
   filteredSuppliers: any[] = [];
   private reportPeriodService = inject(ReportPeriodService);
+  private toastService = inject(ToastService);
 
 
 
@@ -29,13 +28,13 @@ export class TopSupliersComponent implements OnInit{
   }
 
   loadTopSuppliers() {
-    // Aquí debes cargar los datos. Asumo que reportPeriodService te da acceso a los datos
+    
     this.reportPeriodService.getReportPeriods([1, 2, 3]).subscribe({
       next: (data) => {
         this.processTopSuppliers(data);
       },
       error: (err) => {
-        console.error('Error loading suppliers', err);
+        this.toastService.sendError('Error cargando los top proveedores');
       },
     });
   }

@@ -9,7 +9,6 @@ import {
   Filter, FilterConfigBuilder,
   MainContainerComponent,
   TableColumn,
-  TableComponent,
   TableFiltersComponent,
   ToastService
 } from "ngx-dabd-grupo01";
@@ -25,6 +24,9 @@ import { DeleteCategoryModalComponent } from '../../modals/charges/category/dele
 import { NewCategoryChargeModalComponent } from '../../modals/charges/category/new-categoryCharge-modal/new-categoryCharge-modal.component';
 import { ExpensesModalComponent } from '../../modals/expenses-modal/expenses-modal.component';
 import { CategoryChargeInfoComponent } from '../../modals/info/category-charge-info/category-charge-info.component';
+import { StorageService } from '../../../services/storage.service';
+import { User } from '../../../models/user';
+import { URLTargetType } from '../../../../users/models/role';
 
 @Component({
   selector: 'app-expenses-list-category-charges',
@@ -40,6 +42,12 @@ import { CategoryChargeInfoComponent } from '../../modals/info/category-charge-i
   styleUrl: './expenses-list-categorycharge.component.css'
 })
 export class ExpensesListCategoryChargesComponent {
+  private storage = inject(StorageService);
+
+  //VARIABLE DE USER
+  user: User | undefined;
+  rolCode: boolean= false;
+  
 getStatusBadgeClass(arg0: string) {
 throw new Error('Method not implemented.');
 }
@@ -141,6 +149,10 @@ throw new Error('Method not implemented.');
   };
 
   ngOnInit(): void {
+    this.user = this.storage.getFromSessionStorage('user') as User;
+
+    this.rolCode = this.user.value.roles.filter(rol => rol.code === URLTargetType.FINANCE || rol.code === URLTargetType.SUPERADMIN ).length == 1 ? true : false
+   
     this.searchParams = { 'isDeleted':'false' };
     this.cargarPaginado();
   }
@@ -156,15 +168,11 @@ throw new Error('Method not implemented.');
     const status = this.selectedStatus || undefined;
     const type = this.TypeAmount || undefined;
     const excluingFines = this.excluingFines || false ;
-    debugger
-    console.log('El tipo es ' + type)
     this.chargesServices
       .getCategoryChargesPagination(this.currentPage, this.pageSize, type!, status!, excluingFines)
       .subscribe((response) => {
-        debugger
         this.categories = response.content;
         this.categories = this.keysToCamel(this.categories) as CategoryCharge[]; //Cambiar de snake_Case a camelCase
-        console.log('Categoria en : '+ this.categories);
         this.totalPages = response.totalPages;
         this.totalItems = response.totalElements;
         this.currentPage = response.number;
@@ -367,7 +375,6 @@ filterChange(event: Record<string, any>) {
   this.selectedStatus = event['isDeleted'] || null;
   this.excluingFines = event['includeFine'] || false
   this.TypeAmount = event['chargeType'] || null;
-  console.log('El tipo es' + this.TypeAmount)
   this.cargarPaginado();
 }
 

@@ -31,7 +31,7 @@ import { NotificationsComponent } from './notifications/modules/components/notif
     AsyncPipe,
     LoginComponent,
     NotificationsComponent,
-	ForgotPasswordComponent,
+    ForgotPasswordComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -39,6 +39,8 @@ import { NotificationsComponent } from './notifications/modules/components/notif
 export class AppComponent {
   // title = 'AppName';
   showNotifications: boolean = false;
+  // Modo Oscuro
+  darkModeEnabled = false;
   //variables
   navbarMenu: NavbarItem[] = [
     {
@@ -82,10 +84,10 @@ export class AppComponent {
               routerLink: '/invoices/stadistics/1',
             },
             {
-              label: 'Payments',
+              label: 'Pagos',
               routerLink: '/invoices/stadistics/2',
             },
-            
+
           ],
         },
 
@@ -108,7 +110,7 @@ export class AppComponent {
           label: 'Reportes',
           subMenu: [
             {
-              label: 'Gráficos de obras',
+              label: 'Reporte de obras',
               routerLink: '/penalties/constructions-report',
             },
           ],
@@ -158,7 +160,7 @@ export class AppComponent {
         {
           label: 'Gastos',
           subMenu: [
-            { label: 'Lista de gastos', routerLink: 'expenses/gastos' },
+            { label: 'Listado de gastos', routerLink: 'expenses/gastos' },
             {
               label: 'Categorias de gastos',
               routerLink: 'expenses/gastos/categorias',
@@ -172,7 +174,7 @@ export class AppComponent {
         {
           label: 'Cargos',
           subMenu: [
-            { label: 'Lista de cargos', routerLink: 'expenses/cargos' },
+            { label: 'Listado de cargos', routerLink: 'expenses/cargos' },
             {
               label: 'Categorias de cargos',
               routerLink: 'expenses/cargos/categorias',
@@ -182,7 +184,7 @@ export class AppComponent {
         {
           label: 'Periodo',
           subMenu: [
-            { label: 'Lista de periodos', routerLink: 'expenses/periodo' },
+            { label: 'Listado de periodos', routerLink: 'expenses/periodo' },
             { label: 'Histórico de expensas', routerLink: 'expenses/expenses' },
             {
               label: 'Reporte de expensas',
@@ -272,7 +274,10 @@ export class AppComponent {
           label: 'Administración',
           subMenu: [
             { label: 'Listado de Multas', routerLink: '/penalties/fine' },
-            { label: 'Listado de Infracciones', routerLink: '/penalties/infraction' },
+            {
+              label: 'Listado de Infracciones',
+              routerLink: '/penalties/infraction',
+            },
             { label: 'Listado de Reclamos', routerLink: '/penalties/claim' },
             {
               label: 'Tipos de Sanciones',
@@ -284,15 +289,15 @@ export class AppComponent {
           label: 'Reportes',
           subMenu: [
             {
-              label: 'Gráficos de Multas',
+              label: 'Reporte de Multas',
               routerLink: '/penalties/fine-report',
             },
             {
-              label: 'Gráficos de Infracciones',
+              label: 'Reporte de Infracciones',
               routerLink: '/penalties/infraction-report',
             },
             {
-              label: 'Gráficos de Reclamos',
+              label: 'Reporte de Reclamos',
               routerLink: '/penalties/claim-report',
             },
           ],
@@ -426,8 +431,8 @@ export class AppComponent {
   }
   //#endregion
 
-  openProfile(){
-    this.router.navigate(["/users/profile/detail"]);
+  openProfile() {
+    this.router.navigate(['/users/profile/detail']);
   }
 
   currentUrl$ = this.router.events.pipe(
@@ -435,8 +440,17 @@ export class AppComponent {
     map((event: NavigationEnd) => event.urlAfterRedirects)
   );
 
-
-  onNotificationClick(){
+  onNotificationClick() {
     this.showNotifications = !this.showNotifications;
   }
+
+  //Modo Oscuro
+  toggleDarkMode() {
+    this.darkModeEnabled = !this.darkModeEnabled;
+    if (this.darkModeEnabled) {
+      document.body.classList.add('dark-mode'); // Agrega clase al body
+    } else {
+      document.body.classList.remove('dark-mode'); // Remueve clase del body
+    }
+  }
 }

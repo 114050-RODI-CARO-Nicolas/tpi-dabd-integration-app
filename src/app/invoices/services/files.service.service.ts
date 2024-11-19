@@ -16,7 +16,9 @@ export class FilesServiceService {
   userId : Number;
 
   constructor(private http: HttpClient) {
-    this.userId = sessionStorage.getItem('userId') ? Number(sessionStorage.getItem('userId')) : 1;
+    let session = JSON.parse(sessionStorage.getItem('user')!)
+    this.userId = session.value.id;
+    console.log(this.userId);
   }
 
   downloadFile(fileUrl: string): Observable<Blob> {

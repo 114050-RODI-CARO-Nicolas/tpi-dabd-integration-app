@@ -8,12 +8,14 @@ import { environment } from '../../../environments/environment.prod';
   providedIn: 'root'
 })
 export class MercadoPagoServiceService {  
-  private apiUrl = environment.apis.payments + 'mercadopago/crear-preferencia';
+  private apiUrl = environment.apis.payments + 'payments/mercadopago/crear-preferencia';
   userId: number;
   // private apiUrl = 'http://localhost:8090/payments/mercadopago/crear-preferencia';// DEV
 
   constructor(private http: HttpClient) {
-    this.userId = sessionStorage.getItem('userId') ? Number(sessionStorage.getItem('userId')) : 1;
+      let session = JSON.parse(sessionStorage.getItem('user')!)
+      this.userId = session.value.id;
+      console.log(this.userId);
   }
 
   crearPreferencia(orderData: TicketPayDto): Observable<any> {

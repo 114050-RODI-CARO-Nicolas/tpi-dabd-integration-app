@@ -46,7 +46,8 @@
         </div>
         <div class="card-body" style="padding: 0.5rem;">
           <div class="list-group">
-            <div *ngFor="let announcement of announcements"
+            @for (announcement of announcements; track $index) {
+            <div
               class="list-group-item list-group-item-action flex-column align-items-start"
               [ngClass]="'priority-' + announcement.priority">
               <div class="d-flex w-100 justify-content-between align-items-start">
@@ -93,6 +94,7 @@
                 </div>
               </div>
             </div>
+          }
             <div class="pagination-container">
               <ngb-pagination [(page)]="currentPage" [pageSize]="pageSize" [collectionSize]="totalElements"
                 (pageChange)="onPageChange($event)">
@@ -112,27 +114,18 @@
         </div>
         <div class="card-body">
           <div class="row">
-            <!-- Clima actual -->
-            <div class="col-md-4">
-              <div class="weather-card text-center" *ngIf="weather">
-                <h6 class="text-muted">Hoy</h6>
-                <img [src]="'http://openweathermap.org/img/w/' + weather.weather[0].icon + '.png'" alt="Clima actual">
-                <h4>{{weather.main.temp.toFixed(1)}}°C</h4>
-                <p class="weather-description">{{weather.weather[0].description}}</p>
-                <p class="text-muted">Humedad: {{weather.main.humidity}}%</p>
-              </div>
-            </div>
 
-            <!-- Pronóstico próximos días -->
-            <div class="col-md-4" *ngFor="let day of forecast">
-              <div class="weather-card text-center">
-                <h6 class="text-muted">{{formatDate(day.dt_txt || '')}}</h6>
-                <img [src]="'http://openweathermap.org/img/w/' + day.weather[0].icon + '.png'" alt="Pronóstico">
-                <h4>{{day.main.temp.toFixed(1)}}°C</h4>
-                <p class="weather-description">{{day.weather[0].description}}</p>
-                <p class="text-muted">Humedad {{day.main.humidity}}%</p>
+            @for (day of forecast; track $index) {
+              <div class="col-md-4">
+                <div class="weather-card text-center">
+                  <h6 class="text-muted">{{($index === 0 ? "HOY" : formatDate(day.dt_txt || '')).toUpperCase()}}</h6>
+                  <img [src]="'http://openweathermap.org/img/w/' + day.weather[0].icon + '.png'" alt="Pronóstico">
+                  <h4>{{day.main.temp.toFixed(1)}}°C</h4>
+                  <p class="weather-description">{{day.weather[0].description}}</p>
+                  <p class="text-muted">Humedad {{day.main.humidity}}%</p>
+                </div>
               </div>
-            </div>
+            }
           </div>
         </div>
       </div>
@@ -189,11 +182,15 @@
           <label for="title" class="form-label fw-semibold">Título</label>
           <input type="text" class="form-control form-control-lg shadow-sm" id="title" name="title"
             placeholder="Ingrese el título del anuncio" [(ngModel)]="newAnnouncement.title" required #title="ngModel">
-          <div *ngIf="title.invalid && (title.dirty || title.touched)" class="text-danger mt-1">
-            <small *ngIf="title.errors?.['required']">
-              <i class="bi bi-exclamation-circle me-1"></i>El título es requerido
-            </small>
-          </div>
+            @if (title.invalid && (title.dirty || title.touched)) {
+              @if (title.errors?.['required']) {
+                <div class="text-danger mt-1">
+                  <small>
+                    <i class="bi bi-exclamation-circle me-1"></i>El título es requerido
+                  </small>
+                </div>
+              }
+            }
         </div>
 
         <div class="mb-4">
@@ -201,11 +198,15 @@
           <textarea class="form-control shadow-sm" id="content" rows="4" name="content"
             placeholder="Escriba el contenido del anuncio" [(ngModel)]="newAnnouncement.content" required
             #content="ngModel"></textarea>
-          <div *ngIf="content.invalid && (content.dirty || content.touched)" class="text-danger mt-1">
-            <small *ngIf="content.errors?.['required']">
-              <i class="bi bi-exclamation-circle me-1"></i>El contenido es requerido
-            </small>
-          </div>
+            @if (content.invalid && (content.dirty || content.touched)) {
+              @if (content.errors?.['required']) {
+                <div class="text-danger mt-1">
+                  <small>
+                    <i class="bi bi-exclamation-circle me-1"></i>El contenido es requerido
+                  </small>
+                </div>
+              }
+            }
         </div>
 
         <div class="mb-4">
@@ -217,11 +218,15 @@
             <option value="MEDIUM">Media</option>
             <option value="LOW">Baja</option>
           </select>
-          <div *ngIf="priority.invalid && (priority.dirty || priority.touched)" class="text-danger mt-1">
-            <small *ngIf="priority.errors?.['required']">
-              <i class="bi bi-exclamation-circle me-1"></i>La prioridad es requerida
-            </small>
-          </div>
+          @if (priority.invalid && (priority.dirty || priority.touched)) {
+            @if (priority.errors?.['required']) {
+              <div class="text-danger mt-1">
+                <small>
+                  <i class="bi bi-exclamation-circle me-1"></i>La prioridad es requerida
+                </small>
+              </div>
+            }
+          }
         </div>
       </form>
     </div>

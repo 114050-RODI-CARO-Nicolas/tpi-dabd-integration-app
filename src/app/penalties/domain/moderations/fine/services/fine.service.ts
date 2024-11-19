@@ -25,6 +25,7 @@ import { DatePipe } from '@angular/common';
 import { ExcelExportService } from 'ngx-dabd-grupo01';
 import { ClaimDTO } from '../../claim/models/claim.model';
 import { environment } from '../../../../../../environments/environment';
+import { UserDataService } from '../../../../shared/services/user-data.service';
 
 interface SearchResult {
   fines: Fine[];
@@ -46,6 +47,7 @@ interface State {
 export class FineService {
   private excelService = inject(ExcelExportService);
   datePipe = inject(DatePipe);
+  userDataService = inject(UserDataService);
 
   private _loading$ = new BehaviorSubject<boolean>(true);
   public _search$ = new Subject<void>();
@@ -95,10 +97,6 @@ export class FineService {
     this.totalItemsSubject.next(total);
   }
 
-  createClaim(claimData: FormData): Observable<any> {
-    return this.http.post(`${this.apiUrl}/claims`, claimData);
-  }
-
   public findAll(searchParams: any = {}): Observable<Fine[]> {
     let params = new HttpParams();
     Object.keys(searchParams).forEach((key) => {
@@ -127,22 +125,17 @@ export class FineService {
     return this.http.get<Fine>(`${this.apiUrl}/fine/${id}`);
   }
 
-  createFine(fine: FineDTO): Observable<Fine> {
-    return this.http.post<Fine>(`${this.apiUrl}/fine`, fine).pipe(
-      catchError((error) => {
-        // Puedes manejar el error aquí si lo deseas
-        console.error('Error en la solicitud de creación de multa:', error);
-        return throwError(() => new Error('Error en la creación de la multa')); // Lanzar el error
+  updateState(fine: UpdateFineStateDTO, fineId: number): Observable<Fine> {
+    return this.http
+      .put<Fine>(`${this.apiUrl}/fine/${fineId}/state`, fine, {
+        headers: this.userDataService.getHeaders(),
       })
-    );
-  }
-  updateState(fine: UpdateFineStateDTO): Observable<Fine> {
-    return this.http.put<Fine>(`${this.apiUrl}/fine/fine/state`, fine).pipe(
-      catchError((error) => {
-        console.error('Error en la solicitud de edición de multa:', error);
-        return throwError(() => new Error('Error en la edición de la multa'));
-      })
-    );
+      .pipe(
+        catchError((error) => {
+          console.error('Error en la solicitud de edición de multa:', error);
+          return throwError(() => new Error('Error en la edición de la multa'));
+        })
+      );
   }
 
   getValueByKeyForStatusEnum(value: string) {

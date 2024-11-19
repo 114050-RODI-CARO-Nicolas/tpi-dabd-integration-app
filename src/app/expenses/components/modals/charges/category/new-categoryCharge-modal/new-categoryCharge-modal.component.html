@@ -77,6 +77,7 @@
   </div>
 </div>
 <div class="modal-footer">
+  <button type="button" class="btn btn-danger" (click)="activeModal.dismiss()">Cancelar</button>
   <button type="button" class="btn" (click)="saveNewCategory()"
     [disabled]="newCategoryForm.invalid || newCategoryForm.pending" [ngClass]="{
       'btn-success': !newCategoryForm.pending,
@@ -85,7 +86,7 @@
     @if (newCategoryForm.pending) {
     <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
     }
-    Confirmar
+    Guardar
   </button>
-  <button type="button" class="btn btn-danger" (click)="activeModal.dismiss()">Cancelar</button>
+  
 </div>

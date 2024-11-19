@@ -35,7 +35,6 @@ import { ReportPeriod } from '../../../models/report-period/report-period';
 import Period from '../../../models/period';
 import { PeriodService } from '../../../services/period.service';
 import { CategoryData } from '../../../models/report-period/category-data';
-import { Resume } from '../../../models/report-period/resume';
 import { SupplierAmount } from '../../../models/report-period/SupplierAmount';
 import * as XLSX from 'xlsx';
 import { NgSelectComponent } from '@ng-select/ng-select';
@@ -91,12 +90,10 @@ export class ExpensesPeriodReportComponent implements OnInit {
   periodsFilter: FilterOption[] = [];
   lotss: FilterOption[] = [];
   types: FilterOption[] = [];
-
-  //lista principal del select
+  
   periodsList: Period[] = [];
   filterConfig: Filter[] = [];
 
-  //copia para las cards
   listPeriodFind: Period[] = [];
   expenses: Expense[] = [];
   searchTerm: string = '';
@@ -111,7 +108,7 @@ export class ExpensesPeriodReportComponent implements OnInit {
   valueKPI3: number = 0;
 
   constructor() {
-    Chart.register(...registerables); // Registra todos los elementos de chart.js
+    Chart.register(...registerables); 
   }
 
   ngOnInit(): void {
@@ -163,8 +160,8 @@ export class ExpensesPeriodReportComponent implements OnInit {
 
   loadReportPeriod(ids: number[]) {
     if (!ids || ids.length === 0) {
-      console.error('Error: no ids provided');
-      return; // Maneja el caso cuando no se proporcionan ids
+      this.toastService.sendError('No hay periodos seleccionados');
+      return; 
     }
     this.valueKPI1=0
     this.valueKPI2=0
@@ -178,7 +175,7 @@ export class ExpensesPeriodReportComponent implements OnInit {
         this.loadResume()
       },
       error: (error) => {
-        console.error('Error loading report periods:', error);
+        this.toastService.sendError('Error al cargar el reporte');
       },
     });
   }
@@ -211,7 +208,7 @@ export class ExpensesPeriodReportComponent implements OnInit {
   deletePeriod(index: number) {
     const periodToDelete = this.listPeriodFind[index];
     this.listPeriodFind.splice(index, 1);
-    this.createFilter(); // Actualiza el filtro de períodos
+    this.createFilter(); 
     if (this.listPeriodFind.length === 0) {
       (this.valueKPI1 = 0), (this.valueKPI3 = 0), (this.valueKPI2 = 0);
       this.reportPeriod = this.reportPeriod = {
@@ -275,7 +272,7 @@ export class ExpensesPeriodReportComponent implements OnInit {
             startDate: new Date(),
             endDate: new Date()
           },
-          ordinary: [],  // Asegúrate de ajustar estos arrays según los datos que realmente necesitas
+          ordinary: [], 
           extraordinary: [],
           supplierOrdinary: [],
           supplierExtraordinary: []
@@ -295,14 +292,12 @@ export class ExpensesPeriodReportComponent implements OnInit {
     if(!resume){
       return
     }
-    console.log(resume.expenditures.ordinary.totalAmount)
     if(this.typeGraphic==="General"){
       switch (this.typeFilter) {
         case 'Monto': {
           this.valueKPI1 = Number((resume.expenditures.ordinary.totalAmount / 1000000).toFixed(3));
           this.valueKPI2 = Number((resume.expenditures.extraordinary.totalAmount / 1000000).toFixed(3));
           this.valueKPI3 = Number((resume.expenditures.total.totalAmount / 1000000).toFixed(3));
-          console.log(resume);
           break;
   
         }
@@ -310,15 +305,12 @@ export class ExpensesPeriodReportComponent implements OnInit {
           this.valueKPI1 = resume.expenditures.ordinary.percentage;
           this.valueKPI2 = resume.expenditures.extraordinary.percentage;
           this.valueKPI3 = resume.expenditures.total.percentage;
-          console.log(resume);
-               break;
+          break;
         }
         case "Promedio": {
           this.valueKPI1 = Number((resume.expenditures.ordinary.average / 1000000).toFixed(3));
           this.valueKPI2 = Number((resume.expenditures.extraordinary.average / 1000000).toFixed(3));
           this.valueKPI3 = Number((resume.expenditures.total.average / 1000000).toFixed(3));
-  
-          console.log(resume);
           break;
         }
         default:
@@ -331,7 +323,6 @@ export class ExpensesPeriodReportComponent implements OnInit {
           this.valueKPI1 = Number((resume.categories.ordinary.totalAmount / 1000000).toFixed(3));
           this.valueKPI2 = Number((resume.categories.extraordinary.totalAmount / 1000000).toFixed(3));
           this.valueKPI3 = Number((resume.categories.total.totalAmount / 1000000).toFixed(3));
-          console.log(resume);
           break;
   
         }
@@ -339,15 +330,12 @@ export class ExpensesPeriodReportComponent implements OnInit {
           this.valueKPI1 = resume.categories.ordinary.percentage;
           this.valueKPI2 = resume.categories.extraordinary.percentage;
           this.valueKPI3 = resume.categories.total.percentage;
-          console.log(resume);
-               break;
+          break;
         }
         case "Promedio": {
           this.valueKPI1 = Number((resume.categories.ordinary.average / 1000000).toFixed(3));
           this.valueKPI2 = Number((resume.categories.extraordinary.average / 1000000).toFixed(3));
           this.valueKPI3 = Number((resume.categories.total.average / 1000000).toFixed(3));
-  
-          console.log(resume);
           break;
         }
         default:
@@ -361,23 +349,21 @@ export class ExpensesPeriodReportComponent implements OnInit {
           this.valueKPI1 = Number((resume.suppliers.ordinary.totalAmount / 1000000).toFixed(3));
           this.valueKPI2 = Number((resume.suppliers.extraordinary.totalAmount / 1000000).toFixed(3));
           this.valueKPI3 = Number((resume.suppliers.total.totalAmount / 1000000).toFixed(3));
-          console.log(resume);
+          
           break;
-  
         }
         case 'Porcentaje': {
           this.valueKPI1 = resume.suppliers.ordinary.percentage;
           this.valueKPI2 = resume.suppliers.extraordinary.percentage;
           this.valueKPI3 = resume.suppliers.total.percentage;
-          console.log(resume);
-               break;
+          
+          break;
         }
         case "Promedio": {
           this.valueKPI1 = Number((resume.categories.ordinary.average / 1000000).toFixed(3));
           this.valueKPI2 = Number((resume.categories.extraordinary.average / 1000000).toFixed(3));
           this.valueKPI3 = Number((resume.categories.total.average / 1000000).toFixed(3));
   
-          console.log(resume);
           break;
         }
         default:
@@ -400,9 +386,7 @@ export class ExpensesPeriodReportComponent implements OnInit {
     );
   }
 
-  /**
-   *
-   */
+  
   topSupplier: any;
 
   getTopOneSupplier() {
@@ -423,8 +407,7 @@ export class ExpensesPeriodReportComponent implements OnInit {
     this.router.navigate(['/gastos/top-proveedores']);
   }
 
-  //De aca para abajo son los metodos que crean los graficos
-  //grafico ordinarias/extraordinarias
+ 
   createChartResume(
     chartId: string,
     ordinary: CategoryData[],
@@ -498,7 +481,7 @@ export class ExpensesPeriodReportComponent implements OnInit {
       labels: labels,
       datasets: [
         {
-          label: 'Ordinarias ', // Etiqueta para las datos ordinarios
+          label: 'Ordinarias ',
           data: ordinaryValues,
           datalabels: {
             labels: {
@@ -506,9 +489,9 @@ export class ExpensesPeriodReportComponent implements OnInit {
             }
           },
           borderColor: 'rgba(13,110,253,1)',
-          backgroundColor: 'rgba(13, 110, 253, 0.2)', // Color de fondo para las áreas ordinarias
+          backgroundColor: 'rgba(13, 110, 253, 0.2)', 
           borderWidth: 1,
-          pointBackgroundColor: 'rgba(13, 110, 253, 0.2)', // Color de los puntos en las líneas
+          pointBackgroundColor: 'rgba(13, 110, 253, 0.2)',
         },
         {
           label: 'Extraordinarias ', 
@@ -519,7 +502,7 @@ export class ExpensesPeriodReportComponent implements OnInit {
           },
           data: extraordinaryValues,
           borderColor: 'rgba(220, 53, 69, 1)',
-          backgroundColor: 'rgba(220, 53, 69, 0.2)', // Color de fondo para las áreas extraordinarias
+          backgroundColor: 'rgba(220, 53, 69, 0.2)', 
           borderWidth: 1,
         },
       ],
@@ -546,45 +529,44 @@ export class ExpensesPeriodReportComponent implements OnInit {
 
     try {
       let canvas;
-      const parentElement = document.getElementById(element); // Obtén el elemento padre
+      const parentElement = document.getElementById(element); 
 
       if (parentElement) {
-        // Elimina todos los hijos del contenedor
         while (parentElement.firstChild) {
           parentElement.removeChild(parentElement.firstChild);
         }
 
-        // Crea el canvas y añádelo
+
         canvas = document.createElement('canvas');
-        canvas.id = chartId; // Asigna un ID único para cada gráfico
+        canvas.id = chartId; 
         canvas.height=75
-        parentElement.appendChild(canvas); // Añade el canvas al contenedor
+        parentElement.appendChild(canvas); 
       }
 
-      // Crear el gráfico con el nuevo canvas
+      
       const ctx = canvas?.getContext('2d');
       if (ctx) {
         const chart = new Chart(ctx, {
-          type: 'bar', // Gráfico de tipo torta
+          type: 'bar', 
           data: chartData,
           options: chartOptions,
         });
 
-        // Guardar la instancia del gráfico para posibles manipulaciones posteriores
+        
         this.chartInstances.push(chart);
-        return chart; // Devolver la instancia del gráfico
+        return chart;
       }
     } catch (err) {
     }
   }
 
-  //grafico proveedores
+ 
   createSuppliersChart(
     chartId: string,
     suppliers: SupplierAmount[],
     title: string
   ): any {
-    console.log(suppliers)
+    
     suppliers = suppliers
       .sort((a, b) => b.totalAmount - a.totalAmount)
       .slice(0, 5);
@@ -625,7 +607,7 @@ export class ExpensesPeriodReportComponent implements OnInit {
           backgroundColor:
             chartId == 'supplier-ordinary'
               ? 'rgba(98, 182, 143, 1)'
-              : 'rgba(255, 145, 158, 1)', // Color de fondo de las barras
+              : 'rgba(255, 145, 158, 1)', 
           borderColor:
             chartId == 'supplier-ordinary'
               ? 'rgba(98, 182, 143, 1)'
@@ -655,7 +637,7 @@ export class ExpensesPeriodReportComponent implements OnInit {
       },
       scales: {
         x: {
-          beginAtZero: true, // Asegura que el eje X comience en 0
+          beginAtZero: true,
         },
       },
     };
@@ -665,18 +647,18 @@ export class ExpensesPeriodReportComponent implements OnInit {
       const parentElement = document.getElementById(chartId);
 
       if (parentElement) {
-        // Elimina todos los hijos del contenedor
+        
         while (parentElement.firstChild) {
           parentElement.removeChild(parentElement.firstChild);
         }
 
-        // Crea el canvas y añádelo
+        
         canvas = document.createElement('canvas');
-        canvas.id = chartId; // Asigna un ID único para cada gráfico
-        parentElement.appendChild(canvas); // Añade el canvas al contenedor
+        canvas.id = chartId; 
+        parentElement.appendChild(canvas); 
       }
 
-      // Crear el gráfico con el nuevo canvas
+      
       const ctx = canvas?.getContext('2d');
       if (ctx) {
         const ordinaryChart = new Chart(ctx, {
@@ -685,9 +667,9 @@ export class ExpensesPeriodReportComponent implements OnInit {
           options: chartOptions,
         });
 
-        // Guardar la instancia del gráfico para posibles manipulaciones posteriores
+        
         this.chartInstances.push(ordinaryChart);
-        return ordinaryChart; // Devolver la instancia del gráfico
+        return ordinaryChart; 
       }
     } catch (err) {
     }
@@ -726,7 +708,7 @@ export class ExpensesPeriodReportComponent implements OnInit {
     }));
 
     if (!data) {
-      console.error('No data available for export');
+      this.toastService.sendError('No hay datos para exportar');
       return;
     }
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
@@ -737,17 +719,15 @@ export class ExpensesPeriodReportComponent implements OnInit {
         const cell = ws[`${col}${R + 1}`];
         if (cell) {
           if (col === 'D' || col === 'F') {
-            // Columnas de Amount y Average
             cell.z = '$0.00';
           } else if (col === 'E') {
-            // Columna de Percentage
             cell.z = '0.00%';
           }
         }
       }
     }
 
-    // Ajustar el tamaño de las columnas
+    
     ws['!cols'] = [
       { wch: 15 }, // Periodo
       { wch: 30 }, // Categoría

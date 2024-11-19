@@ -1,4 +1,4 @@
-import { Component, Input,OnInit } from '@angular/core';
+import { Component, inject, Input,OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -9,6 +9,9 @@ import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 import {NgClass} from "@angular/common";
 import { ChargeService } from '../../../../../services/charge.service';
 import { CategoryCharge } from '../../../../../models/charge';
+import { User } from '../../../../../models/user';
+import { URLTargetType } from '../../../../../../users/models/role';
+import { StorageService } from '../../../../../services/storage.service';
 
 
 @Component({
@@ -24,6 +27,10 @@ import { CategoryCharge } from '../../../../../models/charge';
 export class EditCategoryModalComponent implements OnInit{
   @Input() category!: CategoryCharge;
   editCategoryForm: FormGroup;
+  //VARIABLE DE USER
+  user : User;
+  rolCode: boolean= false;
+  private storage = inject(StorageService);
 
   constructor(
     private formBuilder: FormBuilder,
@@ -35,6 +42,9 @@ export class EditCategoryModalComponent implements OnInit{
       description: ['', Validators.required],
       amount_Sign: [{ value: '', disabled: true },Validators.required]
     });
+    this.user = this.storage.getFromSessionStorage('user') as User;
+
+    this.rolCode = this.user.value.roles.filter(rol => rol.code === URLTargetType.FINANCE).length == 1 ? true : false
   }
 
   ngOnInit() {
@@ -56,9 +66,8 @@ export class EditCategoryModalComponent implements OnInit{
         amountSign: this.editCategoryForm.get('amount_Sign')?.value
       };
 
-      this.categoryService.updateCategory(updatedCategory).subscribe({
+      this.categoryService.updateCategory(updatedCategory,this.user.value.id).subscribe({
         next: (response: any) => {
-          console.log('Actualizado correctamente', response);
           this.activeModal.close({
             success: true,
             message: 'La categoría se ha actualizado correctamente.',
@@ -66,7 +75,6 @@ export class EditCategoryModalComponent implements OnInit{
           });
         },
         error: (error: any) => {
-          console.error('Error en el update', error);
           let errorMessage = 'Ha ocurrido un error al actualizar la categoría. Por favor, inténtelo de nuevo.';
 
           if (error.status === 409) {

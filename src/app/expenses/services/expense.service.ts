@@ -55,7 +55,7 @@ export class ExpenseServiceService {
 
   }
   getByPeriod(periodId:number):Observable<Expense[]>{
-    //calcular y recuperar lista de expensas de un periodo
+    //calcular y recuperar listado de expensas de un periodo
     return this.http.post<Expense[]>(`${this.apiUrl}create/${periodId}`,null)
   }
   getWithoutFilters(periodId?: number, plotId?: number, typeId?: number): Observable<Expense[]> {

@@ -35,7 +35,6 @@ export class DeleteCategoryModalComponent {
           });
         },
         error: (error) => {
-          console.error('Error al eliminar la categoría:', error);
           this.activeModal.close({
             success: false,
             message: 'Ha ocurrido un error al eliminar la categoría. Por favor, inténtelo de nuevo.',

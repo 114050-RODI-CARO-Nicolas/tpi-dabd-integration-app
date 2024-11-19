@@ -22,9 +22,9 @@ export class ChargeService {
   private urlReport = `${PORT}report/charge`;
   constructor() {}
 
-  addCharge(charge: Charge): Observable<Charge> {
+  addCharge(charge: Charge, userId: number): Observable<Charge> {
     const headers = new HttpHeaders({
-      'x-user-id': '1'
+      'x-user-id': userId
     });
     return this.http.post<Charge>(this.apiUrl, charge, { headers });
   }
@@ -82,9 +82,9 @@ export class ChargeService {
     */
   }
 
-  updateCharge(charge: Charge): Observable<Charge> {
+  updateCharge(charge: Charge, userId: number): Observable<Charge> {
     const headers = new HttpHeaders({
-      'x-user-id': '1'
+      'x-user-id': userId
     });
     return this.http.put<Charge>(`${this.apiUrl}/${charge.chargeId}`, charge, {headers});
   }  
@@ -118,18 +118,18 @@ export class ChargeService {
     return this.getCategoryCharges(true);
   }
 
-  addCategory(categoryCharge : CategoryCharge) : Observable<CategoryCharge> {
+  addCategory(categoryCharge : CategoryCharge, userId: number) : Observable<CategoryCharge> {
     const headers = new HttpHeaders({
-      'x-user-id': '1'
+      'x-user-id': userId
     });
 
     //categoryCharge.amountSing = ChargeType.ABSOLUTE;
     return this.http.post<CategoryCharge>(this.categoryChargeUrl, categoryCharge, { headers });
   }
 
-  updateCategory(categoryCharge : CategoryCharge) : Observable<CategoryCharge> {
+  updateCategory(categoryCharge : CategoryCharge, userId: number) : Observable<CategoryCharge> {
     const headers = new HttpHeaders({
-      'x-user-id': '1'
+      'x-user-id': userId
     });
     return this.http.put<CategoryCharge>(`${this.categoryChargeUrl}/${categoryCharge.categoryChargeId}`, categoryCharge, { headers });
   }

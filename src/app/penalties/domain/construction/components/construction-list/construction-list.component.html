@@ -27,7 +27,7 @@
         >
           Ver detalle
         </button>
-        @if(!userHasRole('CONSTRUCTION_ADMIN')) {
+        @if(!userDataService.userHasRole(userData, 'CONSTRUCTION_ADMIN')) {
         <button
           ngbDropdownItem
           (click)="goToDetails(item.construction_id, 'edit')"
@@ -57,7 +57,7 @@
     [isLoading]="(isLoading$ | async) || false"
     (searchValueChange)="onSearchValueChange($event)"
     (headerButtonClick)="openFormModal()"
-    [showHeaderButton]="userHasRole('OWNER')"
+    [showHeaderButton]="userDataService.userHasRole(userData, 'OWNER')"
     [tableFilters]="filterConfig"
     (filterValueChange)="onFilterValueChange($event)"
     [showExportPdfButton]="false"

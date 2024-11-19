@@ -43,35 +43,6 @@ export class ExpensesReportChargesComponent {
 
   loadChargesData(): void {
     const periodId = this.selectPeriod;
-    // this.service.getReport(periodId).subscribe(report =>{
-
-    // })
-    /*this.service.getExpensesByLot().subscribe(expenses => {
-      console.log(expenses);
-      const lotNumbers = expenses.map(expense => expense.plotNumber);
-      const totalAmounts = expenses.map(expense => expense.totalAmount);
-
-      // Reasignar el objeto completo para forzar la detección de cambios
-      this.barChartData = {
-        labels: lotNumbers,
-        datasets: [
-          { data: totalAmounts, label: 'Distribución de Expensas por Lote' }
-        ]
-      }
-    });
-    this.service.getLotPercentage().subscribe(p => {
-      console.log(p);
-     const por = p.map(pe => {
-        pe = pe * 100 ;
-        return pe
-      })
-      this.pieChartData = {
-       labels: this.barChartData.labels,
-        datasets: [
-          {data: por , label: "Contribución de Expensas por Lote (%)" },
-        ]
-      }
-    })*/
   }
 
 }

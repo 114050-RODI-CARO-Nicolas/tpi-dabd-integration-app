@@ -19,7 +19,7 @@
     ngbTooltip="Aprobar"
     (click)="approveDocument(item)"
     [disabled]="
-      item.state === 'APPROVED' || currentConstructionStatus !== 'ON_REVISION' || !userHasRole('CONSTRUCTION_ADMIN')
+      item.state === 'APPROVED' || currentConstructionStatus !== 'ON_REVISION' || !userDataService.userHasRole(userData, 'CONSTRUCTION_ADMIN')
     "
   >
     <i class="bi bi-check-lg"></i>
@@ -30,7 +30,7 @@
     ngbTooltip="Rechazar"
     (click)="rejectDocument(item)"
     [disabled]="
-      item.state === 'REJECTED' || currentConstructionStatus !== 'ON_REVISION' || !userHasRole('CONSTRUCTION_ADMIN')
+      item.state === 'REJECTED' || currentConstructionStatus !== 'ON_REVISION' || !userDataService.userHasRole(userData, 'CONSTRUCTION_ADMIN')
     "
   >
     <i class="bi bi-x"></i>
@@ -51,7 +51,7 @@
     placement="top"
     ngbTooltip="Eliminar"
     (click)="deleteDocument(item)"
-    [disabled]="!userHasRole('OWNER') || currentConstructionStatus !== 'LOADING' && currentConstructionStatus !== 'REJECTED'" 
+    [disabled]="!userDataService.userHasRole(userData, 'OWNER') || currentConstructionStatus !== 'LOADING' && currentConstructionStatus !== 'REJECTED'" 
   >
     <i class="bi bi-trash"></i>
   </button>
@@ -65,7 +65,7 @@
     [showExportOptions]="false"
     [headerButtonIcon]="'bi bi-upload'"
     [headerButtonText]="'Subir documento'"
-    [showHeaderButton]="userHasRole('OWNER') && currentConstructionStatus === 'LOADING'"
+    [showHeaderButton]="userDataService.userHasRole(userData, 'OWNER') && currentConstructionStatus === 'LOADING'"
     (headerButtonClick)="openFormModal()"
     [showSearchBar]="false"
   >

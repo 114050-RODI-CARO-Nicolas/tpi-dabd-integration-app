@@ -561,27 +561,66 @@ onAccessSaved() {
     private cuitValidator(): ValidatorFn {
       return (control: AbstractControl) => {
         if (!control.value) return null;
-        const cuit = control.value.toString().replace(/\D/g, '');
         
-        if (cuit.length !== 11) {
+        // Eliminar caracteres no numéricos y convertir a string
+        const number = control.value.toString().replace(/\D/g, '');
+        
+        // Validar longitud
+        if (number.length !== 11) {
           return { invalidLength: 'CUIT/CUIL debe tener 11 dígitos' };
         }
-  
+    
+        // Convertir a array de números
+        const numberArray = number.split('').map(Number);
+        
+        // Obtener dígito verificador (último número)
+        const verificador = numberArray[10];
+    
+        // Multiplicadores para el cálculo
         const multiplicadores = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2];
+        
+        // Calcular suma de productos
         let suma = 0;
-  
         for (let i = 0; i < multiplicadores.length; i++) {
-          suma += parseInt(cuit[i]) * multiplicadores[i];
+          suma += numberArray[i] * multiplicadores[i];
         }
-  
-        const resto = suma % 11;
-        const digitoVerificador = 11 - resto;
-        const ultimoDigito = parseInt(cuit[10]);
-  
-        if (digitoVerificador !== ultimoDigito) {
-          return { invalidCheckDigit: 'Dígito verificador inválido' };
+    
+        // Calcular dígito verificador esperado
+        let digitoEsperado = 11 - (suma % 11);
+        
+        // Manejar casos especiales
+        if (digitoEsperado === 11) {
+          digitoEsperado = 0;
+        } else if (digitoEsperado === 10) {
+          return { 
+            invalidCheckDigit: 'CUIT/CUIL inválido - Verificador no puede ser 10' 
+          };
         }
-  
+    
+        // Comparar dígito calculado con el verificador
+        if (verificador !== digitoEsperado) {
+          return { 
+            invalidCheckDigit: 'Dígito verificador inválido',
+            expected: digitoEsperado,
+            received: verificador
+          };
+        }
+    
+        // Validar el tipo según si es CUIT o CUIL
+        const tipo = parseInt(number.substring(0, 2));
+        const tiposValidosCUIT = [30, 33, 34];
+        const tiposValidosCUIL = [20, 23, 24, 27];
+        
+        const docType = control.parent?.get('documentType')?.value;
+        
+        if (docType === DocumentType.CUIT && !tiposValidosCUIT.includes(tipo)) {
+          return { invalidType: 'Tipo de CUIT inválido' };
+        }
+        
+        if (docType === DocumentType.CUIL && !tiposValidosCUIL.includes(tipo)) {
+          return { invalidType: 'Tipo de CUIL inválido' };
+        }
+    
         return null;
       };
     }

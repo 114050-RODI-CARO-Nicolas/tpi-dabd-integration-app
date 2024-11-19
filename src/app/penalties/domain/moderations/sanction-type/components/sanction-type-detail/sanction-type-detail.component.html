@@ -154,7 +154,7 @@
     </div>
   </form>
   <hr style="color: #808080" />
-  @if(userHasRole('FINES_ADMIN')){ @if (editing) {
+  @if(userDataService.userHasRole(userData, 'FINES_ADMIN')){ @if (editing) {
   <div class="d-grid gap-2 d-md-flex justify-content-md-end">
     <button class="btn btn-danger" (click)="goBack()" type="button">
       Cancelar

@@ -93,10 +93,6 @@ export class ClaimListComponent {
     });
   }
 
-  userHasRole(role: string): boolean {
-    return this.userData?.roles.some((userRole) => userRole?.name === role);
-  }
-
   // Methods:
   ngOnInit(): void {
     this.loadUserData();
@@ -159,7 +155,7 @@ export class ClaimListComponent {
   }
 
   updateFiltersAccordingToUser() {
-    if (!this.userHasRole('FINES_ADMIN')) {
+    if (!this.userDataService.userHasRole(this.userData, 'FINES_ADMIN')) {
       this.searchParams = {
         ...this.searchParams,
         plotsIds: this.userData?.plotIds,

@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Company } from '../../../models/suppliers/company.model';
 import { CompanyService } from '../../../services/suppliers/company.service';
+import { ToastService } from 'ngx-dabd-grupo01';
 
 @Component({
   selector: 'app-provider-type-update',
@@ -20,6 +21,8 @@ export class ProviderTypeUpdateComponent implements OnInit {
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     enabled: new FormControl(true)
   });
+
+  private toastService = inject(ToastService);
 
   constructor(private companyService: CompanyService) {}
 
@@ -41,7 +44,7 @@ export class ProviderTypeUpdateComponent implements OnInit {
       const companyData: Company = {
         id: this.company?.id ?? 0,
         name: this.companyForm.value.name ?? '',
-        registration: this.company?.registration ?? new Date(),
+        registration: this.company?.registration ?? new Date().toISOString().split('T')[0],
         enabled: this.companyForm.value.enabled ?? true
       };
 
@@ -49,9 +52,11 @@ export class ProviderTypeUpdateComponent implements OnInit {
         // Update existing company
         this.companyService.updateCompany(companyData).subscribe({
           next: () => {
+            this.toastService.sendSuccess('Compañia actualizada correctamente.');
             this.onClose();
           },
           error: (error) => {
+            this.toastService.sendError('Error al actualizar la compañia.');
             console.error('Error updating company:', error);
           }
         });
@@ -59,9 +64,11 @@ export class ProviderTypeUpdateComponent implements OnInit {
         // Create new company
         this.companyService.createCompany(companyData).subscribe({
           next: () => {
+            this.toastService.sendSuccess('Compañia creada correctamente.');
             this.onClose();
           },
           error: (error) => {
+            this.toastService.sendError('Error al crear la compañia.');
             console.error('Error creating company:', error);
           }
         });

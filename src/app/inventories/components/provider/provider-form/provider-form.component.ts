@@ -8,6 +8,7 @@ import { Service } from '../../../models/suppliers/service.model';
 import { Company } from '../../../models/suppliers/company.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastService, MainContainerComponent } from 'ngx-dabd-grupo01';
+import { cuilValidator } from '../../validators/cuil.validator';
 
 @Component({
   selector: 'app-provider-form',
@@ -50,7 +51,7 @@ export class ProviderFormComponent implements OnInit {
       cuil: ['', [
         Validators.required,
         Validators.pattern(/^\d{11}$/),
-        this.cuilValidator()
+        cuilValidator()
       ]],
       service: [null, [
         Validators.required

@@ -10,6 +10,7 @@ import {
 import { environment } from '../../../../../environments/environment';
 import { SessionService } from '../../../../users/services/session.service';
 import { User } from '../../../../users/models/user';
+import { UserDataService } from '../../../shared/services/user-data.service';
 
 type OneConstruction = ConstructionResponseDto | undefined;
 
@@ -34,14 +35,9 @@ export class ConstructionService {
 
   private readonly http = inject(HttpClient);
 
-  private readonly sessionService = inject(SessionService);
+  private userDataService = inject(UserDataService);
 
-  getHeaders(): HttpHeaders {
-    const user: User = this.sessionService.getItem('user');
-    const userId = user?.id || 1;
 
-    return new HttpHeaders().set('x-user-id', userId.toString());
-  }
 
   getAllItems(): Observable<ConstructionResponseDto[]> {
     return this.http.get<ConstructionResponseDto[]>(this.apiUrl);
@@ -89,7 +85,7 @@ export class ConstructionService {
   ): Observable<ConstructionResponseDto> {
     return this.http
       .post<ConstructionResponseDto>(this.apiUrl, construction, {
-        headers: this.getHeaders(),
+        headers: this.userDataService.getHeaders(),
       })
       .pipe(
         map((newItem) => {
@@ -106,7 +102,7 @@ export class ConstructionService {
     return this.http.put<ConstructionResponseDto>(
       `${this.apiUrl}/status`,
       updateStatusRequestDto,
-      { headers: this.getHeaders() }
+      { headers: this.userDataService.getHeaders() }
     );
   }
 
@@ -125,7 +121,7 @@ export class ConstructionService {
     return this.http.put<ConstructionResponseDto>(
       `${this.apiUrl}/${id}`,
       updateStatusRequestDto,
-      { headers: this.getHeaders() }
+      { headers: this.userDataService.getHeaders() }
     );
   }
 
@@ -133,7 +129,7 @@ export class ConstructionService {
     return this.http.put<ConstructionResponseDto>(
       `${this.apiUrl}/approve/${id}`,
       {},
-      { headers: this.getHeaders() }
+      { headers: this.userDataService.getHeaders() }
     );
   }
 
@@ -141,7 +137,7 @@ export class ConstructionService {
     return this.http.put<ConstructionResponseDto>(
       `${this.apiUrl}/start/${id}`,
       {},
-      { headers: this.getHeaders() }
+      { headers: this.userDataService.getHeaders() }
     );
   }
 
@@ -149,11 +145,10 @@ export class ConstructionService {
     id: number,
     userId: number
   ): Observable<ConstructionResponseDto> {
-    const params = new HttpParams().set('userId', userId);
     return this.http.put<ConstructionResponseDto>(
       `${this.apiUrl}/complete/${id}`,
       {},
-      { params, headers: this.getHeaders() }
+      { headers: this.userDataService.getHeaders() }
     );
   }
 
@@ -161,7 +156,7 @@ export class ConstructionService {
     return this.http.put<ConstructionResponseDto>(
       `${this.apiUrl}/review/${id}`,
       {},
-      { headers: this.getHeaders() }
+      { headers: this.userDataService.getHeaders() }
     );
   }
 
@@ -172,7 +167,7 @@ export class ConstructionService {
     return this.http.put<ConstructionResponseDto>(
       `${this.apiUrl}/reject/${id}`,
       { rejectionReason: reason },
-      { headers: this.getHeaders() }
+      { headers: this.userDataService.getHeaders() }
     );
   }
 

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
 import { NgPipesModule } from 'ngx-pipes';
 import {
@@ -13,7 +13,6 @@ import {
   RadarController,
   ScatterController,
   ChartOptions,
-  ChartConfiguration,
   Chart
 } from 'chart.js';
 import { DatePipe } from '@angular/common';
@@ -33,7 +32,7 @@ Chart.register(BarController, PieController, RadarController, LineController, Po
 export class ExpensesPeriodsGraphicBarComponent implements OnChanges  {
   @Input() ordinary: CategoryData[] = [];
   @Input() extraordinary: CategoryData[] = [];
-  @Input() type: "Monto" | "Promedio" | "Porcentaje" = "Monto";  // Tipo de dato a mostrar
+  @Input() type: "Monto" | "Promedio" | "Porcentaje" = "Monto";
 
   chartData: ChartData<'bar'> = {
     labels: [],
@@ -43,28 +42,19 @@ export class ExpensesPeriodsGraphicBarComponent implements OnChanges  {
   chartType: ChartType = 'bar';
   chartOptions: ChartOptions = {
     responsive: true,
-    maintainAspectRatio: false, 
+    maintainAspectRatio: false,
 
     plugins: {
       title: {
         display: true,
         text: 'Comparación de Ordinarias y Extraordinarias',
       },
-      
+
       tooltip: {
         callbacks: {
           label: (tooltipItem) => `${tooltipItem.label}: ${tooltipItem.raw}`,
         },
-      },
-      legend: {
-        onClick: (event, legendItem) => {
-          if (legendItem.text === 'Ordinarias') {
-            console.log('Ordinarias');
-          } else if (legendItem.text === 'Extraordinarias') {
-            console.log('Extraordinarias');
-          }
-        },
-      },
+      }
     },
   };
 
@@ -78,7 +68,7 @@ export class ExpensesPeriodsGraphicBarComponent implements OnChanges  {
   prepareChartData() {
     let reportMap = new Map<string, Report>();
 
-    // Procesar la lista 'ordinary'
+    // Procesar la listado 'ordinary'
     this.ordinary.map((ord) => {
       let category = ord.category;
       let amount = this.getValueByType(ord.data); // Usamos la función que determina el valor según el tipo
@@ -99,7 +89,7 @@ export class ExpensesPeriodsGraphicBarComponent implements OnChanges  {
       }
     });
 
-    // Procesar la lista 'extraordinary'
+    // Procesar la listado 'extraordinary'
     this.extraordinary.map((extr) => {
       let category = extr.category;
       let amount = this.getValueByType(extr.data); // Usamos la función que determina el valor según el tipo
@@ -132,7 +122,7 @@ export class ExpensesPeriodsGraphicBarComponent implements OnChanges  {
             }
           },
           data: Array.from(reportMap.values()).map(report => report.ordinary),
-          
+
           backgroundColor: 'rgba(98, 182, 143, 1)',  // Color verde para Ordinarias
 
         },

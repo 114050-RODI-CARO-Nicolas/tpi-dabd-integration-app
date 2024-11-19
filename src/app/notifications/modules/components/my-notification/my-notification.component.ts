@@ -2,7 +2,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 import { Notification } from '../../../models/notifications/notification';
-import { Filter, FilterConfigBuilder, MainContainerComponent, TableFiltersComponent } from 'ngx-dabd-grupo01';
+import { Filter, FilterConfigBuilder, MainContainerComponent, TableFiltersComponent, ToastService } from 'ngx-dabd-grupo01';
 import { FormsModule } from '@angular/forms';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
@@ -19,6 +19,8 @@ import { NotificationService } from '../../../services/notification.service';
   styleUrl: './my-notification.component.css'
 })
 export class MyNotificationComponent implements OnInit {
+
+  private toastService = inject(ToastService);
 
   notifications: Notification[] = [];
   selectedNotification?: Notification;
@@ -66,14 +68,21 @@ export class MyNotificationComponent implements OnInit {
 
   loadNotifications(): void {
     this.notificationService.getNotificationByContact()
-      .subscribe(response => {
-        this.notifications = response;
-        this.filteredNotifications = [...this.notifications];
-        this.totalItems = this.filteredNotifications.length;
-      });
+      .subscribe(
+        {
+          next: (response) => {
+            this.notifications = response;
+            this.filteredNotifications = [...this.notifications];
+            this.totalItems = this.filteredNotifications.length;
+          },
+          error: (err) => {
+            console.log("Error al cargar las notificacione")
+            this.toastService.sendError("No se encontró un contacto válido en el usuario con la sesión inicada.")
+          }
+        }
+      );
   
-    this.filteredNotifications = [...this.notifications];
-    this.totalItems = this.filteredNotifications.length;
+
   }
 
 

@@ -53,9 +53,6 @@ export class SanctionTypeDetailComponent {
       }
     });
   }
-  userHasRole(role: string): boolean {
-    return this.userData?.roles?.some((userRole) => userRole?.name === role);
-  }
 
   constructor() {
     this.chargeTypeKeys = this.sanctionTypeService.getChargeTypeKeys();

@@ -30,7 +30,7 @@ export const INVOICE_ROUTES: Routes = [
         component: OwnerListExpensasComponent,
         canActivate: [authGuard],
         canMatch: [hasRoleCodeGuard],
-        data: { allowedRoleCodes: [URLTargetType.OWNER, URLTargetType.TENANT] }
+        data: { allowedRoleCodes: [URLTargetType.OWNER, URLTargetType.TENANT, URLTargetType.SUPERADMIN ] }
     },
     {
         path: 'stadistics',

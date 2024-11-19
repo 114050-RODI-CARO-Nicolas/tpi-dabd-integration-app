@@ -1,7 +1,7 @@
 export interface Company {
     id: number;
     name: string;
-    registration: Date;
+    registration: string;
     enabled: boolean;
 }
 

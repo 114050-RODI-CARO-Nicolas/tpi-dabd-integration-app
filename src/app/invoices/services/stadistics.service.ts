@@ -15,17 +15,20 @@ export class StadisticsService {
   private readonly baseUrlTicket = environment.apis.tickets + 'tickets';
   private readonly baseUrlpayments = environment.apis.payments + 'topPayments';
   private readonly baseUrlpaymentsReport = environment.apis.payments + 'report';
+  // private readonly baseUrl = 'https://lbsm4xgt-8080.brs.devtunnels.ms/report';//DEV
 
-  // private readonly baseUrl = 'http://localhost:8087/report'; // DEV
-  // private readonly baseUrlTicket = 'http://localhost:8087/tickets';
-  // private readonly baseUrlpayments = 'http://localhost:8092/report/topPayments';
-  // private readonly baseUrlpaymentsReport = 'http://localhost:8092/report';
+  // // private readonly baseUrl = 'http://localhost:8087/report'; // DEV
+  // private readonly baseUrlTicket = 'https://lbsm4xgt-8080.brs.devtunnels.ms/tickets/tickets';
+  // private readonly baseUrlpayments = 'https://lbsm4xgt-8080.brs.devtunnels.ms/report/topPayments';
+  // private readonly baseUrlpaymentsReport = 'https://lbsm4xgt-8080.brs.devtunnels.ms/report';
 
   // Endpoints específicos
   private readonly apiUrl = this.baseUrl;
   userId : Number;
   constructor(private http: HttpClient) {
-    this.userId = sessionStorage.getItem('userId') ? Number(sessionStorage.getItem('userId')) : 1;
+    let session = JSON.parse(sessionStorage.getItem('user')!)
+    this.userId = session.value.id;
+    console.log(this.userId);
   }
 
   getBaseReport(fechas: TicketFilter): Observable<Top5> {

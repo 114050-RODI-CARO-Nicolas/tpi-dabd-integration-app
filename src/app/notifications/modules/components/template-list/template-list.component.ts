@@ -300,7 +300,7 @@ export class TemplateListComponent implements OnInit {
 
 
   saveEmailTemplate() {
-    this.router.navigate(['/templates/new']);
+    this.router.navigate(['notifications/templates/new']);
   }
 
   exportToExcel() {

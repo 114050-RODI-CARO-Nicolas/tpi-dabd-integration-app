@@ -90,7 +90,6 @@ export class WorkerFormComponent {
       document: formValue.document,
       last_name: formValue.last_name,
       name: formValue.name,
-      created_by: 0,
     };
 
     this.workerService.registerWorker(worker).subscribe({
