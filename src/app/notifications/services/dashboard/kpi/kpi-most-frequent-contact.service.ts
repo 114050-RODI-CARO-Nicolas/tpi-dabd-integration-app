@@ -72,7 +72,7 @@ export class KpiMostFrequentContactService {
       const untilDate = filter.dateUntil ? new Date(filter.dateUntil) : null;
 
       return (!fromDate || notificationDate >= fromDate) &&
-             (!untilDate || notificationDate <= untilDate);
+        (!untilDate || notificationDate <= untilDate);
     });
   }
 
@@ -103,7 +103,7 @@ export class KpiMostFrequentContactService {
     return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
   }
 
-  private resetStats(): void {
+  resetStats(): void {
     this.frequentContact$.next({
       email: '',
       count: 0

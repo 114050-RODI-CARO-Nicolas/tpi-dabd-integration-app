@@ -1,17 +1,32 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ChartData, ChartOptions } from 'chart.js';
+import { NotificationService } from '../../notification.service';
+import { NotificationKPIViewedModel } from '../../../models/notifications/notification';
 
 interface WeeklyChartState {
   data: ChartData<'bar'>;
   options: ChartOptions<'bar'>;
 }
 
+interface DateFilter {
+  dateFrom: string | null;
+  dateUntil: string | null;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationWeeklyMetricService {
+
+  private notificationService = inject(NotificationService);
+
   private readonly WEEKDAYS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+  private currentFilter$ = new BehaviorSubject<DateFilter>({
+    dateFrom: null,
+    dateUntil: null
+  });
 
   private chartState$ = new BehaviorSubject<WeeklyChartState>({
     data: {
@@ -94,6 +109,58 @@ export class NotificationWeeklyMetricService {
       }
     }
   });
+
+  loadData(): void {
+    this.notificationService.getAllNotificationsNotFiltered()
+      .subscribe({
+        next: (notifications) => {
+          const filteredNotifications = this.applyDateFilter(notifications);
+          this.updateChartData(filteredNotifications);
+        },
+        error: (error) => {
+          console.error('Error loading notifications:', error);
+          this.resetData();
+        }
+      });
+  }
+
+  updateDateFilter(filter: DateFilter): void {
+    this.currentFilter$.next(filter);
+    this.loadData();
+  }
+
+  private applyDateFilter(notifications: NotificationKPIViewedModel[]): NotificationKPIViewedModel[] {
+
+    const filter = this.currentFilter$.value;
+
+    if (!filter.dateFrom && !filter.dateUntil) {
+      return notifications;
+    }
+
+    return notifications.filter(notification => {
+      const notificationDate = this.parseNotificationDate(notification.dateSend);
+      const fromDate = filter.dateFrom ? new Date(filter.dateFrom) : null;
+      const untilDate = filter.dateUntil ? new Date(filter.dateUntil) : null;
+
+      return (!fromDate || notificationDate >= fromDate) &&
+        (!untilDate || notificationDate <= untilDate);
+    });
+  }
+
+  resetData(): void {
+    const emptyState = {
+      ...this.chartState$.value,
+      data: {
+        ...this.chartState$.value.data,
+        datasets: [{
+          ...this.chartState$.value.data.datasets[0],
+          data: Array(7).fill(0)
+        }]
+      }
+    };
+
+    this.chartState$.next(emptyState);
+  }
 
   getChartData(): Observable<ChartData<'bar'>> {
     return new Observable(observer => {
