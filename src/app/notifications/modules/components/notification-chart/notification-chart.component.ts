@@ -264,10 +264,11 @@ export class NotificationChartComponent implements OnInit {
   }
 
   private updateDateFilter(): void {
-    
-    this.kpiViewedRateService.updateDateFilter({
+
+    this.kpiViewedRateService.updateFilters({
       dateFrom: this.dateFrom,
-      dateUntil: this.dateUntil
+      dateUntil: this.dateUntil,
+      selectedStatus: this.selectedStatus
     });
 
     this.kpiDailyAverageService.updateDateFilter({

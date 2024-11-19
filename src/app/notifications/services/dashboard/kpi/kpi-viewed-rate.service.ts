@@ -1,12 +1,12 @@
-import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { NotificationService } from '../../notification.service';
-import { NotificationKPIViewedModel } from '../../../models/notifications/notification';
+import { inject, Injectable } from "@angular/core";
+import { NotificationKPIViewedModel } from "../../../models/notifications/notification";
+import { BehaviorSubject, map, Observable } from "rxjs";
+import { NotificationService } from "../../notification.service";
 
 interface DateFilter {
   dateFrom: string | null;
   dateUntil: string | null;
+  selectedStatus: 'ALL' | 'SENT' | 'VISUALIZED';
 }
 
 interface NotificationStats {
@@ -16,19 +16,17 @@ interface NotificationStats {
   dateRange: DateFilter;
 }
 
-
-
 @Injectable({
   providedIn: 'root'
 })
 export class KpiViewedRateService {
-
   private notificationService = inject(NotificationService);
 
   private notifications: NotificationKPIViewedModel[] = [];
   private currentFilter$ = new BehaviorSubject<DateFilter>({
     dateFrom: null,
-    dateUntil: null
+    dateUntil: null,
+    selectedStatus: 'ALL'
   });
 
   private stats$ = new BehaviorSubject<NotificationStats>({
@@ -37,9 +35,11 @@ export class KpiViewedRateService {
     viewedRate: 0,
     dateRange: {
       dateFrom: null,
-      dateUntil: null
+      dateUntil: null,
+      selectedStatus: 'ALL'
     }
   });
+
 
   getViewedStats(): Observable<NotificationStats> {
     return this.stats$.asObservable();
@@ -65,13 +65,17 @@ export class KpiViewedRateService {
       });
   }
 
-  updateDateFilter(filter: DateFilter): void {
-    this.currentFilter$.next(filter);
+
+  updateFilters(filter: Partial<DateFilter>): void {
+    this.currentFilter$.next({
+      ...this.currentFilter$.value,
+      ...filter
+    });
     this.updateStats();
   }
 
   private updateStats(): void {
-    const filteredNotifications = this.applyDateFilter(this.notifications);
+    const filteredNotifications = this.applyFilters(this.notifications);
     const stats = this.calculateStats(filteredNotifications);
     this.stats$.next({
       ...stats,
@@ -79,21 +83,27 @@ export class KpiViewedRateService {
     });
   }
 
-  private applyDateFilter(notifications: NotificationKPIViewedModel[]): NotificationKPIViewedModel[] {
+  private applyFilters(notifications: NotificationKPIViewedModel[]): NotificationKPIViewedModel[] {
     const filter = this.currentFilter$.value;
 
-    if (!filter.dateFrom && !filter.dateUntil) {
-      return notifications;
-    }
-
     return notifications.filter(notification => {
-      const notificationDate = this.parseNotificationDate(notification.dateSend);
-      const fromDate = filter.dateFrom ? new Date(filter.dateFrom) : null;
-      const untilDate = filter.dateUntil ? new Date(filter.dateUntil) : null;
+      const matchesDate = this.dateFilter(notification, filter.dateFrom, filter.dateUntil);
+      const matchesStatus = filter.selectedStatus === 'ALL' ?
+        true : notification.statusSend === filter.selectedStatus;
 
-      return (!fromDate || notificationDate >= fromDate) &&
-             (!untilDate || notificationDate <= untilDate);
+      return matchesDate && matchesStatus;
     });
+  }
+
+  private dateFilter(notification: any, dateFrom: string | null, dateUntil: string | null): boolean {
+    if (!dateFrom && !dateUntil) return true;
+
+    const notificationDate = this.parseNotificationDate(notification.dateSend);
+    const fromDate = dateFrom ? new Date(dateFrom) : null;
+    const untilDate = dateUntil ? new Date(dateUntil) : null;
+
+    return (!fromDate || notificationDate >= fromDate) &&
+      (!untilDate || notificationDate <= untilDate);
   }
 
   private parseNotificationDate(dateString: string): Date {
@@ -117,7 +127,8 @@ export class KpiViewedRateService {
   resetStats(): void {
     this.currentFilter$.next({
       dateFrom: null,
-      dateUntil: null
+      dateUntil: null,
+      selectedStatus: 'ALL'
     });
     this.stats$.next({
       total: 0,
@@ -125,8 +136,10 @@ export class KpiViewedRateService {
       viewedRate: 0,
       dateRange: {
         dateFrom: null,
-        dateUntil: null
+        dateUntil: null,
+        selectedStatus: 'ALL'
       }
     });
   }
+
 }
