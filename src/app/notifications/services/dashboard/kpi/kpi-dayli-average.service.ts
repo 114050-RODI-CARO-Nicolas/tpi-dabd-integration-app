@@ -80,7 +80,7 @@ export class KpiDailyAverageService {
       const untilDate = filter.dateUntil ? new Date(filter.dateUntil) : null;
 
       return (!fromDate || notificationDate >= fromDate) &&
-             (!untilDate || notificationDate <= untilDate);
+        (!untilDate || notificationDate <= untilDate);
     });
   }
 
@@ -114,7 +114,7 @@ export class KpiDailyAverageService {
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
   }
 
-  private resetStats(): void {
+  resetStats(): void {
     this.stats$.next({
       average: 0,
       totalNotifications: 0,

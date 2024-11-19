@@ -1,4 +1,3 @@
-// contact-type-metric.service.ts
 import { Injectable } from '@angular/core';
 import { ChartData, ChartOptions } from 'chart.js';
 import { BehaviorSubject, Observable } from 'rxjs';

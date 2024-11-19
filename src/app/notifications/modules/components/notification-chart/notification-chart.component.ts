@@ -3,7 +3,7 @@ import { BaseChartDirective } from 'ng2-charts';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NotificationService } from '../../../services/notification.service';
-import { KPIModel, RetentionKPIs, RetentionMetric } from '../../../models/kpi/kpiModel';
+import { KPIModel, RetentionKPIs } from '../../../models/kpi/kpiModel';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { MainContainerComponent } from 'ngx-dabd-grupo01';
@@ -42,8 +42,6 @@ import { KpiHighestRetentionService } from '../../../services/dashboard/kpi/kpi-
 
 export class NotificationChartComponent implements OnInit {
 
-
-  //START REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW
 
   constructor(
     private contactTypeMetricService: ContactTypeMetricService,
@@ -109,8 +107,6 @@ export class NotificationChartComponent implements OnInit {
   averageRetention: number = 0;
 
 
-  //END REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW
-
   private platformId = inject(PLATFORM_ID);
   isBrowser = isPlatformBrowser(this.platformId);
   notificationService = inject(NotificationService);
@@ -141,45 +137,15 @@ export class NotificationChartComponent implements OnInit {
 
   notifications: NotificationKPIViewedModel[] = []
 
-  getAllNotifications() {
-
-    this.notificationService.getAllNotificationsNotFiltered().subscribe((data) => {
-
-      this.notifications = data;
-
-    })
-
-  }
-
-
   ngOnInit() {
 
-    this.getAllNotifications();
-    this.notificationService.getAllNotificationsNotFiltered().subscribe((data) => {
-      this.notifications = data;
-
-      const today = new Date();
-      this.dateFrom = this.formatDate(today);
-
-      const tomorrow = new Date(today);
-      today.setDate(today.getDate() + 2);
-      tomorrow.setDate(today.getDate());
-      this.dateUntil = this.formatDate(tomorrow);
-
-      if (this.isBrowser) {
-
-      }
-    });
-
-    //START REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW
+    this.setInitialDateFilters();
 
     this.contactTypeMetricService.getContactTypeChartData()
       .pipe(takeUntil(this.destroy$))
       .subscribe(data => {
         this.chartDataContactType = data;
       });
-
-    this.notificationStatusMetricService.loadNotifications();
 
     this.notificationStatusMetricService.getChartData()
       .pipe(takeUntil(this.destroy$))
@@ -253,18 +219,11 @@ export class NotificationChartComponent implements OnInit {
         this.retentionKPIs.highestRetention = stats.highestRetentionSubscription || '';
       })
 
-
-
-
     this.loadData();
 
-    //END REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW
 
   }
 
-
-
-  //START REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW
 
 
   ngOnDestroy(): void {
@@ -274,11 +233,7 @@ export class NotificationChartComponent implements OnInit {
 
 
   applyFilters(): void {
-    this.notificationStatusMetricService.updateFilters({
-      dateFrom: this.dateFrom,
-      dateUntil: this.dateUntil,
-      selectedStatus: this.selectedStatus
-    });
+    this.updateDateFilter();
     this.isDropdownOpen = false;
   }
 
@@ -289,6 +244,17 @@ export class NotificationChartComponent implements OnInit {
     this.dateUntil = null;
     this.selectedStatus = 'ALL';
     this.notificationStatusMetricService.resetFilters();
+    this.subscriptionRetentionMetricService.resetData();
+    this.subscriptionOptionalAnalysisMetricService.resetData();
+    this.weeklyMetricService.resetData();
+    this.kpiViewedRateService.resetStats();
+    this.kpiDailyAverageService.resetStats();
+    this.kpiMostDayliActiveService.resetStats();
+    this.kpiMostFrequentContactService.resetStats();
+    this.kpiPeakTimeService.resetStats();
+    this.kpiViewedRateService.resetStats();
+
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -299,6 +265,7 @@ export class NotificationChartComponent implements OnInit {
   }
 
   private updateDateFilter(): void {
+
     this.kpiViewedRateService.updateDateFilter({
       dateFrom: this.dateFrom,
       dateUntil: this.dateUntil
@@ -329,6 +296,17 @@ export class NotificationChartComponent implements OnInit {
       dateUntil: this.dateUntil
     });
 
+    this.weeklyMetricService.updateDateFilter({
+      dateFrom: this.dateFrom,
+      dateUntil: this.dateUntil
+    });
+
+    this.notificationStatusMetricService.updateFilters({
+      dateFrom: this.dateFrom,
+      dateUntil: this.dateUntil,
+      selectedStatus: this.selectedStatus
+    });
+
   }
 
   loadData(): void {
@@ -341,10 +319,11 @@ export class NotificationChartComponent implements OnInit {
     this.kpiHighestRetentionService.loadData();
     this.subscriptionOptionalAnalysisMetricService.loadData();
     this.subscriptionRetentionMetricService.loadData();
+    this.weeklyMetricService.loadData();
+    this.notificationStatusMetricService.loadNotifications();
+
 
   }
-
-  //END REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW REFACTOR NEW
 
   showInfo() {
 
@@ -369,7 +348,20 @@ export class NotificationChartComponent implements OnInit {
     return `${year}-${month}-${day}`
   }
 
+  toggleTooltip() {
+    this.isTooltipOpen = !this.isTooltipOpen;
+    if (this.isTooltipOpen) {
+      this.fetchIaResponse();
+    }
+  }
 
+  getActiveFiltersCount(): number {
+    let count = 0;
+    if (this.dateFrom) count++;
+    if (this.dateUntil) count++;
+    if (this.selectedStatus !== 'ALL') count++;
+    return count;
+  }
 
   exportDashboardData(): string {
     const data = {
@@ -379,21 +371,12 @@ export class NotificationChartComponent implements OnInit {
     return JSON.stringify(data);
   }
 
-
-  toggleTooltip() {
-    this.isTooltipOpen = !this.isTooltipOpen;
-    if (this.isTooltipOpen) {
-      this.fetchIaResponse();
-    }
-  }
-
   fetchIaResponse() {
-    console.log(this.exportDashboardData());
-    this.isLoading = true; // Mostrar spinner
+    this.isLoading = true;
     this.iaService.analyzdeDashboard(this.exportDashboardData()).subscribe({
       next: (response) => {
-        this.iaResponse = response; // Cambia según el formato de tu API
-        this.isLoading = false; // Ocultar spinner
+        this.iaResponse = response;
+        this.isLoading = false;
       },
       error: () => {
         this.iaResponse = 'Error al obtener respuesta del asistente.';
@@ -402,6 +385,24 @@ export class NotificationChartComponent implements OnInit {
     });
   }
 
+  setInitialDateFilters() {
 
+    return this.notificationService.getAllNotificationsNotFiltered().subscribe((data) => {
+      this.notifications = data;
+
+      const today = new Date();
+      this.dateFrom = this.formatDate(today);
+
+      const tomorrow = new Date(today);
+      today.setDate(today.getDate() + 2);
+      tomorrow.setDate(today.getDate());
+      this.dateUntil = this.formatDate(tomorrow);
+
+      if (this.isBrowser) {
+
+      }
+    });
+
+  }
 
 }

@@ -15,6 +15,7 @@ export interface FilterCriteria {
   providedIn: 'root'
 })
 export class NotificationStatusMetricService {
+
   private notifications$ = new BehaviorSubject<any[]>([]);
   private filterCriteria$ = new BehaviorSubject<FilterCriteria>({
     dateFrom: null,
@@ -39,7 +40,6 @@ export class NotificationStatusMetricService {
   }
 
   private initializeDataSubscription(): void {
-    // Combina las notificaciones con los criterios de filtro
     combineLatest([
       this.notifications$,
       this.filterCriteria$.pipe(
@@ -63,6 +63,7 @@ export class NotificationStatusMetricService {
   }
 
   private dateFilter(notification: any, dateFrom: string | null, dateUntil: string | null): boolean {
+    
     if (!dateFrom && !dateUntil) return true;
 
     const notificationDate = new Date(this.convertToISODate(notification.dateSend));
@@ -73,8 +74,12 @@ export class NotificationStatusMetricService {
       (!untilDate || notificationDate <= untilDate);
   }
 
-  private convertToISODate(date: string): string {
-    return new Date(date).toISOString();
+  private convertToISODate(dateString: string) {
+    const [dateOnly, timeOnly] = dateString.split(' ');
+    const [day, month, year] = dateOnly.split('/');
+    const [hours, minutes, seconds] = timeOnly.split(':');
+    const isoDateString = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:${seconds.padStart(2, '0')}Z`;
+    return isoDateString;
   }
 
   private updateChartData(filteredNotifications: any[]): void {

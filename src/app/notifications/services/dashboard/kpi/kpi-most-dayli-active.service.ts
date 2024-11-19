@@ -119,7 +119,7 @@ export class KpiMostDayliActiveService {
     return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
   }
 
-  private resetStats(): void {
+  resetStats(): void {
     this.activeDay$.next({
       day: '',
       count: 0,

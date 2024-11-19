@@ -103,7 +103,7 @@ export class KpiPeakTimeService {
     return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
   }
 
-  private resetStats(): void {
+  resetStats(): void {
     this.peakHourStats$.next({
       hour: 0,
       count: 0
