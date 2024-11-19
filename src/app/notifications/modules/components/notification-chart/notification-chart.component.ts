@@ -283,9 +283,10 @@ export class NotificationChartComponent implements OnInit {
       selectedStatus: this.selectedStatus
     });
 
-    this.kpiMostFrequentContactService.updateDateFilter({
+    this.kpiMostFrequentContactService.updateFilters({
       dateFrom: this.dateFrom,
-      dateUntil: this.dateUntil
+      dateUntil: this.dateUntil,
+      selectedStatus: this.selectedStatus
     });
 
     this.kpiMostDayliActiveService.updateDateFilter({
