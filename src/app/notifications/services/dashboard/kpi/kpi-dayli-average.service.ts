@@ -1,10 +1,11 @@
-import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { NotificationService } from '../../notification.service';
+import { inject, Injectable } from "@angular/core";
+import { NotificationService } from "../../notification.service";
+import { BehaviorSubject, Observable } from "rxjs";
 
 interface DateFilter {
   dateFrom: string | null;
   dateUntil: string | null;
+  selectedStatus: 'ALL' | 'SENT' | 'VISUALIZED';
 }
 
 interface DailyAverageStats {
@@ -15,19 +16,20 @@ interface DailyAverageStats {
 
 interface Notification {
   dateSend: string;
+  statusSend: 'SENT' | 'VISUALIZED';
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class KpiDailyAverageService {
-
   private notificationService = inject(NotificationService);
 
   private notifications: Notification[] = [];
   private currentFilter$ = new BehaviorSubject<DateFilter>({
     dateFrom: null,
-    dateUntil: null
+    dateUntil: null,
+    selectedStatus: 'ALL'
   });
 
   private stats$ = new BehaviorSubject<DailyAverageStats>({
@@ -56,32 +58,41 @@ export class KpiDailyAverageService {
       });
   }
 
-  updateDateFilter(filter: DateFilter): void {
-    this.currentFilter$.next(filter);
+  updateFilters(filter: Partial<DateFilter>): void {
+    this.currentFilter$.next({
+      ...this.currentFilter$.value,
+      ...filter
+    });
     this.updateStats();
   }
 
   private updateStats(): void {
-    const filteredNotifications = this.applyDateFilter(this.notifications);
+    const filteredNotifications = this.applyFilters(this.notifications);
     const stats = this.calculateDailyAverage(filteredNotifications);
     this.stats$.next(stats);
   }
 
-  private applyDateFilter(notifications: Notification[]): Notification[] {
+  private applyFilters(notifications: Notification[]): Notification[] {
     const filter = this.currentFilter$.value;
 
-    if (!filter.dateFrom && !filter.dateUntil) {
-      return notifications;
-    }
-
     return notifications.filter(notification => {
-      const notificationDate = this.parseNotificationDate(notification.dateSend);
-      const fromDate = filter.dateFrom ? new Date(filter.dateFrom) : null;
-      const untilDate = filter.dateUntil ? new Date(filter.dateUntil) : null;
+      const matchesDate = this.dateFilter(notification, filter.dateFrom, filter.dateUntil);
+      const matchesStatus = filter.selectedStatus === 'ALL' ?
+        true : notification.statusSend === filter.selectedStatus;
 
-      return (!fromDate || notificationDate >= fromDate) &&
-        (!untilDate || notificationDate <= untilDate);
+      return matchesDate && matchesStatus;
     });
+  }
+
+  private dateFilter(notification: Notification, dateFrom: string | null, dateUntil: string | null): boolean {
+    if (!dateFrom && !dateUntil) return true;
+
+    const notificationDate = this.parseNotificationDate(notification.dateSend);
+    const fromDate = dateFrom ? new Date(dateFrom) : null;
+    const untilDate = dateUntil ? new Date(dateUntil) : null;
+
+    return (!fromDate || notificationDate >= fromDate) &&
+      (!untilDate || notificationDate <= untilDate);
   }
 
   private calculateDailyAverage(notifications: Notification[]): DailyAverageStats {
@@ -115,10 +126,17 @@ export class KpiDailyAverageService {
   }
 
   resetStats(): void {
+    this.currentFilter$.next({
+      dateFrom: null,
+      dateUntil: null,
+      selectedStatus: 'ALL'
+    });
     this.stats$.next({
       average: 0,
       totalNotifications: 0,
       totalDays: 0
     });
   }
+
+
 }
