@@ -7,55 +7,57 @@
     </button>
   </div>
 
-      <form #form="ngForm" (ngSubmit)="sendForm(form)" class="row g-3 container">
-      <div class="mb-3">
-        <label for="templateNameCustomValidation" class="form-label">Nombre:</label>
-
-        <input #templateNameModel="ngModel"
-          [ngClass]="{'is-invalid': templateNameModel.invalid  && (templateNameModel.dirty || templateNameModel.touched) ,'is-valid': templateNameModel.valid }"
-          type="text" style="max-width: 400px;" class="form-control" id="templateNameModel" name="templateNameModel"
-          [(ngModel)]="templateName" required minlength="5">
-        @if(templateNameModel.invalid && (templateNameModel.dirty || templateNameModel.touched) ){
-        @if(templateNameModel.getError('minlength')) {
-        <div class="text-danger">Debe contener como mínimo 5 caracteres.</div>
-        }@else{
-        <div class="text-danger">El nombre de la plantilla es obligatorio.</div>
-        }}
-
-      </div>
-
-      <!-- Campo para el Cuerpo del Correo -->
-      <div class="mb-3">
-        <label for="templateBodyModelCustomValidation" class="form-label">Contenido:</label>
-
-        <textarea #templateBodyModel="ngModel"
-          [ngClass]="{'is-invalid': templateBodyModel.invalid  && ( templateBodyModel.touched) ,'is-valid': templateBodyModel.touched && templateBodyModel.valid }"
-          class="form-control" id="templateBodyModel" name="templateBodyModel" style="max-width: 400px;"
-          [(ngModel)]="templateBody" required minlength="100" rows="10"
-          ></textarea>
-        @if(templateBodyModel.invalid && (templateBodyModel.dirty || templateBodyModel.touched)) {
-
-          @if(templateBodyModel.getError('minlength')) {
-          <div class="text-danger">El HTML es obligatorio</div>
-          }
-          @else if(templateBodyModel.getError('invalidHtml')) {
-          <div class="text-danger">El HTML ingresado no es válido.</div>
-          }
-          @else {
-          <div class="text-danger">Debe contener como mínimo 100 caracteres.</div>
-          }
+  <form [formGroup]="form" (ngSubmit)="sendForm()" class="row g-3 container">
+    <div class="mb-3">
+      <label for="templateNameCustomValidation" class="form-label d-block">Nombre:</label>
+      
+      <input style="max-width: 400px;"class="form-control" formControlName="templateName" [ngClass]="{
+        'is-invalid':
+          form.controls['templateName'].invalid &&
+          form.controls['templateName'].touched,'is-valid':   form.controls['templateName'].valid
+      }"/>
+       @if (form.get('templateName')?.getError('required')) {
+        <div class="invalid-feedback">El nombre  es requerido</div>
         }
+        @if (form.get('templateName')?.errors?.['minlength']) {
+          <div class="invalid-feedback">
+            El nombre debe tener mas de 5 caracteres
+          </div>
+          }
 
-      </div>
+    </div>
 
-      <!-- Botones de Acción alineados a la derecha -->
-      <div class="d-flex justify-content-end mb-3">
-        <button type="button" class="btn btn-danger me-2">Cancelar</button>
-        <!-- <button type="submit" class="btn btn-primary"
-          (click)="sendEmailTemplate(this.templateName,this.templateBody)">Guardar</button> -->
-        <button type="submit" class="btn btn-primary" [disabled]="!form.valid">Registrar</button>
-      </div>
-    </form>
+    <!-- Campo para el Cuerpo del Correo -->
+    <div class="mb-3">
+      <label for="templateBodyModelCustomValidation" class="form-label">Contenido:</label>
+
+      <textarea formControlName="templateBody"
+      [ngClass]="{'is-invalid': form.controls['templateBody'].invalid &&
+        form.controls['templateBody'].touched,'is-valid':   form.controls['templateBody'].valid }"
+      class="form-control"style="max-width: 400px;"
+      rows="10"
+      ></textarea>
+    @if(form.get('templateBody')?.getError('required')) {
+      <div class="invalid-feedback">El HTML es requerido</div>
+    }
+      @if(form.get('templateBody')?.getError('minlength')) {
+        <div class="invalid-feedback">Debe contener como mínimo 100 caracteres.</div>
+      }
+
+      @else if(form.get('templateBody')?.hasError('invalidHtml')) {
+      <div class="invalid-feedback">El HTML ingresado no es válido.</div>
+      }
+
+    </div>
+
+    <!-- Botones de Acción alineados a la derecha -->
+    <div class="d-flex justify-content-end mb-3">
+      <button type="button" class="btn btn-danger me-2" (click)="resetForm()">Cancelar</button>
+      <!-- <button type="submit" class="btn btn-primary"
+        (click)="sendEmailTemplate(this.templateName,this.templateBody)">Guardar</button> -->
+      <button type="submit" class="btn btn-primary" [disabled]="!form.valid">Registrar</button>
+    </div>
+  </form>
 
 
 
@@ -98,7 +100,7 @@
               #iaTemplateBodyModel="ngModel"
               class="form-control"
               [ngClass]="{
-                'is-invalid': iaTemplateBodyModel.invalid && (iaTemplateBodyModel.dirty || iaTemplateBodyModel.touched),
+                'is-invalid': iaTemplateBodyModel.invalid &&  (iaTemplateBodyModel.touched || iaTemplateBodyModel.dirty),
                 'is-valid': iaTemplateBodyModel.valid
               }"
               id="iaTemplateBodyModel"
@@ -109,7 +111,7 @@
               rows="12"
               placeholder="Describe aquí cómo te gustaría que sea tu plantilla, incluyendo detalles como el tono, el contenido, y cualquier especificación importante que desees..."></textarea>
 
-            <div *ngIf="iaTemplateBodyModel.invalid && (iaTemplateBodyModel.dirty || iaTemplateBodyModel.touched)">
+            <div *ngIf="iaTemplateBodyModel.invalid && (iaTemplateBodyModel.touched || iaTemplateBodyModel.dirty)">
               <div *ngIf="iaTemplateBodyModel.errors?.['required']" class="text-danger">
                 El contenido no puede estar vacío.
               </div>

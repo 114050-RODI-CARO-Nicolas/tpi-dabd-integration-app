@@ -18,7 +18,7 @@ export const NOTIFICATION_ROUTES: Routes = [
   {
     path: 'templates/new',
     component: TemplateEmailComponent,
-    //canActivate: [authGuard],
+    canActivate: [authGuard],
     canMatch: [hasRoleCodeGuard],
     data: {
       allowedRoleCodes: [
@@ -31,7 +31,7 @@ export const NOTIFICATION_ROUTES: Routes = [
   {
     path: 'templates',
     component: TemplateListComponent,
-    //canActivate: [authGuard],
+    canActivate: [authGuard],
     canMatch: [hasRoleCodeGuard],
     data: {
       allowedRoleCodes: [
