@@ -12,20 +12,20 @@ interface WeeklyChartState {
 interface DateFilter {
   dateFrom: string | null;
   dateUntil: string | null;
+  selectedStatus: 'ALL' | 'SENT' | 'VISUALIZED';
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationWeeklyMetricService {
-
   private notificationService = inject(NotificationService);
-
   private readonly WEEKDAYS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
   private currentFilter$ = new BehaviorSubject<DateFilter>({
     dateFrom: null,
-    dateUntil: null
+    dateUntil: null,
+    selectedStatus: 'ALL'
   });
 
   private chartState$ = new BehaviorSubject<WeeklyChartState>({
@@ -114,7 +114,7 @@ export class NotificationWeeklyMetricService {
     this.notificationService.getAllNotificationsNotFiltered()
       .subscribe({
         next: (notifications) => {
-          const filteredNotifications = this.applyDateFilter(notifications);
+          const filteredNotifications = this.applyFilters(notifications);
           this.updateChartData(filteredNotifications);
         },
         error: (error) => {
@@ -124,30 +124,44 @@ export class NotificationWeeklyMetricService {
       });
   }
 
-  updateDateFilter(filter: DateFilter): void {
-    this.currentFilter$.next(filter);
+  updateFilters(filter: Partial<DateFilter>): void {
+    this.currentFilter$.next({
+      ...this.currentFilter$.value,
+      ...filter
+    });
     this.loadData();
   }
 
-  private applyDateFilter(notifications: NotificationKPIViewedModel[]): NotificationKPIViewedModel[] {
-
+  private applyFilters(notifications: NotificationKPIViewedModel[]): NotificationKPIViewedModel[] {
     const filter = this.currentFilter$.value;
 
-    if (!filter.dateFrom && !filter.dateUntil) {
-      return notifications;
-    }
-
     return notifications.filter(notification => {
-      const notificationDate = this.parseNotificationDate(notification.dateSend);
-      const fromDate = filter.dateFrom ? new Date(filter.dateFrom) : null;
-      const untilDate = filter.dateUntil ? new Date(filter.dateUntil) : null;
+      const matchesDate = this.dateFilter(notification, filter.dateFrom, filter.dateUntil);
+      const matchesStatus = filter.selectedStatus === 'ALL' ?
+        true : notification.statusSend === filter.selectedStatus;
 
-      return (!fromDate || notificationDate >= fromDate) &&
-        (!untilDate || notificationDate <= untilDate);
+      return matchesDate && matchesStatus;
     });
   }
 
+  private dateFilter(notification: NotificationKPIViewedModel, dateFrom: string | null, dateUntil: string | null): boolean {
+    if (!dateFrom && !dateUntil) return true;
+
+    const notificationDate = this.parseNotificationDate(notification.dateSend);
+    const fromDate = dateFrom ? new Date(dateFrom) : null;
+    const untilDate = dateUntil ? new Date(dateUntil) : null;
+
+    return (!fromDate || notificationDate >= fromDate) &&
+           (!untilDate || notificationDate <= untilDate);
+  }
+
   resetData(): void {
+    this.currentFilter$.next({
+      dateFrom: null,
+      dateUntil: null,
+      selectedStatus: 'ALL'
+    });
+
     const emptyState = {
       ...this.chartState$.value,
       data: {
@@ -173,7 +187,7 @@ export class NotificationWeeklyMetricService {
     return this.chartState$.value.options;
   }
 
-  updateChartData(notifications: any[]): void {
+  updateChartData(notifications: NotificationKPIViewedModel[]): void {
     const weekdayCount = this.calculateWeekdayCounts(notifications);
 
     const newChartState = {
@@ -190,7 +204,7 @@ export class NotificationWeeklyMetricService {
     this.chartState$.next(newChartState);
   }
 
-  private calculateWeekdayCounts(notifications: any[]): Map<string, number> {
+  private calculateWeekdayCounts(notifications: NotificationKPIViewedModel[]): Map<string, number> {
     const weekdayCount = new Map<string, number>();
 
     notifications.forEach(notification => {

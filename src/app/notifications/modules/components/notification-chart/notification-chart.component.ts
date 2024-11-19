@@ -300,9 +300,10 @@ export class NotificationChartComponent implements OnInit {
       dateUntil: this.dateUntil
     });
 
-    this.weeklyMetricService.updateDateFilter({
+    this.weeklyMetricService.updateFilters({
       dateFrom: this.dateFrom,
-      dateUntil: this.dateUntil
+      dateUntil: this.dateUntil,
+      selectedStatus: this.selectedStatus
     });
 
     this.notificationStatusMetricService.updateFilters({
