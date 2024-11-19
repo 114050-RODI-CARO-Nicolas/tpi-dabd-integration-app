@@ -233,20 +233,7 @@ export class NotificationChartComponent implements OnInit {
 
 
   applyFilters(): void {
-
     this.updateDateFilter();
-
-
-    console.log(this.dateFrom,"this.dateFrom");
-    console.log(this.dateUntil,"this.dateUntil");
-    console.log(this.selectedStatus,"this.selectedStatus");
-
-    this.notificationStatusMetricService.updateFilters({
-      dateFrom: this.dateFrom,
-      dateUntil: this.dateUntil,
-      selectedStatus: this.selectedStatus
-    });
-
     this.isDropdownOpen = false;
   }
 
@@ -271,14 +258,13 @@ export class NotificationChartComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-
     if (changes['dateFrom'] || changes['dateUntil']) {
       this.updateDateFilter();
     }
   }
 
   private updateDateFilter(): void {
-
+    
     this.kpiViewedRateService.updateDateFilter({
       dateFrom: this.dateFrom,
       dateUntil: this.dateUntil

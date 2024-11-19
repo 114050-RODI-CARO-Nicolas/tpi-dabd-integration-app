@@ -53,39 +53,19 @@ export class NotificationStatusMetricService {
   }
 
   private applyFilters(notifications: any[], criteria: FilterCriteria): any[] {
-    console.log(criteria,"criteria")
-    console.log(notifications,"notifications")
-    // return notifications.filter(notification => {
-    //   const matchesDate = this.dateFilter(notification, criteria.dateFrom, criteria.dateUntil);
-    //   console.log(matchesDate,"matchesDate");
-    //   const matchesStatus = criteria.selectedStatus === 'ALL' ?
-    //     true : notification.statusSend === criteria.selectedStatus;
 
-    //   return matchesDate && matchesStatus;
-    // });
-
-    // Filtra las notificaciones según los criterios
   const filteredNotifications = notifications.filter(notification => {
-    // Verificar la coincidencia con las fechas
+    
     const matchesDate = this.dateFilter(notification, criteria.dateFrom, criteria.dateUntil);
-    console.log('matchesDate:', matchesDate); // Muestra si la fecha de la notificación coincide
-
-    // Verificar la coincidencia con el estado
     const matchesStatus = criteria.selectedStatus === 'ALL' ?
       true : notification.statusSend === criteria.selectedStatus;
-    console.log('matchesStatus:', matchesStatus); // Muestra si el estado de la notificación coincide
 
-    // Mostrar el resultado de la combinación de ambos filtros
     const result = matchesDate && matchesStatus;
-    console.log('Notification:', notification, 'Result:', result); // Muestra cada notificación y si pasa ambos filtros
-
-    return result; // Solo las notificaciones que coincidan con ambos filtros serán incluidas
+    return result; 
   });
 
-  // Muestra las notificaciones filtradas después de la ejecución del filtro
-  console.log('Filtered Notifications:', filteredNotifications); // Muestra el array completo filtrado
 
-  // Devuelve las notificaciones filtradas
+  
   return filteredNotifications;
 }
 
@@ -93,22 +73,20 @@ export class NotificationStatusMetricService {
 
     if (!dateFrom && !dateUntil) return true;
 
-    console.log(notification, "notification")
+   
     console.log(notification.dateSend, "notification.dateSend")
     console.log(dateFrom, "dateFrom")
     console.log(dateUntil, "dateUntil")
 
     // Paso 1: Convertir notification.dateSend a formato YYYY-MM-DD
-    const notificationDate = new Date(this.convertToDateString(this.removeTimeFromDate(notification.dateSend)));
+    const notificationDate = new Date(this.convertToISODate(notification.dateSend));
     console.log(notificationDate, "notificationDate")
 
     // Paso 2: Convertir las fechas de entrada dateFrom y dateUntil al formato adecuado
     const fromDate = dateFrom ? new Date(this.convertToDateString(dateFrom)) : null;
     const untilDate = dateUntil ? new Date(this.convertToDateString(dateUntil)) : null;
 
-    console.log(fromDate, "fromDate")
-    console.log(untilDate, "untilDate")
-
+  
     // Paso 3: Comparar las fechas
     return (!fromDate || notificationDate >= fromDate) &&
       (!untilDate || notificationDate <= untilDate);
@@ -122,13 +100,8 @@ export class NotificationStatusMetricService {
     const isoDateString = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:${seconds.padStart(2, '0')}Z`;
     return isoDateString;
 
-
-  // Función para remover la hora de una fecha en formato "yyyy-mm-dd HH:mm:ss"
-  private removeTimeFromDate(dateString: string): string {
-    const [datePart] = dateString.split(' ');  // Obtiene solo la parte de la fecha (antes del espacio)
-    return datePart;  // Retorna solo la fecha sin la hora
-
   }
+
 
   // Función para convertir "dd/mm/yyyy" a "yyyy-mm-dd" (formato que JavaScript entiende)
   private convertToDateString(dateString: string): string {
@@ -136,11 +109,6 @@ export class NotificationStatusMetricService {
     return `${year}-${month}-${day}`;  // Formato YYYY-MM-DD
   }
 
-
-
-  // private convertToISODate(date: string): string {
-  //   return new Date(date).toISOString();
-  // }
 
   private updateChartData(filteredNotifications: any[]): void {
     const statusCount = {
